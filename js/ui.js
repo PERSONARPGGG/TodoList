@@ -1,5 +1,5 @@
 /**
- * UI Module - Chronos Tactical Persona Interface
+ * UI Module - Chronos Tactical Persona Interface (v0.3.0)
  * Strictly handles DOM, Gestures, View Transitions, Animations, and Visual States.
  */
 export class UI {
@@ -19,6 +19,29 @@ export class UI {
     }
 
     bindEvents() {
+        // Fast Command Bar Submission (Natural Language Parser)
+        const quickForm = document.getElementById('form-quick-cmd');
+        const quickInput = document.getElementById('input-quick-cmd');
+        quickForm?.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const text = quickInput.value.trim();
+            if (!text) return;
+
+            const parsed = this.app.store.parseQuickInput(text);
+            this.app.store.addTask({
+                title: parsed.title,
+                time: parsed.time,
+                isDaily: parsed.isDaily,
+                type: parsed.isDaily ? 'critical' : 'normal'
+            });
+
+            quickInput.value = '';
+            this.playSlashEffect('DIRECTIVE ENGAGED');
+            this.renderTasks();
+            this.renderCalendar();
+            this.renderStats();
+        });
+
         // Tab Navigation Buttons (Right Bookmark)
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -55,17 +78,17 @@ export class UI {
             this.renderCalendar();
         });
 
-        // Add Objective Modal Toggles
+        // Detailed Add Objective Modal
         const modal = document.getElementById('add-modal');
         document.getElementById('btn-add')?.addEventListener('click', () => {
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
             
-            // Default time: Now + 1 Hour (Local ISO)
             const tzoffset = (new Date()).getTimezoneOffset() * 60000;
             const localISOTime = (new Date(Date.now() - tzoffset + 3600000)).toISOString().slice(0, 16);
             document.getElementById('input-time').value = localISOTime;
             document.getElementById('input-task').value = '';
+            document.getElementById('input-is-daily').checked = false;
             document.getElementById('input-task').focus();
         });
 
@@ -74,17 +97,19 @@ export class UI {
             setTimeout(() => modal.classList.add('hidden'), 200);
         });
 
-        // Save Objective
+        // Save Objective from Detailed Modal
         document.getElementById('btn-save')?.addEventListener('click', () => {
             const title = document.getElementById('input-task').value.trim();
             const time = document.getElementById('input-time').value;
             const priority = document.getElementById('input-priority').value;
+            const isDaily = document.getElementById('input-is-daily').checked;
 
             if (title && time) {
                 this.app.store.addTask({
                     title,
                     time: new Date(time).toISOString(),
-                    type: priority
+                    type: priority,
+                    isDaily
                 });
                 this.renderTasks();
                 this.renderCalendar();
@@ -166,7 +191,7 @@ export class UI {
 
         document.getElementById('btn-edit-short-goal')?.addEventListener('click', () => {
             this.editingGoalType = 'short';
-            goalTitle.innerText = 'Update This Month Directive';
+            goalTitle.innerText = 'Update This Month Focus';
             goalInput.value = this.app.store.getGoals().shortTerm;
             goalModal.classList.remove('hidden');
             setTimeout(() => goalModal.classList.remove('opacity-0'), 10);
@@ -175,7 +200,7 @@ export class UI {
 
         document.getElementById('btn-edit-long-goal')?.addEventListener('click', () => {
             this.editingGoalType = 'long';
-            goalTitle.innerText = 'Update Annual Vision Directive';
+            goalTitle.innerText = 'Update Annual Vision Goal';
             goalInput.value = this.app.store.getGoals().longTerm;
             goalModal.classList.remove('hidden');
             setTimeout(() => goalModal.classList.remove('opacity-0'), 10);
@@ -200,6 +225,43 @@ export class UI {
                 goalModal.classList.add('opacity-0');
                 setTimeout(() => goalModal.classList.add('hidden'), 200);
             }
+        });
+
+        // JSON Backup Export / Import
+        document.getElementById('btn-export-json')?.addEventListener('click', () => {
+            const json = this.app.store.exportAllData();
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chronos_backup_${new Date().toISOString().slice(0, 10)}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        });
+
+        const fileInput = document.getElementById('file-import-json');
+        document.getElementById('btn-import-json-trigger')?.addEventListener('click', () => {
+            fileInput?.click();
+        });
+
+        fileInput?.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const success = this.app.store.importData(event.target.result);
+                if (success) {
+                    this.playSlashEffect('BACKUP RESTORED');
+                    this.renderTasks();
+                    this.renderCalendar();
+                    this.renderStats();
+                    this.renderGoals();
+                    this.renderLinks();
+                } else {
+                    alert('Invalid JSON backup file.');
+                }
+            };
+            reader.readAsText(file);
         });
 
         // Network Category Filters
@@ -263,15 +325,12 @@ export class UI {
             const diffX = touchEndX - this.touchStartX;
             const diffY = touchEndY - this.touchStartY;
 
-            // Horizontal swipe detected (threshold 45px, more horizontal than vertical)
             if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
                 if (diffX < 0) {
-                    // Swiped Left -> Next Tab
                     if (this.currentTabIndex < this.tabs.length - 1) {
                         this.switchTabByIndex(this.currentTabIndex + 1, 'left');
                     }
                 } else {
-                    // Swiped Right -> Prev Tab
                     if (this.currentTabIndex > 0) {
                         this.switchTabByIndex(this.currentTabIndex - 1, 'right');
                     }
@@ -285,7 +344,6 @@ export class UI {
         this.currentTabIndex = index;
         const targetViewId = this.tabs[index];
 
-        // Update Right Nav Bookmark styling
         document.querySelectorAll('.nav-btn').forEach(b => {
             const idx = parseInt(b.dataset.index, 10);
             const indicator = b.querySelector('.indicator');
@@ -300,7 +358,6 @@ export class UI {
             }
         });
 
-        // Update Swipe Dots
         document.querySelectorAll('.swipe-dot').forEach(dot => {
             const idx = parseInt(dot.dataset.index, 10);
             if (idx === index) {
@@ -310,7 +367,6 @@ export class UI {
             }
         });
 
-        // Hide all views and show the active one with 3D animation
         document.querySelectorAll('.view-section').forEach(sec => {
             sec.classList.add('hidden');
             sec.classList.remove('animate-swipe-left', 'animate-swipe-right');
@@ -318,8 +374,6 @@ export class UI {
 
         const activeSec = document.getElementById(targetViewId);
         activeSec.classList.remove('hidden');
-        
-        // Force Reflow
         void activeSec.offsetWidth;
 
         if (direction === 'left') {
@@ -328,7 +382,6 @@ export class UI {
             activeSec.classList.add('animate-swipe-right');
         }
 
-        // Lazy-render views on tab activation
         if (targetViewId === 'view-info') {
             this.renderStats();
             this.renderGoals();
@@ -365,7 +418,7 @@ export class UI {
         void text.offsetWidth;
         text.classList.add('animate-persona');
 
-        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+        if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
 
         setTimeout(() => {
             overlay.style.display = 'none';
@@ -379,7 +432,6 @@ export class UI {
 
         let tasks = this.app.store.getTasks();
 
-        // Optional date filter from calendar
         if (this.selectedDateFilter) {
             tasks = tasks.filter(t => {
                 const d = new Date(t.time);
@@ -391,9 +443,9 @@ export class UI {
 
         if (tasks.length === 0) {
             list.innerHTML = `
-                <li class="p-8 text-center border border-dashed border-gray-900 rounded-lg">
-                    <p class="font-bebas text-2xl text-gray-700 tracking-wider">ALL OBJECTIVES CLEARED</p>
-                    <p class="text-xs text-gray-600 mt-1">Tap [+ New Objective] to engage a new directive.</p>
+                <li class="p-8 text-center border-2 border-dashed border-gray-900 rounded-lg">
+                    <p class="font-bebas text-2xl text-gray-700 tracking-wider">ALL DIRECTIVES CLEARED</p>
+                    <p class="text-xs text-gray-600 mt-1 font-mono">Use Quick Engage above or [+ Detail Form]</p>
                 </li>
             `;
             return;
@@ -405,32 +457,30 @@ export class UI {
                 month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
             });
             const isPast = taskDate < new Date() && !task.completed;
-            const borderCol = task.completed ? 'border-emerald-600' : (isPast ? 'border-red-600' : (task.type === 'critical' ? 'border-red-500' : 'border-gray-700'));
 
             return `
-            <li class="persona-card p-3 md:p-3.5 rounded flex items-center justify-between gap-3 ${task.completed ? 'task-completed' : ''}" style="border-left-width: 4px; border-left-color: ${task.completed ? '#10b981' : (isPast ? '#ef4444' : '#374151')}">
+            <li class="task-card-persona p-3 md:p-3.5 flex items-center justify-between gap-3 ${task.completed ? 'task-completed' : ''}">
                 <div class="flex items-center gap-3 min-w-0 flex-1">
                     <!-- Complete Checkbox -->
-                    <button class="w-5 h-5 rounded border ${task.completed ? 'bg-emerald-600 border-emerald-500 text-black' : 'border-gray-700 hover:border-red-500'} flex items-center justify-center shrink-0 transition-colors" onclick="app.ui.toggleTaskComplete('${task.id}')">
+                    <button class="w-5 h-5 rounded border ${task.completed ? 'bg-emerald-600 border-emerald-500 text-black font-black' : 'border-gray-700 hover:border-red-500'} flex items-center justify-center shrink-0 transition-colors" onclick="app.ui.toggleTaskComplete('${task.id}')">
                         ${task.completed ? '✓' : ''}
                     </button>
                     
                     <div class="min-w-0 flex-1">
-                        <div class="flex items-center gap-2 mb-0.5">
-                            <span class="text-[10px] font-mono text-gray-500 font-bold uppercase tracking-wider">${dateStr}</span>
-                            ${task.delayCount > 0 ? `<span class="text-[9px] font-mono bg-yellow-950/80 border border-yellow-800 text-yellow-300 px-1 rounded">+${task.delayCount} DELAYS</span>` : ''}
+                        <div class="flex items-center gap-1.5 flex-wrap mb-0.5">
+                            <span class="text-[10px] font-mono text-gray-400 font-bold uppercase tracking-wider">${dateStr}</span>
+                            ${task.isDaily ? `<span class="text-[9px] font-mono bg-yellow-950/80 border border-yellow-700 text-yellow-300 px-1.5 rounded font-black">⚡ DAILY</span>` : ''}
+                            ${task.delayCount > 0 ? `<span class="text-[9px] font-mono bg-red-950/80 border border-red-800 text-red-300 px-1 rounded">+${task.delayCount} DELAYS</span>` : ''}
                             ${task.type === 'critical' ? `<span class="text-[9px] font-mono text-red-400 font-bold">!CRITICAL</span>` : ''}
                         </div>
-                        <h4 class="task-title font-bold text-white text-sm truncate">${task.title}</h4>
+                        <h4 class="task-title font-black text-white text-sm truncate tracking-tight">${task.title}</h4>
                     </div>
                 </div>
 
-                <!-- Actions -->
-                <div class="flex items-center gap-1.5 shrink-0">
-                    <button class="text-gray-600 hover:text-red-500 p-1.5 transition-colors" title="Delete Directive" onclick="app.store.deleteTask('${task.id}'); app.ui.renderTasks(); app.ui.renderStats(); app.ui.renderCalendar();">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                    </button>
-                </div>
+                <!-- Delete Action -->
+                <button class="text-gray-600 hover:text-red-500 p-1.5 transition-colors shrink-0" title="Delete Directive" onclick="app.store.deleteTask('${task.id}'); app.ui.renderTasks(); app.ui.renderStats(); app.ui.renderCalendar();">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
             </li>
         `}).join('');
     }
@@ -459,12 +509,11 @@ export class UI {
         const targetStamp = document.getElementById('target-timestamp');
         const liveClock = document.getElementById('live-clock');
 
-        // Update top-right live clock
         const now = new Date();
         liveClock.innerText = now.toTimeString().slice(0, 8);
 
         if (!nextTask) {
-            titleEl.innerText = 'ALL SYSTEMS CLEAR';
+            titleEl.innerText = 'ALL DIRECTIVES COMPLETE';
             timerEl.innerText = '00:00:00';
             timerEl.className = 'font-bebas text-6xl md:text-7xl text-gray-700 tracking-wider leading-none';
             targetStamp.innerText = 'TARGET: NONE';
@@ -480,11 +529,9 @@ export class UI {
         const diffMs = target - now;
 
         if (diffMs <= 0) {
-            // Overdue
             timerEl.innerText = '00:00:00';
             timerEl.className = 'font-bebas text-6xl md:text-7xl text-red-500 tracking-wider glow-red leading-none animate-pulse';
             
-            // Trigger emergency push notification once when reaching zero
             if (!nextTask._alerted) {
                 this.triggerAlert(nextTask.title);
                 nextTask._alerted = true;
@@ -499,9 +546,9 @@ export class UI {
         timerEl.innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
         if (diffMs < 600000) { // Less than 10 mins
-            timerEl.className = 'font-bebas text-6xl md:text-7xl text-red-500 tracking-wider glow-red leading-none';
+            timerEl.className = 'font-bebas text-6xl md:text-7xl text-red-500 tracking-wider glow-red leading-none animate-timer-beat';
         } else {
-            timerEl.className = 'font-bebas text-6xl md:text-7xl text-yellow-400 tracking-wider glow-yellow leading-none';
+            timerEl.className = 'font-bebas text-6xl md:text-7xl text-yellow-400 tracking-wider glow-yellow leading-none animate-timer-beat';
         }
     }
 
@@ -528,7 +575,6 @@ export class UI {
 
         for (let day = 1; day <= daysInMonth; day++) {
             const isToday = day === now.getDate();
-            const dateObj = new Date(year, month, day);
             const hasTask = tasks.some(t => {
                 const td = new Date(t.time);
                 return td.getFullYear() === year && td.getMonth() === month && td.getDate() === day;
@@ -548,7 +594,7 @@ export class UI {
 
     filterDate(year, month, day) {
         if (this.selectedDateFilter && this.selectedDateFilter.getDate() === day) {
-            this.selectedDateFilter = null; // Unselect
+            this.selectedDateFilter = null;
         } else {
             this.selectedDateFilter = new Date(year, month, day);
         }
@@ -602,7 +648,7 @@ export class UI {
         }
 
         list.innerHTML = links.map(link => `
-            <div class="persona-card p-3 rounded flex items-center justify-between border-l-4 border-yellow-500 group">
+            <div class="task-card-persona p-3 flex items-center justify-between border-l-4 border-yellow-500 group">
                 <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="min-w-0 flex-1 block">
                     <span class="text-[9px] font-mono text-yellow-400 font-bold uppercase tracking-wider block mb-0.5">${link.category}</span>
                     <h4 class="font-bold text-white text-sm group-hover:text-yellow-300 transition-colors truncate">${link.title}</h4>
@@ -643,8 +689,8 @@ export class UI {
             this.initNotificationState();
             if (permission === 'granted') {
                 new Notification('CHRONOS ENGAGED', {
-                    body: 'Tactical notification protocol successfully authorized.',
-                    icon: 'icon-192.png'
+                    body: 'Tactical notification protocol authorized.',
+                    icon: 'icon.svg'
                 });
             }
         });
@@ -654,12 +700,12 @@ export class UI {
         if ('Notification' in window && Notification.permission === 'granted') {
             new Notification('⚡ CHRONOS // OBJECTIVE IMMINENT', {
                 body: `Directive expired or requires immediate action: ${title}`,
-                icon: 'icon-192.png',
+                icon: 'icon.svg',
                 requireInteraction: true
             });
         }
         if (navigator.vibrate) {
-            navigator.vibrate([300, 100, 300, 100, 500]);
+            navigator.vibrate([250, 100, 250, 100, 400]);
         }
     }
 }
