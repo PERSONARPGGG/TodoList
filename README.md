@@ -1,4 +1,4 @@
-# ⚡️ CHRONOS // Tactical Objective Protocol (v0.4.1 Ambient)
+# ⚡️ CHRONOS // Tactical Objective Protocol (v0.5.0 Snappy)
 
 ## 🤖 Dedicated AI Agents & Governance
 1. `persona-stylist`: Motion director for Persona 4/5 comic-book panels, skewed angles, and kinetic 3D micro-animations.
@@ -8,19 +8,19 @@
 
 ---
 
-### 🚀 Core Architecture & Refinements (v0.4.1)
-- **High-End Obsidian Tech Ambience (Replaced speedlines)**:
-  - Eliminated loud background diagonal speedlines.
-  - Replaced with subtle 32px cyber grid and multi-layer radial dark ambient glow (deep obsidian black).
+### 🚀 Core Architecture & Refinements (v0.5.0 Snappy)
+- **Zero-Latency Snappy Transitions (0.12s ~ 0.16s)**:
+  - Eliminated sluggish blurs and excessive 3D perspectives.
+  - Razor-sharp, lightweight, instant responses across all interactions.
+- **Pure Obsidian Matte Black Studio Background**:
+  - Completely removed loud and messy speedline grid patterns.
+  - 100% clean, deep obsidian black studio backdrop with subtle radial dark lighting.
+- **Instant Client-Side Multilingual Engine (EN | KR | JP)**:
+  - Default: English (`EN`).
+  - Seamless 1-tap switching between **English, Korean, and Japanese** in the top status bar.
+  - Translates directives, headers, timers, relative time stamps, and modals in 0ms without page reloads.
+- **High-End Ambient Text Box (`.chronos-cmd-bar`, `.chronos-input`)**:
+  - Independent, bulletproof CSS classes ensuring high specificity and zero Tailwind CDN conflicts.
+  - Smooth neon red focus ring and high-end obsidian dark input field.
 - **Calm & Dignified Cyber Hourglass**:
-  - Completely removed jitter/quake shaking when timer is expired or under 10 minutes.
-  - Now remains static and dignified with an elegant crimson edge glow (`drop-shadow: 0 0 10px rgba(255, 31, 61, 0.75)`).
-  - Falling sand animation and tap-to-spin interaction preserved.
-- **Ambient Breathing Text Box (`.quick-cmd-bar`)**:
-  - Subtle breathing glow animation (`ambientBreathe`) cycling over 5 seconds.
-  - Smooth expansion to full neon red border on focus.
-- **Fluid & Kinetic Typography**:
-  - `clamp()` responsive typography across headers and counters.
-  - Zero-latency 120Hz GPU composition without Layout/Reflow triggers.
-- **PWA Network-First Sync (`sw.js?v=0.4.1`)**:
-  - Clean background cache management ensuring instant code reflection on page reload.
+  - Completely static and dignified with glowing sand-drop stream; zero violent shaking on task expiration.

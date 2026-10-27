@@ -1,7 +1,9 @@
 /**
- * UI Module - Chronos Tactical Persona Interface (v0.3.5 Optimized)
- * High-performance DOM, Event Delegation, 120Hz Animation Smoothness.
+ * UI Module - Chronos Tactical Persona Interface (v0.5.0 Snappy)
+ * High-performance DOM, Event Delegation, Instant Multilingual (EN/KR/JP), Snappy Transitions.
  */
+import { i18n } from './i18n.js';
+
 export class UI {
     constructor(app) {
         this.app = app;
@@ -24,14 +26,31 @@ export class UI {
         this.bindEvents();
         this.bindGestures();
         this.initNotificationState();
+        this.applyTranslations();
     }
 
     bindEvents() {
-        // Cyber Hourglass Temporal Interaction
+        // Language Switcher (EN | KR | JP)
+        document.querySelectorAll('#lang-switcher .lang-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#lang-switcher .lang-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const lang = btn.dataset.lang;
+                i18n.setLang(lang);
+                this.applyTranslations();
+                this.renderTasks();
+                this.renderCalendar();
+                this.renderStats();
+                this.renderGoals();
+                this.renderLinks();
+            });
+        });
+
+        // Cyber Hourglass Flip Interaction
         const hourglass = document.getElementById('cyber-hourglass');
         hourglass?.addEventListener('click', () => {
             hourglass.classList.toggle('flip');
-            this.playSlashEffect('TEMPORAL SHIFT');
+            this.playSlashEffect(i18n.currentLang === 'KR' ? '시간 엔진 회전' : (i18n.currentLang === 'JP' ? '時間反転' : 'TEMPORAL FLIP'));
         });
 
         // Fast Command Bar Submission (Natural Language Parser)
@@ -51,7 +70,7 @@ export class UI {
             });
 
             quickInput.value = '';
-            this.playSlashEffect('DIRECTIVE ENGAGED');
+            this.playSlashEffect(i18n.currentLang === 'KR' ? '일정 등록 완료' : (i18n.currentLang === 'JP' ? '目標登録完了' : 'DIRECTIVE ENGAGED'));
             this.renderTasks();
             this.renderCalendar();
             this.renderStats();
@@ -117,7 +136,7 @@ export class UI {
             this.renderTasks();
         });
 
-        // Status Filter Chips (ALL / PENDING / DAILY / CLEARED)
+        // Status Filter Chips
         document.querySelectorAll('#task-filter-chips .task-chip').forEach(chip => {
             chip.addEventListener('click', () => {
                 document.querySelectorAll('#task-filter-chips .task-chip').forEach(c => {
@@ -129,7 +148,7 @@ export class UI {
             });
         });
 
-        // High-Performance Event Delegation for Task List (No inline onclicks)
+        // Event Delegation for Task List
         const taskListEl = document.getElementById('task-list');
         taskListEl?.addEventListener('click', (e) => {
             const completeBtn = e.target.closest('[data-action="toggle-complete"]');
@@ -166,9 +185,10 @@ export class UI {
 
         document.getElementById('btn-cancel')?.addEventListener('click', () => {
             modal.classList.add('opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 200);
+            setTimeout(() => modal.classList.add('hidden'), 150);
         });
 
+        // Save Objective from Detailed Modal
         document.getElementById('btn-save')?.addEventListener('click', () => {
             const title = document.getElementById('input-task').value.trim();
             const time = document.getElementById('input-time').value;
@@ -187,7 +207,7 @@ export class UI {
                 this.renderStats();
                 
                 modal.classList.add('opacity-0');
-                setTimeout(() => modal.classList.add('hidden'), 200);
+                setTimeout(() => modal.classList.add('hidden'), 150);
             }
         });
 
@@ -196,7 +216,7 @@ export class UI {
             const nextTask = this.app.store.getNextTask();
             if (nextTask) {
                 this.app.store.completeTask(nextTask.id);
-                this.playSlashEffect('MISSION COMPLETED');
+                this.playSlashEffect(i18n.currentLang === 'KR' ? '목표 완수!' : (i18n.currentLang === 'JP' ? '任務完了!' : 'MISSION COMPLETE'));
                 this.renderTasks();
                 this.renderStats();
             }
@@ -240,7 +260,7 @@ export class UI {
 
         document.getElementById('btn-cancel-custom-delay')?.addEventListener('click', () => {
             customModal.classList.add('opacity-0');
-            setTimeout(() => customModal.classList.add('hidden'), 200);
+            setTimeout(() => customModal.classList.add('hidden'), 150);
         });
 
         document.getElementById('btn-confirm-custom-delay')?.addEventListener('click', () => {
@@ -251,7 +271,7 @@ export class UI {
                 this.renderTasks();
                 this.renderStats();
                 customModal.classList.add('opacity-0');
-                setTimeout(() => customModal.classList.add('hidden'), 200);
+                setTimeout(() => customModal.classList.add('hidden'), 150);
             }
         });
 
@@ -262,7 +282,7 @@ export class UI {
 
         document.getElementById('btn-edit-short-goal')?.addEventListener('click', () => {
             this.editingGoalType = 'short';
-            goalTitle.innerText = 'Update This Month Focus';
+            goalTitle.innerText = i18n.t('shortTermTitle');
             goalInput.value = this.app.store.getGoals().shortTerm;
             goalModal.classList.remove('hidden');
             setTimeout(() => goalModal.classList.remove('opacity-0'), 10);
@@ -271,7 +291,7 @@ export class UI {
 
         document.getElementById('btn-edit-long-goal')?.addEventListener('click', () => {
             this.editingGoalType = 'long';
-            goalTitle.innerText = 'Update Annual Vision Goal';
+            goalTitle.innerText = i18n.t('longTermTitle');
             goalInput.value = this.app.store.getGoals().longTerm;
             goalModal.classList.remove('hidden');
             setTimeout(() => goalModal.classList.remove('opacity-0'), 10);
@@ -280,7 +300,7 @@ export class UI {
 
         document.getElementById('btn-cancel-goal')?.addEventListener('click', () => {
             goalModal.classList.add('opacity-0');
-            setTimeout(() => goalModal.classList.add('hidden'), 200);
+            setTimeout(() => goalModal.classList.add('hidden'), 150);
         });
 
         document.getElementById('btn-save-goal')?.addEventListener('click', () => {
@@ -294,7 +314,7 @@ export class UI {
                 }
                 this.renderGoals();
                 goalModal.classList.add('opacity-0');
-                setTimeout(() => goalModal.classList.add('hidden'), 200);
+                setTimeout(() => goalModal.classList.add('hidden'), 150);
             }
         });
 
@@ -322,7 +342,7 @@ export class UI {
             reader.onload = (event) => {
                 const success = this.app.store.importData(event.target.result);
                 if (success) {
-                    this.playSlashEffect('BACKUP RESTORED');
+                    this.playSlashEffect(i18n.currentLang === 'KR' ? '백업 복원 완료' : 'BACKUP RESTORED');
                     this.renderTasks();
                     this.renderCalendar();
                     this.renderStats();
@@ -359,7 +379,7 @@ export class UI {
 
         document.getElementById('btn-cancel-link')?.addEventListener('click', () => {
             linkModal.classList.add('opacity-0');
-            setTimeout(() => linkModal.classList.add('hidden'), 200);
+            setTimeout(() => linkModal.classList.add('hidden'), 150);
         });
 
         document.getElementById('btn-save-link')?.addEventListener('click', () => {
@@ -370,7 +390,7 @@ export class UI {
                 this.app.store.addLink(title, cat, url);
                 this.renderLinks();
                 linkModal.classList.add('opacity-0');
-                setTimeout(() => linkModal.classList.add('hidden'), 200);
+                setTimeout(() => linkModal.classList.add('hidden'), 150);
             }
         });
 
@@ -378,6 +398,67 @@ export class UI {
         document.getElementById('btn-request-notify')?.addEventListener('click', () => {
             this.requestNotificationPermission();
         });
+    }
+
+    /* ================= Instant Multilingual Applier ================= */
+    applyTranslations() {
+        const lang = i18n.currentLang;
+        document.querySelectorAll('#lang-switcher .lang-btn').forEach(b => {
+            if (b.dataset.lang === lang) b.classList.add('active');
+            else b.classList.remove('active');
+        });
+
+        // Update Labels
+        const setTxt = (id, key) => {
+            const el = document.getElementById(id);
+            if (el) el.innerText = i18n.t(key);
+        };
+
+        setTxt('system-status', 'sysReady');
+        setTxt('label-prime-directive', 'primeDirective');
+        setTxt('btn-complete-prime', 'btnComplete');
+        setTxt('btn-delay-custom', 'btnCustom');
+        setTxt('tab-sub-timeline', 'tabTimeline');
+        setTxt('tab-sub-calendar', 'tabCalendar');
+        setTxt('chip-all', 'chipAll');
+        setTxt('chip-pending', 'chipPending');
+        setTxt('chip-daily', 'chipDaily');
+        setTxt('chip-cleared', 'chipCleared');
+        setTxt('btn-add', 'btnDetailForm');
+        setTxt('cal-filter-text', 'calFiltered');
+        setTxt('btn-clear-date-filter', 'calViewAll');
+        setTxt('label-intel-title', 'intelTitle');
+        setTxt('label-intel-sub', 'intelSubtitle');
+        setTxt('label-exec-rating', 'execRating');
+        setTxt('label-eff-index', 'efficiencyIndex');
+        setTxt('label-rate', 'rate');
+        setTxt('label-delayed', 'delayed');
+        setTxt('label-done', 'done');
+        setTxt('label-short-term-title', 'shortTermTitle');
+        setTxt('label-long-term-title', 'longTermTitle');
+        setTxt('label-backup-title', 'backupTitle');
+        setTxt('btn-export-json', 'btnExport');
+        setTxt('btn-import-json-trigger', 'btnRestore');
+        setTxt('label-net-title', 'netTitle');
+        setTxt('btn-add-link', 'btnAddPortal');
+        setTxt('nav-text-schedule', 'navSchedule');
+        setTxt('nav-text-intel', 'navIntel');
+        setTxt('nav-text-network', 'navNetwork');
+        setTxt('modal-add-title', 'modalAddTitle');
+        setTxt('label-modal-title', 'labelTitle');
+        setTxt('label-modal-target', 'labelTarget');
+        setTxt('label-modal-daily', 'labelRepeatDaily');
+        setTxt('label-modal-priority', 'labelPriority');
+        setTxt('modal-delay-title', 'modalRescheduleTitle');
+        setTxt('modal-delay-sub', 'modalRescheduleSub');
+        setTxt('modal-portal-title', 'modalPortalTitle');
+        setTxt('btn-save-link', 'btnStoreLink');
+        setTxt('edit-goal-title', 'modalGoalTitle');
+
+        const quickInput = document.getElementById('input-quick-cmd');
+        if (quickInput) quickInput.placeholder = i18n.t('quickPlaceholder');
+
+        this.initNotificationState();
     }
 
     /* ================= Mobile Swipe Gestures ================= */
@@ -396,7 +477,7 @@ export class UI {
             const diffX = touchEndX - this.touchStartX;
             const diffY = touchEndY - this.touchStartY;
 
-            if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
+            if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
                 if (diffX < 0) {
                     if (this.currentTabIndex < this.tabs.length - 1) {
                         this.switchTabByIndex(this.currentTabIndex + 1, 'left');
@@ -461,7 +542,7 @@ export class UI {
         }
     }
 
-    /* ================= Persona Visual Effects ================= */
+    /* ================= Persona Visual Effects (Snappy) ================= */
     playIntroAnimation() {
         const overlay = document.getElementById('date-transition');
         const text = document.getElementById('transition-text');
@@ -474,7 +555,7 @@ export class UI {
 
         setTimeout(() => {
             overlay.style.display = 'none';
-        }, 1100);
+        }, 750);
     }
 
     playSlashEffect(message) {
@@ -483,17 +564,17 @@ export class UI {
         if (!overlay || !text) return;
 
         overlay.style.display = 'flex';
-        text.className = 'font-bebas text-6xl md:text-8xl tracking-wider text-emerald-400 transform scale-150';
+        text.className = 'font-bebas text-6xl md:text-8xl tracking-wider text-emerald-400 transform scale-125';
         text.innerText = message;
         text.classList.remove('animate-persona');
         void text.offsetWidth;
         text.classList.add('animate-persona');
 
-        if (navigator.vibrate) navigator.vibrate([70, 30, 70]);
+        if (navigator.vibrate) navigator.vibrate([40, 20, 40]);
 
         setTimeout(() => {
             overlay.style.display = 'none';
-        }, 1000);
+        }, 650);
     }
 
     /* ================= Rendering Tasks ================= */
@@ -503,7 +584,6 @@ export class UI {
 
         let tasks = this.app.store.getTasks();
 
-        // 1. Date Filter
         if (this.selectedDateFilter) {
             tasks = tasks.filter(t => {
                 const d = new Date(t.time);
@@ -513,7 +593,6 @@ export class UI {
             });
         }
 
-        // 2. Status Filter Chip
         if (this.currentTaskFilter === 'PENDING') {
             tasks = tasks.filter(t => !t.completed);
         } else if (this.currentTaskFilter === 'DAILY') {
@@ -524,9 +603,9 @@ export class UI {
 
         if (tasks.length === 0) {
             list.innerHTML = `
-                <li class="p-8 text-center border-2 border-dashed border-gray-900 rounded-lg">
-                    <p class="font-bebas text-2xl text-gray-700 tracking-wider">NO DIRECTIVES IN THIS VIEW</p>
-                    <p class="text-xs text-gray-600 mt-1 font-mono">Use Quick Engage above or [+ Detail Form]</p>
+                <li class="p-6 text-center border border-dashed border-gray-900 rounded-lg">
+                    <p class="font-bebas text-xl text-gray-700 tracking-wider">${i18n.t('noDirectives')}</p>
+                    <p class="text-xs text-gray-600 mt-1 font-mono">${i18n.t('noDirectivesSub')}</p>
                 </li>
             `;
             return;
@@ -535,34 +614,32 @@ export class UI {
         const now = new Date();
         list.innerHTML = tasks.map(task => {
             const taskDate = new Date(task.time);
-            const dateStr = taskDate.toLocaleString('en-US', {
+            const dateStr = taskDate.toLocaleString(i18n.currentLang === 'KR' ? 'ko-KR' : (i18n.currentLang === 'JP' ? 'ja-JP' : 'en-US'), {
                 month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
             });
             const diffMs = taskDate - now;
             const isPast = diffMs < 0 && !task.completed;
 
-            // Relative countdown tag (e.g. IN 45M)
             let relativeBadge = '';
             if (task.completed) {
-                relativeBadge = `<span class="text-[9px] font-mono text-emerald-400 font-bold">CLEARED</span>`;
+                relativeBadge = `<span class="text-[9px] font-mono text-emerald-400 font-bold">${i18n.t('tagCleared')}</span>`;
             } else if (isPast) {
-                relativeBadge = `<span class="text-[9px] font-mono text-red-500 font-bold animate-pulse">OVERDUE</span>`;
+                relativeBadge = `<span class="text-[9px] font-mono text-red-500 font-bold animate-pulse">${i18n.t('tagOverdue')}</span>`;
             } else {
                 const hours = Math.floor(diffMs / 3600000);
                 const mins = Math.floor((diffMs % 3600000) / 60000);
                 if (hours > 24) {
-                    relativeBadge = `<span class="text-[9px] font-mono text-gray-400 font-bold">IN ${Math.floor(hours / 24)}D</span>`;
+                    relativeBadge = `<span class="text-[9px] font-mono text-gray-400 font-bold">${i18n.dict[i18n.currentLang].inDays(Math.floor(hours / 24))}</span>`;
                 } else if (hours > 0) {
-                    relativeBadge = `<span class="text-[9px] font-mono text-yellow-300 font-bold">IN ${hours}H ${mins}M</span>`;
+                    relativeBadge = `<span class="text-[9px] font-mono text-yellow-300 font-bold">${i18n.dict[i18n.currentLang].inHoursMins(hours, mins)}</span>`;
                 } else {
-                    relativeBadge = `<span class="text-[9px] font-mono text-red-400 font-bold animate-pulse">IN ${mins}M</span>`;
+                    relativeBadge = `<span class="text-[9px] font-mono text-red-400 font-bold animate-pulse">${i18n.dict[i18n.currentLang].inMins(mins)}</span>`;
                 }
             }
 
             return `
             <li class="task-card-persona p-3 flex items-center justify-between gap-3 ${task.completed ? 'task-completed' : ''}">
                 <div class="flex items-center gap-3 min-w-0 flex-1">
-                    <!-- Complete Checkbox (Event Delegated) -->
                     <button data-action="toggle-complete" data-id="${task.id}" class="w-5 h-5 rounded border ${task.completed ? 'bg-emerald-600 border-emerald-500 text-black font-black' : 'border-gray-700 hover:border-red-500'} flex items-center justify-center shrink-0 transition-colors">
                         ${task.completed ? '✓' : ''}
                     </button>
@@ -571,15 +648,14 @@ export class UI {
                         <div class="flex items-center gap-1.5 flex-wrap mb-0.5">
                             <span class="text-[10px] font-mono text-gray-400 font-bold uppercase tracking-wider">${dateStr}</span>
                             ${relativeBadge}
-                            ${task.isDaily ? `<span class="text-[9px] font-mono bg-yellow-950/80 border border-yellow-700 text-yellow-300 px-1.5 rounded font-black">⚡ DAILY</span>` : ''}
+                            ${task.isDaily ? `<span class="text-[9px] font-mono bg-yellow-950/80 border border-yellow-700 text-yellow-300 px-1.5 rounded font-black">${i18n.t('tagDaily')}</span>` : ''}
                             ${task.delayCount > 0 ? `<span class="text-[9px] font-mono bg-red-950/80 border border-red-800 text-red-300 px-1 rounded">+${task.delayCount}D</span>` : ''}
-                            ${task.type === 'critical' ? `<span class="text-[9px] font-mono text-red-400 font-bold">!CRIT</span>` : ''}
+                            ${task.type === 'critical' ? `<span class="text-[9px] font-mono text-red-400 font-bold">${i18n.t('tagCritical')}</span>` : ''}
                         </div>
-                        <h4 class="task-title font-black text-white text-sm truncate tracking-tight">${task.title}</h4>
+                        <h4 class="task-title font-bold text-white text-sm truncate tracking-tight">${task.title}</h4>
                     </div>
                 </div>
 
-                <!-- Delete Action (Event Delegated) -->
                 <button data-action="delete-task" data-id="${task.id}" class="text-gray-600 hover:text-red-500 p-1.5 transition-colors shrink-0" title="Delete Directive">
                     <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -595,7 +671,7 @@ export class UI {
                 this.app.store.uncompleteTask(id);
             } else {
                 this.app.store.completeTask(id);
-                this.playSlashEffect('OBJECTIVE CLEARED');
+                this.playSlashEffect(i18n.currentLang === 'KR' ? '목표 달성!' : 'OBJECTIVE CLEARED');
             }
             this.renderTasks();
             this.renderStats();
@@ -613,21 +689,20 @@ export class UI {
         const badgeTimeLeft = document.getElementById('task-badge-time-left');
         const gaugeFill = document.getElementById('time-gauge-fill');
         const gaugePercent = document.getElementById('gauge-percent');
+        const hourglass = document.getElementById('cyber-hourglass');
 
         const now = new Date();
         liveClock.innerText = now.toTimeString().slice(0, 8);
 
-        const hourglass = document.getElementById('cyber-hourglass');
-
         if (!nextTask) {
-            titleEl.innerText = 'ALL DIRECTIVES COMPLETE';
+            titleEl.innerText = i18n.t('noDirectives');
             timerEl.innerText = '00:00:00';
             timerEl.className = 'font-bebas fluid-timer-text text-gray-700 tracking-wider leading-none';
-            targetStamp.innerText = 'TARGET: NONE';
+            targetStamp.innerText = i18n.t('targetNone');
             hourglass?.classList.remove('hourglass-urgent');
             if (badgeTimeLeft) badgeTimeLeft.innerText = 'STANDBY';
             if (gaugeFill) gaugeFill.style.width = '0%';
-            if (gaugePercent) gaugePercent.innerText = 'RESOURCES: 0%';
+            if (gaugePercent) gaugePercent.innerText = `${i18n.t('resources')}: 0%`;
             delayActions.classList.add('hidden');
             return;
         }
@@ -645,10 +720,10 @@ export class UI {
             hourglass?.classList.add('hourglass-urgent');
             if (badgeTimeLeft) {
                 badgeTimeLeft.className = "text-[9px] font-mono uppercase bg-red-950/90 border border-red-700 text-red-300 px-1.5 py-0.5 rounded font-black animate-pulse";
-                badgeTimeLeft.innerText = 'OVERDUE';
+                badgeTimeLeft.innerText = i18n.t('tagOverdue');
             }
             if (gaugeFill) gaugeFill.style.width = '100%';
-            if (gaugePercent) gaugePercent.innerText = 'EXPIRED (ACTION REQUIRED)';
+            if (gaugePercent) gaugePercent.innerText = i18n.t('expired');
 
             if (!nextTask._alerted) {
                 this.triggerAlert(nextTask.title);
@@ -665,16 +740,15 @@ export class UI {
 
         if (badgeTimeLeft) {
             badgeTimeLeft.className = "text-[9px] font-mono uppercase bg-yellow-950/80 border border-yellow-700 text-yellow-300 px-1.5 py-0.5 rounded font-black";
-            badgeTimeLeft.innerText = `IN ${hours}H ${minutes}M`;
+            badgeTimeLeft.innerText = i18n.dict[i18n.currentLang].inHoursMins(hours, minutes);
         }
 
-        // Calculate Remaining Gauge (Assuming 24H or nearest window)
         const totalWindowMs = 24 * 3600 * 1000;
         const remainingPct = Math.min(100, Math.max(5, Math.round((diffMs / totalWindowMs) * 100)));
         if (gaugeFill) gaugeFill.style.width = `${remainingPct}%`;
-        if (gaugePercent) gaugePercent.innerText = `RESOURCES: ${remainingPct}% REMAINING`;
+        if (gaugePercent) gaugePercent.innerText = `${i18n.t('resources')}: ${remainingPct}% ${i18n.t('remaining')}`;
 
-        if (diffMs < 600000) { // Less than 10 mins
+        if (diffMs < 600000) {
             timerEl.className = 'font-bebas fluid-timer-text text-red-500 tracking-wider glow-red leading-none animate-timer-beat';
             hourglass?.classList.add('hourglass-urgent');
         } else {
@@ -733,12 +807,11 @@ export class UI {
 
         grid.innerHTML = html;
 
-        // Update Date Filter Banner
         const filterBanner = document.getElementById('cal-filter-banner');
         const filterText = document.getElementById('cal-filter-text');
         if (this.selectedDateFilter) {
             filterBanner?.classList.remove('hidden');
-            if (filterText) filterText.innerText = `FILTERED: ${this.selectedDateFilter.toDateString().toUpperCase()}`;
+            if (filterText) filterText.innerText = `${i18n.t('calFiltered')}: ${this.selectedDateFilter.toDateString().toUpperCase()}`;
         } else {
             filterBanner?.classList.add('hidden');
         }
@@ -749,7 +822,7 @@ export class UI {
             this.selectedDateFilter.getFullYear() === year &&
             this.selectedDateFilter.getMonth() === month &&
             this.selectedDateFilter.getDate() === day) {
-            this.selectedDateFilter = null; // Unselect
+            this.selectedDateFilter = null;
         } else {
             this.selectedDateFilter = new Date(year, month, day);
         }
@@ -779,8 +852,8 @@ export class UI {
         const goals = this.app.store.getGoals();
         const shortEl = document.getElementById('display-short-goal');
         const longEl = document.getElementById('display-long-goal');
-        if (shortEl) shortEl.innerText = goals.shortTerm || 'No active directive set.';
-        if (longEl) longEl.innerText = goals.longTerm || 'No active directive set.';
+        if (shortEl) shortEl.innerText = goals.shortTerm || i18n.t('targetNone');
+        if (longEl) longEl.innerText = goals.longTerm || i18n.t('targetNone');
     }
 
     /* ================= Network Portals ================= */
@@ -796,7 +869,7 @@ export class UI {
         if (links.length === 0) {
             list.innerHTML = `
                 <div class="p-6 text-center text-xs text-gray-600 font-mono border border-dashed border-gray-900 rounded">
-                    NO PORTALS REGISTERED IN [${this.currentLinkCategory}].
+                    ${i18n.t('noPortals')} [${this.currentLinkCategory}].
                 </div>
             `;
             return;
@@ -827,10 +900,11 @@ export class UI {
         }
 
         if (Notification.permission === 'granted') {
-            badge.innerText = '🔔 PUSH: ON';
+            badge.innerText = i18n.t('pushOn');
             badge.parentElement.classList.add('text-emerald-400');
         } else {
-            badge.innerText = '🔔 PUSH: OFF';
+            badge.innerText = i18n.t('pushOff');
+            badge.parentElement.classList.remove('text-emerald-400');
         }
     }
 
@@ -860,7 +934,7 @@ export class UI {
             });
         }
         if (navigator.vibrate) {
-            navigator.vibrate([250, 100, 250, 100, 400]);
+            navigator.vibrate([200, 100, 200]);
         }
     }
 }
