@@ -6,7 +6,7 @@
     <title>CHRONOS // Tactical Objective Protocol</title>
     <!-- Tailwind CSS (Rapid Architecture) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css?v=0.4.0">
+    <link rel="stylesheet" href="style.css?v=0.4.1">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff1f3d">
@@ -390,7 +390,7 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js?v=0.4.0')
+                navigator.serviceWorker.register('./sw.js?v=0.4.1')
                 .then(reg => {
                     console.log('SW Registered:', reg.scope);
                     reg.update(); // Force immediate background check
@@ -399,6 +399,6 @@
             });
         }
     </script>
-    <script type="module" src="js/main.js?v=0.4.0"></script>
+    <script type="module" src="js/main.js?v=0.4.1"></script>
 </body>
 </html>

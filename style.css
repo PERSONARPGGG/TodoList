@@ -1,6 +1,6 @@
 /* ===================================================
-   CHRONOS // PERSONA TACTICAL DYNAMIC ENGINE (v0.4.0 Kinetic)
-   Kinetic Typography / Cyber Hourglass / 120Hz GPU Mastered
+   CHRONOS // TACTICAL AMBIENT ENGINE (v0.4.1 Refined)
+   High-End Minimalist / Obsidian Tech / Zero-Latency GPU
    =================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@600;800&display=swap');
@@ -11,8 +11,8 @@
     --color-p-blue: #38bdf8;
     --color-p-purple: #c084fc;
     --color-p-emerald: #10b981;
-    --color-p-black: #050608;
-    --color-p-card: #0e0f14;
+    --color-p-black: #040507;
+    --color-p-card: #0b0c11;
 }
 
 body {
@@ -44,27 +44,23 @@ body {
     scrollbar-width: none;
 }
 
-/* Dynamic Animated Background Speedlines (GPU Optimized via will-change) */
+/* ================= REFINED HIGH-END OBSIDIAN BACKGROUND ================= */
+/* Subtle, sleek, elegant tech ambience instead of harsh speedlines */
 .bg-persona-dynamic {
     background-color: var(--color-p-black);
     background-image: 
-        radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-        linear-gradient(135deg, rgba(255, 31, 61, 0.035) 25%, transparent 25%, transparent 50%, rgba(255, 31, 61, 0.035) 50%, rgba(255, 31, 61, 0.035) 75%, transparent 75%, transparent);
-    background-size: 14px 14px, 70px 70px;
-    animation: speedlines 25s linear infinite;
-    will-change: background-position;
+        radial-gradient(circle at 50% 15%, rgba(255, 31, 61, 0.04) 0%, transparent 60%),
+        radial-gradient(circle at 80% 80%, rgba(56, 189, 248, 0.02) 0%, transparent 50%),
+        linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 32px 32px, 32px 32px;
 }
 
-@keyframes speedlines {
-    0% { background-position: 0 0, 0 0; }
-    100% { background-position: 140px 140px, 700px 700px; }
-}
-
-/* ================= CYBER HOURGLASS ================= */
+/* ================= CYBER HOURGLASS (CALM & STABLE) ================= */
 .cyber-hourglass-box {
     position: relative;
-    width: 44px;
-    height: 52px;
+    width: 42px;
+    height: 50px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -76,72 +72,97 @@ body {
 .cyber-hourglass-svg {
     width: 100%;
     height: 100%;
-    filter: drop-shadow(0 0 8px rgba(250, 204, 21, 0.5));
-    transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s;
-    will-change: transform;
+    filter: drop-shadow(0 0 6px rgba(250, 204, 21, 0.35));
+    transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s;
+    will-change: transform, filter;
 }
 
 .cyber-hourglass-box:hover .cyber-hourglass-svg,
 .cyber-hourglass-box.flip .cyber-hourglass-svg {
-    transform: rotate(180deg) scale(1.1);
-    filter: drop-shadow(0 0 12px var(--color-p-red));
+    transform: rotate(180deg);
+    filter: drop-shadow(0 0 10px var(--color-p-red));
 }
 
-/* Falling Sand Grain Animation */
+/* Gentle Falling Sand Stream */
 @keyframes sandDrop {
-    0% { transform: translateY(-8px) scaleY(0.4); opacity: 0; }
-    30% { transform: translateY(0px) scaleY(1.2); opacity: 1; }
-    100% { transform: translateY(16px) scaleY(0.6); opacity: 0; }
+    0% { transform: translateY(-6px) scaleY(0.4); opacity: 0; }
+    30% { transform: translateY(0px) scaleY(1); opacity: 0.9; }
+    100% { transform: translateY(14px) scaleY(0.5); opacity: 0; }
 }
 
 .sand-stream {
-    animation: sandDrop 0.8s linear infinite;
+    animation: sandDrop 0.9s linear infinite;
     will-change: transform, opacity;
 }
 
-/* Quake Warning for Hourglass when urgent */
-@keyframes hourglassQuake {
-    0% { transform: translate(0, 0) rotate(0deg); }
-    25% { transform: translate(-1.5px, 1px) rotate(-3deg); }
-    50% { transform: translate(1.5px, -1px) rotate(3deg); }
-    75% { transform: translate(-1px, -1px) rotate(-1deg); }
-    100% { transform: translate(0, 0) rotate(0deg); }
+/* Steady Urgent State: NO SHAKING, elegant dignified red glow */
+.hourglass-urgent .cyber-hourglass-svg {
+    filter: drop-shadow(0 0 10px rgba(255, 31, 61, 0.75)) !important;
 }
 
-.hourglass-urgent {
-    animation: hourglassQuake 0.25s infinite;
-    filter: drop-shadow(0 0 12px var(--color-p-red)) !important;
+/* ================= AMBIENT BREATHING TEXT BOXES ================= */
+@keyframes ambientBreathe {
+    0% {
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0px transparent, 3px 3px 0px #000;
+    }
+    50% {
+        border-color: rgba(255, 31, 61, 0.35);
+        box-shadow: 0 0 14px rgba(255, 31, 61, 0.12), 3px 3px 0px #000;
+    }
+    100% {
+        border-color: rgba(255, 255, 255, 0.08);
+        box-shadow: 0 0 0px transparent, 3px 3px 0px #000;
+    }
+}
+
+.quick-cmd-bar {
+    position: relative;
+    background: linear-gradient(180deg, #0a0b10 0%, #06070a 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    transform: skewX(-3deg);
+    animation: ambientBreathe 5s ease-in-out infinite;
+    transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2), border-color 0.2s, box-shadow 0.2s;
+    will-change: transform, border-color, box-shadow;
+}
+
+.quick-cmd-bar:focus-within {
+    border-color: var(--color-p-red);
+    box-shadow: 0 0 20px rgba(255, 31, 61, 0.25), 4px 4px 0px var(--color-p-red);
+    transform: skewX(-1.5deg) translateY(-2px);
+    animation: none; /* Stabilize on focus */
+}
+
+.quick-cmd-input {
+    transform: skewX(3deg);
 }
 
 /* ================= KINETIC FLUID TYPOGRAPHY ================= */
-/* Responsive Fluid Headline with Persona Chromatic Shift */
 .fluid-hero-title {
-    font-size: clamp(1.25rem, 4.5vw, 2rem);
+    font-size: clamp(1.25rem, 4.5vw, 1.9rem);
     font-weight: 900;
     line-height: 1.15;
     letter-spacing: -0.02em;
     position: relative;
     display: inline-block;
-    transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2), text-shadow 0.2s;
+    transition: transform 0.2s ease, text-shadow 0.2s;
     will-change: transform;
 }
 
 .fluid-hero-title:hover {
-    transform: skewX(-3deg) scale(1.02);
-    text-shadow: 3px 3px 0px var(--color-p-red), -2px -2px 0px var(--color-p-blue);
+    transform: skewX(-2deg);
+    text-shadow: 2px 2px 0px var(--color-p-red), -1px -1px 0px var(--color-p-blue);
 }
 
-/* Dynamic Fluid Timer Text */
 .fluid-timer-text {
-    font-size: clamp(3rem, 11vw, 5rem);
+    font-size: clamp(2.8rem, 10vw, 4.8rem);
     line-height: 0.95;
     letter-spacing: 0.04em;
     font-variant-numeric: tabular-nums;
-    will-change: transform, text-shadow;
+    will-change: transform;
     display: inline-block;
 }
 
-/* Scanline Sweep on Header Badge */
 @keyframes textShine {
     0% { background-position: -200% 0; }
     100% { background-position: 200% 0; }
@@ -153,39 +174,39 @@ body {
     color: transparent;
     -webkit-background-clip: text;
     background-clip: text;
-    animation: textShine 4s linear infinite;
+    animation: textShine 5s linear infinite;
 }
 
-/* Hero Box with Persona Skew */
+/* Hero Box with Refined Slate Accent */
 .hero-countdown-box {
     position: relative;
-    background: linear-gradient(135deg, rgba(16, 17, 24, 0.98) 0%, rgba(9, 10, 14, 0.98) 100%);
-    border: 2px solid #20222d;
-    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.95), 0 0 20px rgba(255, 31, 61, 0.12);
-    transform: rotate(-0.5deg);
-    transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2), border-color 0.25s, box-shadow 0.25s;
+    background: linear-gradient(135deg, rgba(14, 15, 21, 0.96) 0%, rgba(8, 9, 13, 0.98) 100%);
+    border: 1.5px solid rgba(255, 255, 255, 0.07);
+    box-shadow: 5px 5px 0px rgba(0, 0, 0, 0.95);
+    transform: rotate(-0.4deg);
+    transition: transform 0.2s ease, border-color 0.2s, box-shadow 0.2s;
     will-change: transform;
 }
 
 .hero-countdown-box:hover {
-    transform: rotate(-0.2deg) translateY(-2px);
-    border-color: var(--color-p-red);
-    box-shadow: 8px 8px 0px var(--color-p-red), 0 0 25px rgba(255, 31, 61, 0.3);
+    transform: rotate(-0.1deg) translateY(-2px);
+    border-color: rgba(255, 31, 61, 0.6);
+    box-shadow: 6px 6px 0px var(--color-p-red), 0 0 20px rgba(255, 31, 61, 0.15);
 }
 
 /* Time Resource Gauge Bar */
 .gauge-container {
-    height: 8px;
-    background: #14151e;
+    height: 7px;
+    background: #111218;
     position: relative;
     overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .gauge-fill {
     height: 100%;
     background: linear-gradient(90deg, var(--color-p-yellow) 0%, var(--color-p-red) 100%);
-    box-shadow: 0 0 10px var(--color-p-yellow);
+    box-shadow: 0 0 8px rgba(250, 204, 21, 0.5);
     transition: width 0.3s ease-out;
     will-change: width;
 }
@@ -193,7 +214,7 @@ body {
 /* Pulsating Heartbeat for Big Seconds */
 @keyframes timerPulse {
     0% { transform: scale3d(1, 1, 1); }
-    50% { transform: scale3d(1.02, 1.02, 1); }
+    50% { transform: scale3d(1.015, 1.015, 1); }
     100% { transform: scale3d(1, 1, 1); }
 }
 
@@ -204,32 +225,11 @@ body {
 
 /* Neon Glows */
 .glow-yellow {
-    text-shadow: 0 0 16px rgba(250, 204, 21, 0.65), 0 0 32px rgba(250, 204, 21, 0.3);
+    text-shadow: 0 0 14px rgba(250, 204, 21, 0.55), 0 0 28px rgba(250, 204, 21, 0.25);
 }
 
 .glow-red {
-    text-shadow: 0 0 18px rgba(255, 31, 61, 0.85), 0 0 35px rgba(255, 31, 61, 0.4);
-}
-
-/* Quick Command Bar */
-.quick-cmd-bar {
-    position: relative;
-    background: #0b0c11;
-    border: 2px solid #252836;
-    box-shadow: 4px 4px 0px #000;
-    transform: skewX(-4deg);
-    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
-    will-change: transform;
-}
-
-.quick-cmd-bar:focus-within {
-    border-color: var(--color-p-red);
-    box-shadow: 6px 6px 0px var(--color-p-red);
-    transform: skewX(-2deg) translateY(-2px);
-}
-
-.quick-cmd-input {
-    transform: skewX(4deg);
+    text-shadow: 0 0 16px rgba(255, 31, 61, 0.75), 0 0 30px rgba(255, 31, 61, 0.35);
 }
 
 /* Persona Dynamic Buttons */
@@ -238,10 +238,10 @@ body {
     background: #000;
     color: #fff;
     font-weight: 800;
-    font-size: 0.76rem;
+    font-size: 0.75rem;
     letter-spacing: 0.08em;
-    padding: 0.42rem 0.82rem;
-    border: 2px solid #fff;
+    padding: 0.4rem 0.8rem;
+    border: 1.5px solid #fff;
     clip-path: polygon(12% 0, 100% 0, 88% 100%, 0% 100%);
     transition: transform 0.16s cubic-bezier(0.2, 0.9, 0.3, 1.2), color 0.16s, border-color 0.16s, box-shadow 0.16s;
     cursor: pointer;
@@ -270,8 +270,8 @@ body {
 .persona-btn:hover {
     color: #000;
     border-color: var(--color-p-red);
-    transform: scale(1.06) rotate(-2deg);
-    box-shadow: 4px 4px 0 #fff;
+    transform: scale(1.05) rotate(-1.5deg);
+    box-shadow: 3px 3px 0 #fff;
 }
 
 .persona-btn:hover::before {
@@ -279,7 +279,7 @@ body {
 }
 
 .persona-btn:active {
-    transform: scale(0.95);
+    transform: scale(0.96);
 }
 
 .persona-btn.btn-done {
@@ -320,14 +320,14 @@ body {
     top: 8px;
     bottom: 8px;
     width: 2px;
-    background: linear-gradient(180deg, var(--color-p-red) 0%, rgba(56, 189, 248, 0.4) 50%, #20222d 100%);
-    box-shadow: 0 0 6px rgba(255, 31, 61, 0.4);
+    background: linear-gradient(180deg, var(--color-p-red) 0%, rgba(56, 189, 248, 0.3) 50%, #171822 100%);
+    box-shadow: 0 0 5px rgba(255, 31, 61, 0.3);
 }
 
-/* Dynamic Interactive Task Card with Persona 3D Shift */
+/* Dynamic Interactive Task Card */
 .task-card-persona {
     background: var(--color-p-card);
-    border: 1.5px solid rgba(255, 255, 255, 0.08);
+    border: 1.5px solid rgba(255, 255, 255, 0.06);
     position: relative;
     clip-path: polygon(0% 0%, 97% 0%, 100% 10px, 100% 100%, 3% 100%, 0% calc(100% - 10px));
     transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2), border-color 0.2s, box-shadow 0.2s, background 0.2s;
@@ -345,15 +345,15 @@ body {
     height: 8px;
     border-radius: 50%;
     background: var(--color-p-red);
-    box-shadow: 0 0 8px var(--color-p-red);
+    box-shadow: 0 0 7px var(--color-p-red);
     z-index: 10;
 }
 
 .task-card-persona:hover, .task-card-persona:active {
-    border-color: #ffffff;
+    border-color: rgba(255, 255, 255, 0.9);
     transform: translate3d(-3px, -3px, 0) rotate(-0.3deg);
-    box-shadow: 6px 6px 0px var(--color-p-red);
-    background: linear-gradient(90deg, rgba(255, 31, 61, 0.12) 0%, rgba(14, 15, 20, 1) 100%);
+    box-shadow: 5px 5px 0px var(--color-p-red);
+    background: linear-gradient(90deg, rgba(255, 31, 61, 0.08) 0%, rgba(14, 15, 20, 1) 100%);
 }
 
 .task-card-persona:hover .task-title {
@@ -367,14 +367,14 @@ body {
 }
 
 .task-completed {
-    opacity: 0.38;
+    opacity: 0.35;
     filter: grayscale(0.9);
-    border-color: rgba(255, 255, 255, 0.03) !important;
+    border-color: rgba(255, 255, 255, 0.02) !important;
     box-shadow: none !important;
 }
 .task-completed::before {
     background: var(--color-p-emerald) !important;
-    box-shadow: 0 0 6px var(--color-p-emerald) !important;
+    box-shadow: 0 0 5px var(--color-p-emerald) !important;
 }
 .task-completed .task-title {
     text-decoration: line-through;
@@ -384,58 +384,58 @@ body {
 
 /* Persona 3D Blade Slash Swipe Animations */
 @keyframes bladeSwipeLeft {
-    0% { transform: perspective(900px) rotateY(-38deg) rotateZ(-1.5deg) translate3d(-35%, 0, 0); opacity: 0; filter: blur(5px); }
-    100% { transform: perspective(900px) rotateY(0deg) rotateZ(0deg) translate3d(0, 0, 0); opacity: 1; filter: blur(0px); }
+    0% { transform: perspective(900px) rotateY(-36deg) translate3d(-30%, 0, 0); opacity: 0; filter: blur(4px); }
+    100% { transform: perspective(900px) rotateY(0deg) translate3d(0, 0, 0); opacity: 1; filter: blur(0px); }
 }
 
 @keyframes bladeSwipeRight {
-    0% { transform: perspective(900px) rotateY(38deg) rotateZ(1.5deg) translate3d(35%, 0, 0); opacity: 0; filter: blur(5px); }
-    100% { transform: perspective(900px) rotateY(0deg) rotateZ(0deg) translate3d(0, 0, 0); opacity: 1; filter: blur(0px); }
+    0% { transform: perspective(900px) rotateY(36deg) translate3d(30%, 0, 0); opacity: 0; filter: blur(4px); }
+    100% { transform: perspective(900px) rotateY(0deg) translate3d(0, 0, 0); opacity: 1; filter: blur(0px); }
 }
 
 .animate-swipe-left {
-    animation: bladeSwipeLeft 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
+    animation: bladeSwipeLeft 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
     will-change: transform, opacity;
 }
 
 .animate-swipe-right {
-    animation: bladeSwipeRight 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
+    animation: bladeSwipeRight 0.28s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
     will-change: transform, opacity;
 }
 
 /* Full-Screen Persona Slash Transition */
 @keyframes persona-slash {
-    0% { transform: scale(1.8) rotate(-9deg); opacity: 0; filter: blur(12px); }
-    20% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0px); text-shadow: 8px 8px 0px var(--color-p-red); }
-    75% { transform: scale(1.05) rotate(0deg); opacity: 1; text-shadow: -8px 8px 0px var(--color-p-blue); }
-    100% { transform: scale(1.8) rotate(9deg); opacity: 0; filter: blur(12px); }
+    0% { transform: scale(1.6) rotate(-8deg); opacity: 0; filter: blur(10px); }
+    20% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0px); text-shadow: 6px 6px 0px var(--color-p-red); }
+    75% { transform: scale(1.04) rotate(0deg); opacity: 1; text-shadow: -6px 6px 0px var(--color-p-blue); }
+    100% { transform: scale(1.7) rotate(8deg); opacity: 0; filter: blur(10px); }
 }
 
 .animate-persona {
-    animation: persona-slash 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    animation: persona-slash 0.95s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
 /* Rank S / A / B / C Persona Stamp */
 .rank-stamp {
     font-family: 'Bebas Neue', cursive;
-    font-size: 3.6rem;
+    font-size: 3.5rem;
     line-height: 1;
     display: inline-block;
     padding: 0.2rem 0.8rem;
     border: 3px solid;
     transform: rotate(-12deg);
-    box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.9);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.9);
     transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     will-change: transform;
 }
 .rank-stamp:hover {
-    transform: rotate(-4deg) scale(1.08);
+    transform: rotate(-3deg) scale(1.06);
 }
 
 .rank-s {
     color: var(--color-p-yellow);
     border-color: var(--color-p-yellow);
-    text-shadow: 0 0 16px rgba(250, 204, 21, 0.7);
+    text-shadow: 0 0 14px rgba(250, 204, 21, 0.6);
 }
 .rank-a {
     color: var(--color-p-blue);
@@ -463,8 +463,8 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 0.74rem;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(16, 17, 23, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(14, 15, 20, 0.75);
     border-radius: 4px;
     cursor: pointer;
     transition: transform 0.15s ease, background 0.15s, border-color 0.15s;
@@ -472,9 +472,9 @@ body {
     will-change: transform;
 }
 .cal-cell:hover {
-    background: rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.1);
     border-color: var(--color-p-yellow);
-    transform: scale(1.08);
+    transform: scale(1.06);
 }
 .cal-cell.today {
     border-color: var(--color-p-red);
@@ -511,7 +511,7 @@ body {
     background: var(--color-p-red);
     color: #000;
     font-weight: 900;
-    box-shadow: 0 0 10px rgba(255, 31, 61, 0.6);
+    box-shadow: 0 0 8px rgba(255, 31, 61, 0.5);
 }
 
 /* Swipe Indicator Pill */

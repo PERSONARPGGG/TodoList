@@ -1,4 +1,4 @@
-# ⚡️ CHRONOS // Tactical Objective Protocol (v0.4.0 Kinetic Master)
+# ⚡️ CHRONOS // Tactical Objective Protocol (v0.4.1 Ambient)
 
 ## 🤖 Dedicated AI Agents & Governance
 1. `persona-stylist`: Motion director for Persona 4/5 comic-book panels, skewed angles, and kinetic 3D micro-animations.
@@ -8,30 +8,19 @@
 
 ---
 
-### 🚀 Core Architecture & Kinetic Innovations (v0.4.0)
-- **Cyber Hourglass (Interactive Temporal Engine)**:
-  - Custom vector-rendered cyberpunk hourglass with animated dropping sand stream (`.sand-stream`).
-  - Interactive 180-degree 3D spin on tap with kinetic feedback.
-  - Urgent quake warning (`.hourglass-urgent`) when time falls under 10 minutes or expires.
+### 🚀 Core Architecture & Refinements (v0.4.1)
+- **High-End Obsidian Tech Ambience (Replaced speedlines)**:
+  - Eliminated loud background diagonal speedlines.
+  - Replaced with subtle 32px cyber grid and multi-layer radial dark ambient glow (deep obsidian black).
+- **Calm & Dignified Cyber Hourglass**:
+  - Completely removed jitter/quake shaking when timer is expired or under 10 minutes.
+  - Now remains static and dignified with an elegant crimson edge glow (`drop-shadow: 0 0 10px rgba(255, 31, 61, 0.75)`).
+  - Falling sand animation and tap-to-spin interaction preserved.
+- **Ambient Breathing Text Box (`.quick-cmd-bar`)**:
+  - Subtle breathing glow animation (`ambientBreathe`) cycling over 5 seconds.
+  - Smooth expansion to full neon red border on focus.
 - **Fluid & Kinetic Typography**:
-  - `clamp()` responsive fluid typography scaling seamlessly without JavaScript resize reflows.
-  - Persona chromatic 3D split text shadows on titles and cards (Red/Cyan offset).
-  - Sweeping scanline shine animation on directive badges (`.shine-badge`).
-- **High-Performance PWA Architecture**:
-  - Network-first caching strategy with instant service worker update check (`sw.js?v=0.4.0`).
-  - Zero CLS (Cumulative Layout Shift) with `tabular-nums`.
-  - Event delegation across all directive actions (`data-action="toggle-complete"`, `data-action="delete-task"`).
-- **Time Resource Gauge Bar**:
-  - Real-time animated progress bar reflecting resource exhaustion percentage.
-  - Relative temporal badges: `IN 45M`, `IN 2H 10M`, `OVERDUE`, `CLEARED`.
-- **Vertical Neon Timeline**:
-  - Connected luminous vertical line connecting active and routine directives.
-  - Multi-status filter chips: `ALL`, `PENDING`, `DAILY`, `CLEARED`.
-- **Enhanced Mini Calendar**:
-  - Month pagination (`◀ PREV`, `NEXT ▶`).
-  - Multi-dot density indicators (highlighting critical and routine tasks).
-  - Selected date sticky filter banner with single-tap `VIEW ALL` reset.
-- **Daily Routine Automation (⚡ DAILY)**:
-  - Daily tasks reset automatically at midnight for the next day's run.
-- **Offline Data Safeguard**:
-  - One-click JSON backup export & restore in the Intel tab.
+  - `clamp()` responsive typography across headers and counters.
+  - Zero-latency 120Hz GPU composition without Layout/Reflow triggers.
+- **PWA Network-First Sync (`sw.js?v=0.4.1`)**:
+  - Clean background cache management ensuring instant code reflection on page reload.
