@@ -1,6 +1,6 @@
 /**
- * UI Module - Chronos Tactical Persona Interface (v0.3.0)
- * Strictly handles DOM, Gestures, View Transitions, Animations, and Visual States.
+ * UI Module - Chronos Tactical Persona Interface (v0.3.5 Optimized)
+ * High-performance DOM, Event Delegation, 120Hz Animation Smoothness.
  */
 export class UI {
     constructor(app) {
@@ -8,8 +8,16 @@ export class UI {
         this.currentTabIndex = 0;
         this.tabs = ['view-schedule', 'view-info', 'view-urls'];
         this.selectedDateFilter = null;
+        this.currentTaskFilter = 'ALL';
         this.currentLinkCategory = 'ALL';
         this.editingGoalType = null;
+        
+        // Calendar Navigation State
+        const now = new Date();
+        this.calYear = now.getFullYear();
+        this.calMonth = now.getMonth();
+
+        // Touch Gestures
         this.touchStartX = 0;
         this.touchStartY = 0;
 
@@ -67,8 +75,6 @@ export class UI {
             btnTimeline.className = "text-xs uppercase font-bold tracking-wider text-red-500 pb-0.5 border-b-2 border-red-500 transition-colors";
             btnCalendar.className = "text-xs uppercase font-bold tracking-wider text-gray-500 hover:text-white pb-0.5 border-b-2 border-transparent transition-colors";
             calWidget.classList.add('hidden');
-            this.selectedDateFilter = null;
-            this.renderTasks();
         });
 
         btnCalendar?.addEventListener('click', () => {
@@ -76,6 +82,65 @@ export class UI {
             btnTimeline.className = "text-xs uppercase font-bold tracking-wider text-gray-500 hover:text-white pb-0.5 border-b-2 border-transparent transition-colors";
             calWidget.classList.remove('hidden');
             this.renderCalendar();
+        });
+
+        // Calendar Month Prev / Next
+        document.getElementById('btn-cal-prev')?.addEventListener('click', () => {
+            this.calMonth--;
+            if (this.calMonth < 0) {
+                this.calMonth = 11;
+                this.calYear--;
+            }
+            this.renderCalendar();
+        });
+
+        document.getElementById('btn-cal-next')?.addEventListener('click', () => {
+            this.calMonth++;
+            if (this.calMonth > 11) {
+                this.calMonth = 0;
+                this.calYear++;
+            }
+            this.renderCalendar();
+        });
+
+        document.getElementById('btn-clear-date-filter')?.addEventListener('click', () => {
+            this.selectedDateFilter = null;
+            document.getElementById('cal-filter-banner')?.classList.add('hidden');
+            this.renderCalendar();
+            this.renderTasks();
+        });
+
+        // Status Filter Chips (ALL / PENDING / DAILY / CLEARED)
+        document.querySelectorAll('#task-filter-chips .task-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('#task-filter-chips .task-chip').forEach(c => {
+                    c.className = "px-2 py-0.5 text-[9px] font-mono font-bold rounded bg-gray-900 text-gray-400 hover:text-white task-chip";
+                });
+                chip.className = "px-2 py-0.5 text-[9px] font-mono font-bold rounded bg-red-600 text-white task-chip active";
+                this.currentTaskFilter = chip.dataset.filter;
+                this.renderTasks();
+            });
+        });
+
+        // High-Performance Event Delegation for Task List (No inline onclicks)
+        const taskListEl = document.getElementById('task-list');
+        taskListEl?.addEventListener('click', (e) => {
+            const completeBtn = e.target.closest('[data-action="toggle-complete"]');
+            if (completeBtn) {
+                const taskId = completeBtn.dataset.id;
+                this.toggleTaskComplete(taskId);
+                return;
+            }
+
+            const deleteBtn = e.target.closest('[data-action="delete-task"]');
+            if (deleteBtn) {
+                const taskId = deleteBtn.dataset.id;
+                this.app.store.deleteTask(taskId);
+                this.renderTasks();
+                this.renderStats();
+                this.renderCalendar();
+                return;
+            }
         });
 
         // Detailed Add Objective Modal
@@ -97,7 +162,6 @@ export class UI {
             setTimeout(() => modal.classList.add('hidden'), 200);
         });
 
-        // Save Objective from Detailed Modal
         document.getElementById('btn-save')?.addEventListener('click', () => {
             const title = document.getElementById('input-task').value.trim();
             const time = document.getElementById('input-time').value;
@@ -403,7 +467,7 @@ export class UI {
 
         setTimeout(() => {
             overlay.style.display = 'none';
-        }, 1200);
+        }, 1100);
     }
 
     playSlashEffect(message) {
@@ -418,11 +482,11 @@ export class UI {
         void text.offsetWidth;
         text.classList.add('animate-persona');
 
-        if (navigator.vibrate) navigator.vibrate([80, 40, 80]);
+        if (navigator.vibrate) navigator.vibrate([70, 30, 70]);
 
         setTimeout(() => {
             overlay.style.display = 'none';
-        }, 1100);
+        }, 1000);
     }
 
     /* ================= Rendering Tasks ================= */
@@ -432,6 +496,7 @@ export class UI {
 
         let tasks = this.app.store.getTasks();
 
+        // 1. Date Filter
         if (this.selectedDateFilter) {
             tasks = tasks.filter(t => {
                 const d = new Date(t.time);
@@ -441,45 +506,75 @@ export class UI {
             });
         }
 
+        // 2. Status Filter Chip
+        if (this.currentTaskFilter === 'PENDING') {
+            tasks = tasks.filter(t => !t.completed);
+        } else if (this.currentTaskFilter === 'DAILY') {
+            tasks = tasks.filter(t => t.isDaily);
+        } else if (this.currentTaskFilter === 'CLEARED') {
+            tasks = tasks.filter(t => t.completed);
+        }
+
         if (tasks.length === 0) {
             list.innerHTML = `
                 <li class="p-8 text-center border-2 border-dashed border-gray-900 rounded-lg">
-                    <p class="font-bebas text-2xl text-gray-700 tracking-wider">ALL DIRECTIVES CLEARED</p>
+                    <p class="font-bebas text-2xl text-gray-700 tracking-wider">NO DIRECTIVES IN THIS VIEW</p>
                     <p class="text-xs text-gray-600 mt-1 font-mono">Use Quick Engage above or [+ Detail Form]</p>
                 </li>
             `;
             return;
         }
 
+        const now = new Date();
         list.innerHTML = tasks.map(task => {
             const taskDate = new Date(task.time);
             const dateStr = taskDate.toLocaleString('en-US', {
                 month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
             });
-            const isPast = taskDate < new Date() && !task.completed;
+            const diffMs = taskDate - now;
+            const isPast = diffMs < 0 && !task.completed;
+
+            // Relative countdown tag (e.g. IN 45M)
+            let relativeBadge = '';
+            if (task.completed) {
+                relativeBadge = `<span class="text-[9px] font-mono text-emerald-400 font-bold">CLEARED</span>`;
+            } else if (isPast) {
+                relativeBadge = `<span class="text-[9px] font-mono text-red-500 font-bold animate-pulse">OVERDUE</span>`;
+            } else {
+                const hours = Math.floor(diffMs / 3600000);
+                const mins = Math.floor((diffMs % 3600000) / 60000);
+                if (hours > 24) {
+                    relativeBadge = `<span class="text-[9px] font-mono text-gray-400 font-bold">IN ${Math.floor(hours / 24)}D</span>`;
+                } else if (hours > 0) {
+                    relativeBadge = `<span class="text-[9px] font-mono text-yellow-300 font-bold">IN ${hours}H ${mins}M</span>`;
+                } else {
+                    relativeBadge = `<span class="text-[9px] font-mono text-red-400 font-bold animate-pulse">IN ${mins}M</span>`;
+                }
+            }
 
             return `
-            <li class="task-card-persona p-3 md:p-3.5 flex items-center justify-between gap-3 ${task.completed ? 'task-completed' : ''}">
+            <li class="task-card-persona p-3 flex items-center justify-between gap-3 ${task.completed ? 'task-completed' : ''}">
                 <div class="flex items-center gap-3 min-w-0 flex-1">
-                    <!-- Complete Checkbox -->
-                    <button class="w-5 h-5 rounded border ${task.completed ? 'bg-emerald-600 border-emerald-500 text-black font-black' : 'border-gray-700 hover:border-red-500'} flex items-center justify-center shrink-0 transition-colors" onclick="app.ui.toggleTaskComplete('${task.id}')">
+                    <!-- Complete Checkbox (Event Delegated) -->
+                    <button data-action="toggle-complete" data-id="${task.id}" class="w-5 h-5 rounded border ${task.completed ? 'bg-emerald-600 border-emerald-500 text-black font-black' : 'border-gray-700 hover:border-red-500'} flex items-center justify-center shrink-0 transition-colors">
                         ${task.completed ? '✓' : ''}
                     </button>
                     
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-1.5 flex-wrap mb-0.5">
                             <span class="text-[10px] font-mono text-gray-400 font-bold uppercase tracking-wider">${dateStr}</span>
+                            ${relativeBadge}
                             ${task.isDaily ? `<span class="text-[9px] font-mono bg-yellow-950/80 border border-yellow-700 text-yellow-300 px-1.5 rounded font-black">⚡ DAILY</span>` : ''}
-                            ${task.delayCount > 0 ? `<span class="text-[9px] font-mono bg-red-950/80 border border-red-800 text-red-300 px-1 rounded">+${task.delayCount} DELAYS</span>` : ''}
-                            ${task.type === 'critical' ? `<span class="text-[9px] font-mono text-red-400 font-bold">!CRITICAL</span>` : ''}
+                            ${task.delayCount > 0 ? `<span class="text-[9px] font-mono bg-red-950/80 border border-red-800 text-red-300 px-1 rounded">+${task.delayCount}D</span>` : ''}
+                            ${task.type === 'critical' ? `<span class="text-[9px] font-mono text-red-400 font-bold">!CRIT</span>` : ''}
                         </div>
                         <h4 class="task-title font-black text-white text-sm truncate tracking-tight">${task.title}</h4>
                     </div>
                 </div>
 
-                <!-- Delete Action -->
-                <button class="text-gray-600 hover:text-red-500 p-1.5 transition-colors shrink-0" title="Delete Directive" onclick="app.store.deleteTask('${task.id}'); app.ui.renderTasks(); app.ui.renderStats(); app.ui.renderCalendar();">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <!-- Delete Action (Event Delegated) -->
+                <button data-action="delete-task" data-id="${task.id}" class="text-gray-600 hover:text-red-500 p-1.5 transition-colors shrink-0" title="Delete Directive">
+                    <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </li>
         `}).join('');
@@ -501,13 +596,16 @@ export class UI {
         }
     }
 
-    /* ================= Countdown & Clock ================= */
+    /* ================= Countdown, Gauge & Real-Time Clock ================= */
     updateCountdown(nextTask) {
         const titleEl = document.getElementById('next-task-title');
         const timerEl = document.getElementById('countdown-timer');
         const delayActions = document.getElementById('delay-actions');
         const targetStamp = document.getElementById('target-timestamp');
         const liveClock = document.getElementById('live-clock');
+        const badgeTimeLeft = document.getElementById('task-badge-time-left');
+        const gaugeFill = document.getElementById('time-gauge-fill');
+        const gaugePercent = document.getElementById('gauge-percent');
 
         const now = new Date();
         liveClock.innerText = now.toTimeString().slice(0, 8);
@@ -515,8 +613,11 @@ export class UI {
         if (!nextTask) {
             titleEl.innerText = 'ALL DIRECTIVES COMPLETE';
             timerEl.innerText = '00:00:00';
-            timerEl.className = 'font-bebas text-6xl md:text-7xl text-gray-700 tracking-wider leading-none';
+            timerEl.className = 'font-bebas text-5xl md:text-6xl text-gray-700 tracking-wider leading-none';
             targetStamp.innerText = 'TARGET: NONE';
+            if (badgeTimeLeft) badgeTimeLeft.innerText = 'STANDBY';
+            if (gaugeFill) gaugeFill.style.width = '0%';
+            if (gaugePercent) gaugePercent.innerText = 'RESOURCES: 0%';
             delayActions.classList.add('hidden');
             return;
         }
@@ -530,8 +631,14 @@ export class UI {
 
         if (diffMs <= 0) {
             timerEl.innerText = '00:00:00';
-            timerEl.className = 'font-bebas text-6xl md:text-7xl text-red-500 tracking-wider glow-red leading-none animate-pulse';
-            
+            timerEl.className = 'font-bebas text-5xl md:text-6xl text-red-500 tracking-wider glow-red leading-none animate-pulse';
+            if (badgeTimeLeft) {
+                badgeTimeLeft.className = "text-[9px] font-mono uppercase bg-red-950/90 border border-red-700 text-red-300 px-1.5 py-0.5 rounded font-black animate-pulse";
+                badgeTimeLeft.innerText = 'OVERDUE';
+            }
+            if (gaugeFill) gaugeFill.style.width = '100%';
+            if (gaugePercent) gaugePercent.innerText = 'EXPIRED (ACTION REQUIRED)';
+
             if (!nextTask._alerted) {
                 this.triggerAlert(nextTask.title);
                 nextTask._alerted = true;
@@ -545,25 +652,36 @@ export class UI {
 
         timerEl.innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
+        if (badgeTimeLeft) {
+            badgeTimeLeft.className = "text-[9px] font-mono uppercase bg-yellow-950/80 border border-yellow-700 text-yellow-300 px-1.5 py-0.5 rounded font-black";
+            badgeTimeLeft.innerText = `IN ${hours}H ${minutes}M`;
+        }
+
+        // Calculate Remaining Gauge (Assuming 24H or nearest window)
+        const totalWindowMs = 24 * 3600 * 1000;
+        const remainingPct = Math.min(100, Math.max(5, Math.round((diffMs / totalWindowMs) * 100)));
+        if (gaugeFill) gaugeFill.style.width = `${remainingPct}%`;
+        if (gaugePercent) gaugePercent.innerText = `RESOURCES: ${remainingPct}% REMAINING`;
+
         if (diffMs < 600000) { // Less than 10 mins
-            timerEl.className = 'font-bebas text-6xl md:text-7xl text-red-500 tracking-wider glow-red leading-none animate-timer-beat';
+            timerEl.className = 'font-bebas text-5xl md:text-6xl text-red-500 tracking-wider glow-red leading-none animate-timer-beat';
         } else {
-            timerEl.className = 'font-bebas text-6xl md:text-7xl text-yellow-400 tracking-wider glow-yellow leading-none animate-timer-beat';
+            timerEl.className = 'font-bebas text-5xl md:text-6xl text-yellow-400 tracking-wider glow-yellow leading-none animate-timer-beat';
         }
     }
 
-    /* ================= Mini Calendar ================= */
+    /* ================= Enhanced Mini Calendar ================= */
     renderCalendar() {
         const grid = document.getElementById('cal-grid-days');
         const monthTitle = document.getElementById('cal-month-title');
         if (!grid || !monthTitle) return;
 
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth();
+        const year = this.calYear;
+        const month = this.calMonth;
         const monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
         monthTitle.innerText = `${monthNames[month]} ${year}`;
 
+        const now = new Date();
         const firstDayIndex = new Date(year, month, 1).getDay();
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         const tasks = this.app.store.getTasks();
@@ -574,27 +692,51 @@ export class UI {
         }
 
         for (let day = 1; day <= daysInMonth; day++) {
-            const isToday = day === now.getDate();
-            const hasTask = tasks.some(t => {
+            const isToday = day === now.getDate() && month === now.getMonth() && year === now.getFullYear();
+            const dayTasks = tasks.filter(t => {
                 const td = new Date(t.time);
                 return td.getFullYear() === year && td.getMonth() === month && td.getDate() === day;
             });
-            const isSelected = this.selectedDateFilter && this.selectedDateFilter.getDate() === day;
+
+            const hasTask = dayTasks.length > 0;
+            const hasCritical = dayTasks.some(t => t.type === 'critical');
+            const isSelected = this.selectedDateFilter && 
+                               this.selectedDateFilter.getFullYear() === year &&
+                               this.selectedDateFilter.getMonth() === month &&
+                               this.selectedDateFilter.getDate() === day;
 
             html += `
                 <div class="cal-cell ${isToday ? 'today' : ''} ${hasTask ? 'has-task' : ''} ${isSelected ? 'selected' : ''}" onclick="app.ui.filterDate(${year}, ${month}, ${day})">
-                    <span>${day}</span>
-                    ${hasTask ? '<div class="cal-dot"></div>' : ''}
+                    <span class="font-bold">${day}</span>
+                    ${hasTask ? `
+                        <div class="cal-dot-container">
+                            <div class="cal-dot ${hasCritical ? 'dot-critical' : ''}"></div>
+                            ${dayTasks.length > 1 ? `<span class="text-[8px] font-mono text-gray-400 leading-none">${dayTasks.length}</span>` : ''}
+                        </div>
+                    ` : ''}
                 </div>
             `;
         }
 
         grid.innerHTML = html;
+
+        // Update Date Filter Banner
+        const filterBanner = document.getElementById('cal-filter-banner');
+        const filterText = document.getElementById('cal-filter-text');
+        if (this.selectedDateFilter) {
+            filterBanner?.classList.remove('hidden');
+            if (filterText) filterText.innerText = `FILTERED: ${this.selectedDateFilter.toDateString().toUpperCase()}`;
+        } else {
+            filterBanner?.classList.add('hidden');
+        }
     }
 
     filterDate(year, month, day) {
-        if (this.selectedDateFilter && this.selectedDateFilter.getDate() === day) {
-            this.selectedDateFilter = null;
+        if (this.selectedDateFilter && 
+            this.selectedDateFilter.getFullYear() === year &&
+            this.selectedDateFilter.getMonth() === month &&
+            this.selectedDateFilter.getDate() === day) {
+            this.selectedDateFilter = null; // Unselect
         } else {
             this.selectedDateFilter = new Date(year, month, day);
         }

@@ -1,6 +1,6 @@
 /* ===================================================
-   CHRONOS // PERSONA TACTICAL DYNAMIC ENGINE (v0.3.0)
-   Hyper-Stylized / Slanted Comic-Book Panels / Kinetic Motion
+   CHRONOS // PERSONA TACTICAL DYNAMIC ENGINE (v0.3.5 Optimized)
+   High Performance / 120Hz Mobile Ready / GPU Accelerated
    =================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@600;800&display=swap');
@@ -11,8 +11,8 @@
     --color-p-blue: #38bdf8;
     --color-p-purple: #c084fc;
     --color-p-emerald: #10b981;
-    --color-p-black: #060608;
-    --color-p-card: #0f1015;
+    --color-p-black: #050608;
+    --color-p-card: #0e0f14;
 }
 
 body {
@@ -22,14 +22,17 @@ body {
     user-select: none;
     -webkit-tap-highlight-color: transparent;
     overflow: hidden;
+    contain: paint;
 }
 
 .font-bebas {
     font-family: 'Bebas Neue', cursive;
+    font-variant-numeric: tabular-nums;
 }
 
 .font-mono {
     font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
 }
 
 /* Hide Scrollbars */
@@ -41,43 +44,44 @@ body {
     scrollbar-width: none;
 }
 
-/* Dynamic Animated Background Speedlines */
+/* Dynamic Animated Background Speedlines (GPU Optimized via will-change) */
 .bg-persona-dynamic {
     background-color: var(--color-p-black);
     background-image: 
-        radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+        radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
         linear-gradient(135deg, rgba(255, 31, 61, 0.03) 25%, transparent 25%, transparent 50%, rgba(255, 31, 61, 0.03) 50%, rgba(255, 31, 61, 0.03) 75%, transparent 75%, transparent);
-    background-size: 12px 12px, 60px 60px;
-    animation: speedlines 20s linear infinite;
+    background-size: 14px 14px, 70px 70px;
+    animation: speedlines 25s linear infinite;
+    will-change: background-position;
 }
 
 @keyframes speedlines {
     0% { background-position: 0 0, 0 0; }
-    100% { background-position: 120px 120px, 600px 600px; }
+    100% { background-position: 140px 140px, 700px 700px; }
 }
 
 /* Persona Skewed Frame Components */
-.skew-panel {
-    transform: perspective(600px) rotateX(1deg) rotateZ(-0.8deg);
-    transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
-}
-
 .clip-polygon-card {
-    clip-path: polygon(0% 0%, 96% 0%, 100% 12%, 100% 100%, 4% 100%, 0% 88%);
+    clip-path: polygon(0% 0%, 96% 0%, 100% 12px, 100% 100%, 4% 100%, 0% calc(100% - 12px));
 }
 
 .clip-tag {
     clip-path: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%);
 }
 
+.clip-gauge {
+    clip-path: polygon(2% 0%, 100% 0%, 98% 100%, 0% 100%);
+}
+
 /* Kinetic Persona Header Widget */
 .hero-countdown-box {
     position: relative;
-    background: linear-gradient(135deg, rgba(18, 19, 26, 0.96) 0%, rgba(10, 11, 15, 0.98) 100%);
-    border: 2px solid #222530;
-    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.9), 0 0 20px rgba(255, 31, 61, 0.15);
-    transform: rotate(-0.5deg);
-    transition: all 0.3s cubic-bezier(0.19, 1, 0.22, 1);
+    background: linear-gradient(135deg, rgba(16, 17, 24, 0.98) 0%, rgba(9, 10, 14, 0.98) 100%);
+    border: 2px solid #20222d;
+    box-shadow: 6px 6px 0px rgba(0, 0, 0, 0.95), 0 0 20px rgba(255, 31, 61, 0.12);
+    transform: rotate(-0.6deg);
+    transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2), border-color 0.25s, box-shadow 0.25s;
+    will-change: transform;
 }
 
 .hero-countdown-box:hover {
@@ -86,34 +90,53 @@ body {
     box-shadow: 8px 8px 0px var(--color-p-red), 0 0 25px rgba(255, 31, 61, 0.3);
 }
 
-/* Pulsating Heartbeat for the Big Seconds Counter */
+/* Time Resource Gauge Bar (Visual Countdown Gauge) */
+.gauge-container {
+    height: 8px;
+    background: #151720;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gauge-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--color-p-yellow) 0%, var(--color-p-red) 100%);
+    box-shadow: 0 0 10px var(--color-p-yellow);
+    transition: width 0.3s ease-out;
+    will-change: width;
+}
+
+/* Pulsating Heartbeat for Big Seconds */
 @keyframes timerPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.015); }
-    100% { transform: scale(1); }
+    0% { transform: scale3d(1, 1, 1); }
+    50% { transform: scale3d(1.02, 1.02, 1); }
+    100% { transform: scale3d(1, 1, 1); }
 }
 
 .animate-timer-beat {
-    animation: timerPulse 1s ease-in-out infinite;
+    animation: timerPulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    will-change: transform;
 }
 
 /* Neon Glows */
 .glow-yellow {
-    text-shadow: 0 0 15px rgba(250, 204, 21, 0.6), 0 0 30px rgba(250, 204, 21, 0.3);
+    text-shadow: 0 0 16px rgba(250, 204, 21, 0.65), 0 0 32px rgba(250, 204, 21, 0.3);
 }
 
 .glow-red {
-    text-shadow: 0 0 18px rgba(255, 31, 61, 0.8), 0 0 35px rgba(255, 31, 61, 0.4);
+    text-shadow: 0 0 18px rgba(255, 31, 61, 0.85), 0 0 35px rgba(255, 31, 61, 0.4);
 }
 
-/* Quick Command Bar (Fast Natural Language Input) */
+/* Quick Command Bar */
 .quick-cmd-bar {
     position: relative;
-    background: #0d0e14;
-    border: 2px solid #2a2d3d;
+    background: #0b0c11;
+    border: 2px solid #252836;
     box-shadow: 4px 4px 0px #000;
     transform: skewX(-4deg);
-    transition: all 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+    will-change: transform;
 }
 
 .quick-cmd-bar:focus-within {
@@ -132,12 +155,12 @@ body {
     background: #000;
     color: #fff;
     font-weight: 800;
-    font-size: 0.78rem;
+    font-size: 0.76rem;
     letter-spacing: 0.08em;
-    padding: 0.45rem 0.85rem;
+    padding: 0.42rem 0.82rem;
     border: 2px solid #fff;
     clip-path: polygon(12% 0, 100% 0, 88% 100%, 0% 100%);
-    transition: all 0.16s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    transition: transform 0.16s cubic-bezier(0.2, 0.9, 0.3, 1.2), color 0.16s, border-color 0.16s, box-shadow 0.16s;
     cursor: pointer;
     overflow: hidden;
     z-index: 1;
@@ -145,6 +168,7 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.3rem;
+    will-change: transform;
 }
 
 .persona-btn::before {
@@ -200,28 +224,64 @@ body {
     border-color: var(--color-p-blue);
 }
 
+/* Timeline Vertical Line Connector */
+.timeline-container {
+    position: relative;
+    padding-left: 18px;
+}
+
+.timeline-container::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    background: linear-gradient(180deg, var(--color-p-red) 0%, rgba(56, 189, 248, 0.4) 50%, #20222d 100%);
+    box-shadow: 0 0 6px rgba(255, 31, 61, 0.4);
+}
+
 /* Dynamic Interactive Task Card */
 .task-card-persona {
     background: var(--color-p-card);
     border: 1.5px solid rgba(255, 255, 255, 0.08);
     position: relative;
     clip-path: polygon(0% 0%, 97% 0%, 100% 10px, 100% 100%, 3% 100%, 0% calc(100% - 10px));
-    transition: all 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.3, 1.2), border-color 0.2s, box-shadow 0.2s, background 0.2s;
     box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.7);
+    will-change: transform;
+}
+
+.task-card-persona::before {
+    content: '';
+    position: absolute;
+    left: -18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-p-red);
+    box-shadow: 0 0 8px var(--color-p-red);
+    z-index: 10;
 }
 
 .task-card-persona:hover, .task-card-persona:active {
     border-color: #ffffff;
-    transform: translate(-3px, -3px) rotate(-0.4deg);
+    transform: translate3d(-3px, -3px, 0) rotate(-0.3deg);
     box-shadow: 6px 6px 0px var(--color-p-red);
-    background: linear-gradient(90deg, rgba(255, 31, 61, 0.1) 0%, rgba(15, 16, 21, 1) 100%);
+    background: linear-gradient(90deg, rgba(255, 31, 61, 0.12) 0%, rgba(14, 15, 20, 1) 100%);
 }
 
 .task-completed {
-    opacity: 0.4;
-    filter: grayscale(0.85);
+    opacity: 0.38;
+    filter: grayscale(0.9);
     border-color: rgba(255, 255, 255, 0.03) !important;
     box-shadow: none !important;
+}
+.task-completed::before {
+    background: var(--color-p-emerald) !important;
+    box-shadow: 0 0 6px var(--color-p-emerald) !important;
 }
 .task-completed .task-title {
     text-decoration: line-through;
@@ -230,33 +290,35 @@ body {
 
 /* Persona 3D Blade Slash Swipe Animations */
 @keyframes bladeSwipeLeft {
-    0% { transform: perspective(900px) rotateY(-40deg) rotateZ(-2deg) translateX(-40%); opacity: 0; filter: blur(6px); }
-    100% { transform: perspective(900px) rotateY(0deg) rotateZ(0deg) translateX(0); opacity: 1; filter: blur(0px); }
+    0% { transform: perspective(900px) rotateY(-38deg) rotateZ(-1.5deg) translate3d(-35%, 0, 0); opacity: 0; filter: blur(5px); }
+    100% { transform: perspective(900px) rotateY(0deg) rotateZ(0deg) translate3d(0, 0, 0); opacity: 1; filter: blur(0px); }
 }
 
 @keyframes bladeSwipeRight {
-    0% { transform: perspective(900px) rotateY(40deg) rotateZ(2deg) translateX(40%); opacity: 0; filter: blur(6px); }
-    100% { transform: perspective(900px) rotateY(0deg) rotateZ(0deg) translateX(0); opacity: 1; filter: blur(0px); }
+    0% { transform: perspective(900px) rotateY(38deg) rotateZ(1.5deg) translate3d(35%, 0, 0); opacity: 0; filter: blur(5px); }
+    100% { transform: perspective(900px) rotateY(0deg) rotateZ(0deg) translate3d(0, 0, 0); opacity: 1; filter: blur(0px); }
 }
 
 .animate-swipe-left {
-    animation: bladeSwipeLeft 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
+    animation: bladeSwipeLeft 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
+    will-change: transform, opacity;
 }
 
 .animate-swipe-right {
-    animation: bladeSwipeRight 0.35s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
+    animation: bladeSwipeRight 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.15) forwards;
+    will-change: transform, opacity;
 }
 
 /* Full-Screen Persona Slash Transition */
 @keyframes persona-slash {
-    0% { transform: scale(1.8) rotate(-9deg); opacity: 0; filter: blur(14px); }
+    0% { transform: scale(1.8) rotate(-9deg); opacity: 0; filter: blur(12px); }
     20% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0px); text-shadow: 8px 8px 0px var(--color-p-red); }
-    75% { transform: scale(1.06) rotate(0deg); opacity: 1; text-shadow: -8px 8px 0px var(--color-p-blue); }
-    100% { transform: scale(1.9) rotate(9deg); opacity: 0; filter: blur(14px); }
+    75% { transform: scale(1.05) rotate(0deg); opacity: 1; text-shadow: -8px 8px 0px var(--color-p-blue); }
+    100% { transform: scale(1.8) rotate(9deg); opacity: 0; filter: blur(12px); }
 }
 
 .animate-persona {
-    animation: persona-slash 1.1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    animation: persona-slash 1s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
 /* Rank S / A / B / C Persona Stamp */
@@ -269,10 +331,11 @@ body {
     border: 3px solid;
     transform: rotate(-12deg);
     box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.9);
-    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
 }
 .rank-stamp:hover {
-    transform: rotate(-4deg) scale(1.1);
+    transform: rotate(-4deg) scale(1.08);
 }
 
 .rank-s {
@@ -305,12 +368,14 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    font-size: 0.75rem;
+    font-size: 0.74rem;
     border: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(18, 19, 24, 0.75);
+    background: rgba(16, 17, 23, 0.8);
     border-radius: 4px;
     cursor: pointer;
-    transition: all 0.16s ease;
+    transition: transform 0.15s ease, background 0.15s, border-color 0.15s;
+    position: relative;
+    will-change: transform;
 }
 .cal-cell:hover {
     background: rgba(255, 255, 255, 0.12);
@@ -332,13 +397,21 @@ body {
     background: var(--color-p-red);
     border-radius: 50%;
 }
-.cal-cell.has-task .cal-dot {
-    width: 5px;
-    height: 5px;
-    background: var(--color-p-yellow);
-    border-radius: 50%;
+.cal-cell.has-task .cal-dot-container {
+    display: flex;
+    gap: 2px;
     margin-top: 2px;
-    box-shadow: 0 0 6px var(--color-p-yellow);
+}
+.cal-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-p-yellow);
+    box-shadow: 0 0 5px var(--color-p-yellow);
+}
+.cal-dot.dot-critical {
+    background: var(--color-p-red);
+    box-shadow: 0 0 5px var(--color-p-red);
 }
 .cal-cell.selected {
     background: var(--color-p-red);
@@ -362,7 +435,7 @@ body {
     height: 6px;
     border-radius: 50%;
     background: #374151;
-    transition: all 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    transition: width 0.25s cubic-bezier(0.2, 0.9, 0.3, 1.2), background 0.25s;
 }
 .swipe-dot.active {
     width: 18px;

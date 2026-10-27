@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>CHRONOS // Tactical Objective Protocol</title>
-    <!-- Tailwind CSS (CDN for rapid vanilla architecture) -->
+    <!-- Tailwind CSS (Rapid Architecture) -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
@@ -16,7 +16,7 @@
     <!-- Persona Style Date Transition Slash Overlay -->
     <div id="date-transition" class="fixed inset-0 z-50 flex items-center justify-center bg-black pointer-events-none">
         <div class="relative text-center">
-            <p class="text-red-500 font-mono text-sm tracking-widest uppercase mb-1">Engaging Objective Matrix</p>
+            <p class="text-red-500 font-mono text-xs tracking-widest uppercase mb-1">Engaging Tactical Protocol</p>
             <h1 id="transition-text" class="font-bebas text-8xl md:text-9xl tracking-wider text-white transform scale-150 opacity-0"></h1>
         </div>
     </div>
@@ -25,13 +25,13 @@
     <main class="h-screen w-screen flex relative overflow-hidden" id="app-container">
         
         <!-- Central Content Area (Takes Gestures) -->
-        <div class="flex-1 flex flex-col p-4 md:p-6 h-full relative z-10 overflow-hidden" id="main-content">
+        <div class="flex-1 flex flex-col p-3.5 md:p-6 h-full relative z-10 overflow-hidden" id="main-content">
             
             <!-- System Top Status Bar -->
-            <div class="flex justify-between items-center text-[10px] font-mono tracking-widest uppercase text-gray-400 border-b border-gray-900 pb-2 mb-2.5">
+            <div class="flex justify-between items-center text-[10px] font-mono tracking-widest uppercase text-gray-400 border-b border-gray-900 pb-2 mb-2">
                 <div class="flex items-center gap-2">
                     <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span id="system-status">SYS: READY // v0.3.0 KINETIC</span>
+                    <span id="system-status">SYS: ONLINE // 120Hz OPT</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <button id="btn-request-notify" class="hover:text-red-400 transition-colors flex items-center gap-1 cursor-pointer">
@@ -41,41 +41,53 @@
                 </div>
             </div>
 
-            <!-- Focus Objective Widget (Hero Persona Box with Asymmetric Skew) -->
-            <header class="mb-3.5 relative p-4 rounded-lg hero-countdown-box">
+            <!-- Focus Objective Widget (Hero Persona Box with Gauge) -->
+            <header class="mb-3 relative p-3.5 md:p-4 rounded-lg hero-countdown-box shrink-0">
                 <div class="absolute left-0 top-0 w-2 h-full bg-red-600 clip-tag"></div>
-                <div class="flex justify-between items-start">
-                    <span class="text-red-500 font-bold tracking-widest uppercase text-[11px] block flex items-center gap-1">
+                <div class="flex justify-between items-start mb-1">
+                    <span class="text-red-500 font-bold tracking-widest uppercase text-[11px] flex items-center gap-1">
                         <span class="w-1.5 h-1.5 bg-red-500 inline-block rotate-45"></span>
-                        PRIME OBJECTIVE
+                        PRIME DIRECTIVE
                     </span>
-                    <span id="task-badge-type" class="text-[9px] font-mono uppercase bg-red-950/80 border border-red-700 text-red-300 px-2 py-0.5 rounded clip-tag">CRITICAL</span>
+                    <div class="flex items-center gap-1.5">
+                        <span id="task-badge-time-left" class="text-[9px] font-mono uppercase bg-yellow-950/80 border border-yellow-700 text-yellow-300 px-1.5 py-0.5 rounded font-black">IN 0H 0M</span>
+                        <span id="task-badge-type" class="text-[9px] font-mono uppercase bg-red-950/80 border border-red-700 text-red-300 px-1.5 py-0.5 rounded clip-tag font-bold">CRITICAL</span>
+                    </div>
                 </div>
-                <h2 id="next-task-title" class="text-2xl md:text-3xl font-black leading-tight mt-1 mb-2 truncate text-white tracking-tight">STANDBY</h2>
+                
+                <h2 id="next-task-title" class="text-xl md:text-2xl font-black leading-tight mb-2 truncate text-white tracking-tight">STANDBY</h2>
                 
                 <!-- Mega Persona Countdown (Seconds) -->
-                <div class="flex items-baseline justify-between flex-wrap gap-2">
-                    <div class="font-bebas text-6xl md:text-7xl text-yellow-400 tracking-wider glow-yellow leading-none animate-timer-beat" id="countdown-timer">
+                <div class="flex items-baseline justify-between flex-wrap gap-2 mb-2">
+                    <div class="font-bebas text-5xl md:text-6xl text-yellow-400 tracking-wider glow-yellow leading-none animate-timer-beat" id="countdown-timer">
                         00:00:00
                     </div>
-                    <div id="target-timestamp" class="text-[11px] font-mono text-gray-400 font-bold">TARGET: NONE</div>
+                    <div class="text-right">
+                        <div id="target-timestamp" class="text-[11px] font-mono text-gray-400 font-bold">TARGET: NONE</div>
+                        <div id="gauge-percent" class="text-[9px] font-mono text-yellow-400 font-bold">RESOURCES: 100%</div>
+                    </div>
+                </div>
+
+                <!-- Visual Time Resource Gauge Bar -->
+                <div class="gauge-container rounded mb-2.5 clip-gauge">
+                    <div id="time-gauge-fill" class="gauge-fill" style="width: 100%;"></div>
                 </div>
 
                 <!-- Auto-Rescheduling & Mission Actions -->
-                <div id="delay-actions" class="mt-3 pt-3 border-t border-gray-900/90 flex flex-wrap gap-2 items-center">
-                    <button id="btn-complete-prime" class="persona-btn btn-done text-xs py-1.5 px-3.5">
+                <div id="delay-actions" class="pt-2 border-t border-gray-900/90 flex flex-wrap gap-2 items-center">
+                    <button id="btn-complete-prime" class="persona-btn btn-done text-xs py-1 px-3">
                         ✓ COMPLETE
                     </button>
-                    <button id="btn-delay-15m" class="persona-btn text-xs py-1.5 px-2.5">
+                    <button id="btn-delay-15m" class="persona-btn text-xs py-1 px-2">
                         +15M
                     </button>
-                    <button id="btn-delay-1h" class="persona-btn text-xs py-1.5 px-2.5">
+                    <button id="btn-delay-1h" class="persona-btn text-xs py-1 px-2">
                         +1H
                     </button>
-                    <button id="btn-delay-1d" class="persona-btn text-xs py-1.5 px-2.5">
+                    <button id="btn-delay-1d" class="persona-btn text-xs py-1 px-2">
                         +1D
                     </button>
-                    <button id="btn-delay-custom" class="persona-btn btn-yellow text-xs py-1.5 px-2.5">
+                    <button id="btn-delay-custom" class="persona-btn btn-yellow text-xs py-1 px-2">
                         CUSTOM...
                     </button>
                 </div>
@@ -85,10 +97,10 @@
             <div class="flex-1 relative overflow-hidden flex flex-col min-h-0" id="views-container">
                 
                 <!-- VIEW 1: TIMELINE & FAST CAPTURE -->
-                <section id="view-schedule" class="flex-1 overflow-y-auto pb-16 no-scrollbar view-section active flex flex-col">
+                <section id="view-schedule" class="flex-1 overflow-y-auto pb-14 no-scrollbar view-section active flex flex-col">
                     
                     <!-- Fast Natural Language Command Bar -->
-                    <form id="form-quick-cmd" class="mb-3 shrink-0">
+                    <form id="form-quick-cmd" class="mb-2.5 shrink-0">
                         <div class="quick-cmd-bar flex items-center px-3 py-1.5 rounded">
                             <span class="text-red-500 font-mono font-black text-xs mr-2">▶</span>
                             <input type="text" id="input-quick-cmd" placeholder="Quick Engage (e.g. 매일 08:00 브리핑, 30분 뒤 검토)" class="quick-cmd-input w-full bg-transparent text-white text-xs outline-none placeholder-gray-600 font-medium">
@@ -96,51 +108,68 @@
                         </div>
                     </form>
 
-                    <!-- Sub Toolbar: List vs Calendar -->
-                    <div class="flex justify-between items-center mb-2.5 pb-2 border-b border-gray-800 shrink-0">
+                    <!-- Sub Toolbar & Filter Chips -->
+                    <div class="flex justify-between items-center mb-2 pb-1.5 border-b border-gray-800 shrink-0 flex-wrap gap-2">
+                        <!-- View Toggle -->
                         <div class="flex gap-2">
-                            <button id="tab-sub-timeline" class="text-xs uppercase font-bold tracking-wider text-red-500 pb-0.5 border-b-2 border-red-500 transition-colors">List View</button>
+                            <button id="tab-sub-timeline" class="text-xs uppercase font-bold tracking-wider text-red-500 pb-0.5 border-b-2 border-red-500 transition-colors">Timeline</button>
                             <button id="tab-sub-calendar" class="text-xs uppercase font-bold tracking-wider text-gray-500 hover:text-white pb-0.5 border-b-2 border-transparent transition-colors">Calendar</button>
                         </div>
-                        <button id="btn-add" class="persona-btn text-xs py-1 px-3">
+
+                        <!-- Status Filter Chips -->
+                        <div class="flex gap-1" id="task-filter-chips">
+                            <button class="px-2 py-0.5 text-[9px] font-mono font-bold rounded bg-red-600 text-white task-chip active" data-filter="ALL">ALL</button>
+                            <button class="px-2 py-0.5 text-[9px] font-mono font-bold rounded bg-gray-900 text-gray-400 hover:text-white task-chip" data-filter="PENDING">PENDING</button>
+                            <button class="px-2 py-0.5 text-[9px] font-mono font-bold rounded bg-gray-900 text-gray-400 hover:text-white task-chip" data-filter="DAILY">DAILY</button>
+                            <button class="px-2 py-0.5 text-[9px] font-mono font-bold rounded bg-gray-900 text-gray-400 hover:text-white task-chip" data-filter="CLEARED">CLEARED</button>
+                        </div>
+
+                        <button id="btn-add" class="persona-btn text-[10px] py-0.5 px-2.5 ml-auto">
                             + Detail Form
                         </button>
                     </div>
 
-                    <!-- Mini Calendar View (Toggled) -->
-                    <div id="calendar-widget" class="hidden mb-3 p-3 bg-gray-950/90 border border-gray-900 rounded-lg shrink-0">
-                        <div class="flex justify-between items-center mb-2">
-                            <h4 id="cal-month-title" class="font-bold text-sm tracking-wide text-yellow-400">OCTOBER 2026</h4>
-                            <div class="text-[10px] font-mono text-gray-500">Tap date to filter</div>
+                    <!-- Enhanced Mini Calendar View (Toggled) -->
+                    <div id="calendar-widget" class="hidden mb-3 p-3 bg-gray-950/95 border border-gray-900 rounded-lg shrink-0">
+                        <div class="flex justify-between items-center mb-2.5">
+                            <button id="btn-cal-prev" class="text-gray-400 hover:text-white text-xs font-mono px-2 py-1 bg-gray-900 rounded">◀ PREV</button>
+                            <h4 id="cal-month-title" class="font-bold text-sm tracking-wide text-yellow-400 font-mono">OCTOBER 2026</h4>
+                            <button id="btn-cal-next" class="text-gray-400 hover:text-white text-xs font-mono px-2 py-1 bg-gray-900 rounded">NEXT ▶</button>
                         </div>
                         <div class="grid grid-cols-7 gap-1 text-center font-mono text-[10px] text-gray-500 mb-1">
-                            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+                            <span class="text-red-500">SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span class="text-blue-400">SAT</span>
                         </div>
                         <div id="cal-grid-days" class="cal-grid">
                             <!-- Injected by JS -->
                         </div>
+                        <div id="cal-filter-banner" class="hidden mt-2 pt-2 border-t border-gray-900 text-center flex justify-between items-center text-[10px] font-mono text-yellow-400">
+                            <span id="cal-filter-text">Filtered by date</span>
+                            <button id="btn-clear-date-filter" class="text-gray-400 hover:text-white underline">VIEW ALL</button>
+                        </div>
                     </div>
 
-                    <!-- Task List Timeline -->
-                    <ul id="task-list" class="space-y-2 flex-1 overflow-y-auto no-scrollbar">
-                        <!-- Tasks injected dynamically by ui.js -->
-                    </ul>
+                    <!-- Task List Vertical Timeline -->
+                    <div class="flex-1 overflow-y-auto no-scrollbar">
+                        <ul id="task-list" class="space-y-2 timeline-container">
+                            <!-- Tasks injected dynamically by ui.js -->
+                        </ul>
+                    </div>
                 </section>
                 
                 <!-- VIEW 2: INTELLIGENCE & ENTJ PROTOCOL -->
-                <section id="view-info" class="flex-1 overflow-y-auto pb-16 no-scrollbar view-section hidden flex flex-col">
+                <section id="view-info" class="flex-1 overflow-y-auto pb-14 no-scrollbar view-section hidden flex flex-col">
                     <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-800 shrink-0">
                         <h3 class="text-sm font-bold uppercase tracking-wider text-blue-400">Tactical Intelligence</h3>
                         <span class="text-[10px] font-mono text-gray-500">ENTJ PERFORMANCE MATRIX</span>
                     </div>
 
-                    <div class="space-y-3.5">
+                    <div class="space-y-3">
                         <!-- Rank & Productivity Card -->
-                        <div class="p-4 bg-gray-950/90 border border-blue-900/40 rounded-lg relative overflow-hidden flex items-center justify-between">
+                        <div class="p-3.5 bg-gray-950/90 border border-blue-900/40 rounded-lg relative overflow-hidden flex items-center justify-between">
                             <div class="space-y-1 z-10">
                                 <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest block font-bold">Executive Rating</span>
                                 <h4 class="text-xl font-bold text-white">Efficiency Index</h4>
-                                <div class="text-xs text-gray-400 flex gap-4 mt-2 font-mono">
+                                <div class="text-xs text-gray-400 flex gap-4 mt-1.5 font-mono">
                                     <span>Rate: <b id="stat-rate" class="text-white">100%</b></span>
                                     <span>Delayed: <b id="stat-delayed" class="text-yellow-400">0</b></span>
                                     <span>Done: <b id="stat-completed" class="text-emerald-400">0</b></span>
@@ -153,7 +182,7 @@
                         </div>
 
                         <!-- Short-Term & Long-Term Directives -->
-                        <div class="p-3.5 bg-gray-950/90 border-l-4 border-blue-500 rounded border border-gray-900 relative">
+                        <div class="p-3 bg-gray-950/90 border-l-4 border-blue-500 rounded border border-gray-900 relative">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[10px] text-blue-400 font-bold uppercase tracking-widest">This Month (Short-Term Focus)</span>
                                 <button id="btn-edit-short-goal" class="text-[10px] text-gray-500 hover:text-white uppercase font-mono">[EDIT]</button>
@@ -161,7 +190,7 @@
                             <p id="display-short-goal" class="font-bold text-sm text-gray-200">Loading directive...</p>
                         </div>
 
-                        <div class="p-3.5 bg-gray-950/90 border-l-4 border-purple-500 rounded border border-gray-900 relative">
+                        <div class="p-3 bg-gray-950/90 border-l-4 border-purple-500 rounded border border-gray-900 relative">
                             <div class="flex justify-between items-center mb-1">
                                 <span class="text-[10px] text-purple-400 font-bold uppercase tracking-widest">Annual Vision (Long-Term Goal)</span>
                                 <button id="btn-edit-long-goal" class="text-[10px] text-gray-500 hover:text-white uppercase font-mono">[EDIT]</button>
@@ -170,8 +199,8 @@
                         </div>
 
                         <!-- Data Integrity & Backup Controls -->
-                        <div class="p-3.5 bg-gray-950/90 border border-gray-900 rounded space-y-2.5">
-                            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 border-b border-gray-900 pb-1.5">Offline Data Safeguard</h4>
+                        <div class="p-3 bg-gray-950/90 border border-gray-900 rounded space-y-2">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 border-b border-gray-900 pb-1">Offline Data Safeguard</h4>
                             <div class="flex gap-2">
                                 <button id="btn-export-json" class="persona-btn text-[10px] py-1.5 px-3 flex-1">
                                     Export JSON Backup
@@ -186,7 +215,7 @@
                 </section>
 
                 <!-- VIEW 3: NETWORK & ARCHIVES -->
-                <section id="view-urls" class="flex-1 overflow-y-auto pb-16 no-scrollbar view-section hidden flex flex-col">
+                <section id="view-urls" class="flex-1 overflow-y-auto pb-14 no-scrollbar view-section hidden flex flex-col">
                     <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-800 shrink-0">
                         <h3 class="text-sm font-bold uppercase tracking-wider text-yellow-400">Network Terminal</h3>
                         <button id="btn-add-link" class="persona-btn btn-yellow text-xs py-1 px-3">
@@ -195,7 +224,7 @@
                     </div>
 
                     <!-- Categories Filter -->
-                    <div class="flex gap-1.5 mb-3 overflow-x-auto no-scrollbar shrink-0" id="link-category-filter">
+                    <div class="flex gap-1.5 mb-2.5 overflow-x-auto no-scrollbar shrink-0" id="link-category-filter">
                         <button class="px-2.5 py-1 text-[10px] font-mono font-bold rounded bg-yellow-400 text-black filter-btn active" data-cat="ALL">ALL</button>
                         <button class="px-2.5 py-1 text-[10px] font-mono font-bold rounded bg-gray-900 text-gray-400 hover:text-white filter-btn" data-cat="DEV">DEV</button>
                         <button class="px-2.5 py-1 text-[10px] font-mono font-bold rounded bg-gray-900 text-gray-400 hover:text-white filter-btn" data-cat="AI">AI</button>
