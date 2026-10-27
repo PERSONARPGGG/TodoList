@@ -1,0 +1,15 @@
+{
+  "name": "CHRONOS // Tactical Protocol",
+  "short_name": "Chronos",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#08080a",
+  "theme_color": "#ff1f3d",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

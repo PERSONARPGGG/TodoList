@@ -1,115 +1,433 @@
 /**
- * UI Module
- * Handles all DOM manipulation, animations, and View updates.
- * STRICT ISOLATION: Never accesses LocalStorage directly; asks App/Store.
+ * UI Module - Chronos Tactical Persona Interface
+ * Strictly handles DOM, Gestures, View Transitions, Animations, and Visual States.
  */
 export class UI {
     constructor(app) {
         this.app = app;
+        this.currentTabIndex = 0;
+        this.tabs = ['view-schedule', 'view-info', 'view-urls'];
+        this.selectedDateFilter = null;
+        this.currentLinkCategory = 'ALL';
+        this.editingGoalType = null;
+        this.touchStartX = 0;
+        this.touchStartY = 0;
+
         this.bindEvents();
+        this.bindGestures();
+        this.initNotificationState();
     }
 
     bindEvents() {
-        // Tab Navigation
+        // Tab Navigation Buttons (Right Bookmark)
         document.querySelectorAll('.nav-btn').forEach(btn => {
-            btn.addEventListener('click', () => this.switchTab(btn));
+            btn.addEventListener('click', () => {
+                const targetIndex = parseInt(btn.dataset.index, 10);
+                this.switchTabByIndex(targetIndex);
+            });
         });
 
-        // Add Modal Toggles
+        // Swipe Dots Click
+        document.querySelectorAll('.swipe-dot').forEach(dot => {
+            dot.addEventListener('click', () => {
+                const index = parseInt(dot.dataset.index, 10);
+                this.switchTabByIndex(index);
+            });
+        });
+
+        // Sub-tabs in Schedule: Timeline vs Calendar
+        const btnTimeline = document.getElementById('tab-sub-timeline');
+        const btnCalendar = document.getElementById('tab-sub-calendar');
+        const calWidget = document.getElementById('calendar-widget');
+
+        btnTimeline?.addEventListener('click', () => {
+            btnTimeline.className = "text-xs uppercase font-bold tracking-wider text-red-500 pb-0.5 border-b-2 border-red-500 transition-colors";
+            btnCalendar.className = "text-xs uppercase font-bold tracking-wider text-gray-500 hover:text-white pb-0.5 border-b-2 border-transparent transition-colors";
+            calWidget.classList.add('hidden');
+            this.selectedDateFilter = null;
+            this.renderTasks();
+        });
+
+        btnCalendar?.addEventListener('click', () => {
+            btnCalendar.className = "text-xs uppercase font-bold tracking-wider text-yellow-400 pb-0.5 border-b-2 border-yellow-400 transition-colors";
+            btnTimeline.className = "text-xs uppercase font-bold tracking-wider text-gray-500 hover:text-white pb-0.5 border-b-2 border-transparent transition-colors";
+            calWidget.classList.remove('hidden');
+            this.renderCalendar();
+        });
+
+        // Add Objective Modal Toggles
         const modal = document.getElementById('add-modal');
-        document.getElementById('btn-add').addEventListener('click', () => {
+        document.getElementById('btn-add')?.addEventListener('click', () => {
             modal.classList.remove('hidden');
             setTimeout(() => modal.classList.remove('opacity-0'), 10);
             
-            // Default time to now + 1 hour
-            const tzoffset = (new Date()).getTimezoneOffset() * 60000; 
+            // Default time: Now + 1 Hour (Local ISO)
+            const tzoffset = (new Date()).getTimezoneOffset() * 60000;
             const localISOTime = (new Date(Date.now() - tzoffset + 3600000)).toISOString().slice(0, 16);
             document.getElementById('input-time').value = localISOTime;
+            document.getElementById('input-task').value = '';
             document.getElementById('input-task').focus();
         });
 
-        document.getElementById('btn-cancel').addEventListener('click', () => {
+        document.getElementById('btn-cancel')?.addEventListener('click', () => {
             modal.classList.add('opacity-0');
             setTimeout(() => modal.classList.add('hidden'), 200);
         });
 
-        // Save logic
-        document.getElementById('btn-save').addEventListener('click', () => {
-            const title = document.getElementById('input-task').value;
+        // Save Objective
+        document.getElementById('btn-save')?.addEventListener('click', () => {
+            const title = document.getElementById('input-task').value.trim();
             const time = document.getElementById('input-time').value;
+            const priority = document.getElementById('input-priority').value;
+
             if (title && time) {
                 this.app.store.addTask({
-                    id: Date.now().toString(),
                     title,
                     time: new Date(time).toISOString(),
-                    type: 'normal' // TODO: dynamic priority
+                    type: priority
                 });
                 this.renderTasks();
-                document.getElementById('input-task').value = '';
+                this.renderCalendar();
+                this.renderStats();
                 
                 modal.classList.add('opacity-0');
                 setTimeout(() => modal.classList.add('hidden'), 200);
             }
         });
-    }
 
-    switchTab(btn) {
-        // Reset all tabs
-        document.querySelectorAll('.nav-btn').forEach(b => {
-            b.classList.remove('active');
-            b.querySelector('.indicator').classList.remove('opacity-100', 'scale-y-100');
-            b.querySelector('.indicator').classList.add('opacity-0', 'scale-y-0');
+        // Complete Active Prime Directive
+        document.getElementById('btn-complete-prime')?.addEventListener('click', () => {
+            const nextTask = this.app.store.getNextTask();
+            if (nextTask) {
+                this.app.store.completeTask(nextTask.id);
+                this.playSlashEffect('MISSION COMPLETED');
+                this.renderTasks();
+                this.renderStats();
+            }
         });
-        
-        const target = btn.dataset.target;
-        btn.classList.add('active');
-        btn.querySelector('.indicator').classList.remove('opacity-0', 'scale-y-0');
-        btn.querySelector('.indicator').classList.add('opacity-100', 'scale-y-100');
 
-        // Swap Content Views
-        document.querySelectorAll('.view-section').forEach(sec => sec.classList.add('hidden'));
-        const targetView = document.getElementById(target);
-        targetView.classList.remove('hidden');
-        
-        // Retrigger animation
-        targetView.classList.remove('animate-fade-in');
-        void targetView.offsetWidth; // trigger reflow
-        targetView.classList.add('animate-fade-in');
+        // Auto-Rescheduling Buttons
+        document.getElementById('btn-delay-15m')?.addEventListener('click', () => {
+            const nextTask = this.app.store.getNextTask();
+            if (nextTask) {
+                this.app.store.delayTask(nextTask.id, 15);
+                this.renderTasks();
+                this.renderStats();
+            }
+        });
+
+        document.getElementById('btn-delay-1h')?.addEventListener('click', () => {
+            const nextTask = this.app.store.getNextTask();
+            if (nextTask) {
+                this.app.store.delayTask(nextTask.id, 60);
+                this.renderTasks();
+                this.renderStats();
+            }
+        });
+
+        document.getElementById('btn-delay-1d')?.addEventListener('click', () => {
+            const nextTask = this.app.store.getNextTask();
+            if (nextTask) {
+                this.app.store.delayTask(nextTask.id, 1440);
+                this.renderTasks();
+                this.renderStats();
+            }
+        });
+
+        // Custom Delay Modal
+        const customModal = document.getElementById('delay-custom-modal');
+        document.getElementById('btn-delay-custom')?.addEventListener('click', () => {
+            customModal.classList.remove('hidden');
+            setTimeout(() => customModal.classList.remove('opacity-0'), 10);
+            document.getElementById('input-custom-minutes').focus();
+        });
+
+        document.getElementById('btn-cancel-custom-delay')?.addEventListener('click', () => {
+            customModal.classList.add('opacity-0');
+            setTimeout(() => customModal.classList.add('hidden'), 200);
+        });
+
+        document.getElementById('btn-confirm-custom-delay')?.addEventListener('click', () => {
+            const mins = parseInt(document.getElementById('input-custom-minutes').value, 10);
+            const nextTask = this.app.store.getNextTask();
+            if (nextTask && mins > 0) {
+                this.app.store.delayTask(nextTask.id, mins);
+                this.renderTasks();
+                this.renderStats();
+                customModal.classList.add('opacity-0');
+                setTimeout(() => customModal.classList.add('hidden'), 200);
+            }
+        });
+
+        // Goals Edit Modals
+        const goalModal = document.getElementById('edit-goal-modal');
+        const goalTitle = document.getElementById('edit-goal-title');
+        const goalInput = document.getElementById('input-goal-text');
+
+        document.getElementById('btn-edit-short-goal')?.addEventListener('click', () => {
+            this.editingGoalType = 'short';
+            goalTitle.innerText = 'Update This Month Directive';
+            goalInput.value = this.app.store.getGoals().shortTerm;
+            goalModal.classList.remove('hidden');
+            setTimeout(() => goalModal.classList.remove('opacity-0'), 10);
+            goalInput.focus();
+        });
+
+        document.getElementById('btn-edit-long-goal')?.addEventListener('click', () => {
+            this.editingGoalType = 'long';
+            goalTitle.innerText = 'Update Annual Vision Directive';
+            goalInput.value = this.app.store.getGoals().longTerm;
+            goalModal.classList.remove('hidden');
+            setTimeout(() => goalModal.classList.remove('opacity-0'), 10);
+            goalInput.focus();
+        });
+
+        document.getElementById('btn-cancel-goal')?.addEventListener('click', () => {
+            goalModal.classList.add('opacity-0');
+            setTimeout(() => goalModal.classList.add('hidden'), 200);
+        });
+
+        document.getElementById('btn-save-goal')?.addEventListener('click', () => {
+            const val = goalInput.value.trim();
+            if (val) {
+                const current = this.app.store.getGoals();
+                if (this.editingGoalType === 'short') {
+                    this.app.store.saveGoals(val, current.longTerm);
+                } else {
+                    this.app.store.saveGoals(current.shortTerm, val);
+                }
+                this.renderGoals();
+                goalModal.classList.add('opacity-0');
+                setTimeout(() => goalModal.classList.add('hidden'), 200);
+            }
+        });
+
+        // Network Category Filters
+        document.querySelectorAll('#link-category-filter .filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('#link-category-filter .filter-btn').forEach(b => {
+                    b.className = "px-2.5 py-1 text-[10px] font-mono font-bold rounded bg-gray-900 text-gray-400 hover:text-white filter-btn";
+                });
+                btn.className = "px-2.5 py-1 text-[10px] font-mono font-bold rounded bg-yellow-400 text-black filter-btn active";
+                this.currentLinkCategory = btn.dataset.cat;
+                this.renderLinks();
+            });
+        });
+
+        // Add Network Link Modal
+        const linkModal = document.getElementById('add-link-modal');
+        document.getElementById('btn-add-link')?.addEventListener('click', () => {
+            linkModal.classList.remove('hidden');
+            setTimeout(() => linkModal.classList.remove('opacity-0'), 10);
+            document.getElementById('input-link-title').value = '';
+            document.getElementById('input-link-url').value = '';
+            document.getElementById('input-link-title').focus();
+        });
+
+        document.getElementById('btn-cancel-link')?.addEventListener('click', () => {
+            linkModal.classList.add('opacity-0');
+            setTimeout(() => linkModal.classList.add('hidden'), 200);
+        });
+
+        document.getElementById('btn-save-link')?.addEventListener('click', () => {
+            const title = document.getElementById('input-link-title').value.trim();
+            const url = document.getElementById('input-link-url').value.trim();
+            const cat = document.getElementById('input-link-cat').value;
+            if (title && url) {
+                this.app.store.addLink(title, cat, url);
+                this.renderLinks();
+                linkModal.classList.add('opacity-0');
+                setTimeout(() => linkModal.classList.add('hidden'), 200);
+            }
+        });
+
+        // Notification Permission Request
+        document.getElementById('btn-request-notify')?.addEventListener('click', () => {
+            this.requestNotificationPermission();
+        });
     }
 
+    /* ================= Mobile Swipe Gestures ================= */
+    bindGestures() {
+        const area = document.getElementById('main-content');
+        if (!area) return;
+
+        area.addEventListener('touchstart', (e) => {
+            this.touchStartX = e.touches[0].clientX;
+            this.touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        area.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const touchEndY = e.changedTouches[0].clientY;
+            const diffX = touchEndX - this.touchStartX;
+            const diffY = touchEndY - this.touchStartY;
+
+            // Horizontal swipe detected (threshold 45px, more horizontal than vertical)
+            if (Math.abs(diffX) > 45 && Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX < 0) {
+                    // Swiped Left -> Next Tab
+                    if (this.currentTabIndex < this.tabs.length - 1) {
+                        this.switchTabByIndex(this.currentTabIndex + 1, 'left');
+                    }
+                } else {
+                    // Swiped Right -> Prev Tab
+                    if (this.currentTabIndex > 0) {
+                        this.switchTabByIndex(this.currentTabIndex - 1, 'right');
+                    }
+                }
+            }
+        }, { passive: true });
+    }
+
+    switchTabByIndex(index, direction = 'right') {
+        if (index < 0 || index >= this.tabs.length) return;
+        this.currentTabIndex = index;
+        const targetViewId = this.tabs[index];
+
+        // Update Right Nav Bookmark styling
+        document.querySelectorAll('.nav-btn').forEach(b => {
+            const idx = parseInt(b.dataset.index, 10);
+            const indicator = b.querySelector('.indicator');
+            if (idx === index) {
+                b.classList.add('active');
+                indicator.classList.remove('opacity-0', 'scale-y-0');
+                indicator.classList.add('opacity-100', 'scale-y-100');
+            } else {
+                b.classList.remove('active');
+                indicator.classList.remove('opacity-100', 'scale-y-100');
+                indicator.classList.add('opacity-0', 'scale-y-0');
+            }
+        });
+
+        // Update Swipe Dots
+        document.querySelectorAll('.swipe-dot').forEach(dot => {
+            const idx = parseInt(dot.dataset.index, 10);
+            if (idx === index) {
+                dot.className = "swipe-dot active";
+            } else {
+                dot.className = "swipe-dot";
+            }
+        });
+
+        // Hide all views and show the active one with 3D animation
+        document.querySelectorAll('.view-section').forEach(sec => {
+            sec.classList.add('hidden');
+            sec.classList.remove('animate-swipe-left', 'animate-swipe-right');
+        });
+
+        const activeSec = document.getElementById(targetViewId);
+        activeSec.classList.remove('hidden');
+        
+        // Force Reflow
+        void activeSec.offsetWidth;
+
+        if (direction === 'left') {
+            activeSec.classList.add('animate-swipe-left');
+        } else {
+            activeSec.classList.add('animate-swipe-right');
+        }
+
+        // Lazy-render views on tab activation
+        if (targetViewId === 'view-info') {
+            this.renderStats();
+            this.renderGoals();
+        } else if (targetViewId === 'view-urls') {
+            this.renderLinks();
+        }
+    }
+
+    /* ================= Persona Visual Effects ================= */
     playIntroAnimation() {
         const overlay = document.getElementById('date-transition');
         const text = document.getElementById('transition-text');
-        
+        if (!overlay || !text) return;
+
         const now = new Date();
         const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
         text.innerText = `${days[now.getDay()]} ${now.getDate()}`;
-        
         text.classList.add('animate-persona');
-        
+
         setTimeout(() => {
             overlay.style.display = 'none';
-        }, 1500); // Wait for animation to finish
+        }, 1200);
     }
 
+    playSlashEffect(message) {
+        const overlay = document.getElementById('date-transition');
+        const text = document.getElementById('transition-text');
+        if (!overlay || !text) return;
+
+        overlay.style.display = 'flex';
+        text.className = 'font-bebas text-6xl md:text-8xl tracking-wider text-emerald-400 transform scale-150';
+        text.innerText = message;
+        text.classList.remove('animate-persona');
+        void text.offsetWidth;
+        text.classList.add('animate-persona');
+
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+        setTimeout(() => {
+            overlay.style.display = 'none';
+        }, 1100);
+    }
+
+    /* ================= Rendering Tasks ================= */
     renderTasks() {
         const list = document.getElementById('task-list');
-        const tasks = this.app.store.getTasks();
-        
+        if (!list) return;
+
+        let tasks = this.app.store.getTasks();
+
+        // Optional date filter from calendar
+        if (this.selectedDateFilter) {
+            tasks = tasks.filter(t => {
+                const d = new Date(t.time);
+                return d.getFullYear() === this.selectedDateFilter.getFullYear() &&
+                       d.getMonth() === this.selectedDateFilter.getMonth() &&
+                       d.getDate() === this.selectedDateFilter.getDate();
+            });
+        }
+
+        if (tasks.length === 0) {
+            list.innerHTML = `
+                <li class="p-8 text-center border border-dashed border-gray-900 rounded-lg">
+                    <p class="font-bebas text-2xl text-gray-700 tracking-wider">ALL OBJECTIVES CLEARED</p>
+                    <p class="text-xs text-gray-600 mt-1">Tap [+ New Objective] to engage a new directive.</p>
+                </li>
+            `;
+            return;
+        }
+
         list.innerHTML = tasks.map(task => {
-            const dateStr = new Date(task.time).toLocaleString('en-US', {
+            const taskDate = new Date(task.time);
+            const dateStr = taskDate.toLocaleString('en-US', {
                 month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
             });
-            const isPast = new Date(task.time) < new Date();
-            
+            const isPast = taskDate < new Date() && !task.completed;
+            const borderCol = task.completed ? 'border-emerald-600' : (isPast ? 'border-red-600' : (task.type === 'critical' ? 'border-red-500' : 'border-gray-700'));
+
             return `
-            <li class="task-card bg-gray-900 p-4 rounded flex flex-col justify-center group cursor-pointer border-l-4 ${isPast ? 'border-gray-800 opacity-50' : 'border-gray-600'}">
-                <div class="flex justify-between items-center w-full">
-                    <div>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest mb-1">${dateStr}</p>
-                        <h4 class="font-bold text-white group-hover:text-red-400 transition-colors text-sm">${task.title}</h4>
+            <li class="persona-card p-3 md:p-3.5 rounded flex items-center justify-between gap-3 ${task.completed ? 'task-completed' : ''}" style="border-left-width: 4px; border-left-color: ${task.completed ? '#10b981' : (isPast ? '#ef4444' : '#374151')}">
+                <div class="flex items-center gap-3 min-w-0 flex-1">
+                    <!-- Complete Checkbox -->
+                    <button class="w-5 h-5 rounded border ${task.completed ? 'bg-emerald-600 border-emerald-500 text-black' : 'border-gray-700 hover:border-red-500'} flex items-center justify-center shrink-0 transition-colors" onclick="app.ui.toggleTaskComplete('${task.id}')">
+                        ${task.completed ? '✓' : ''}
+                    </button>
+                    
+                    <div class="min-w-0 flex-1">
+                        <div class="flex items-center gap-2 mb-0.5">
+                            <span class="text-[10px] font-mono text-gray-500 font-bold uppercase tracking-wider">${dateStr}</span>
+                            ${task.delayCount > 0 ? `<span class="text-[9px] font-mono bg-yellow-950/80 border border-yellow-800 text-yellow-300 px-1 rounded">+${task.delayCount} DELAYS</span>` : ''}
+                            ${task.type === 'critical' ? `<span class="text-[9px] font-mono text-red-400 font-bold">!CRITICAL</span>` : ''}
+                        </div>
+                        <h4 class="task-title font-bold text-white text-sm truncate">${task.title}</h4>
                     </div>
-                    <button class="text-gray-600 hover:text-white transition-colors opacity-0 group-hover:opacity-100" onclick="app.store.deleteTask('${task.id}'); app.ui.renderTasks();">
+                </div>
+
+                <!-- Actions -->
+                <div class="flex items-center gap-1.5 shrink-0">
+                    <button class="text-gray-600 hover:text-red-500 p-1.5 transition-colors" title="Delete Directive" onclick="app.store.deleteTask('${task.id}'); app.ui.renderTasks(); app.ui.renderStats(); app.ui.renderCalendar();">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                     </button>
                 </div>
@@ -117,39 +435,231 @@ export class UI {
         `}).join('');
     }
 
+    toggleTaskComplete(id) {
+        const tasks = this.app.store.getTasks();
+        const task = tasks.find(t => t.id === id);
+        if (task) {
+            if (task.completed) {
+                this.app.store.uncompleteTask(id);
+            } else {
+                this.app.store.completeTask(id);
+                this.playSlashEffect('OBJECTIVE CLEARED');
+            }
+            this.renderTasks();
+            this.renderStats();
+            this.renderCalendar();
+        }
+    }
+
+    /* ================= Countdown & Clock ================= */
     updateCountdown(nextTask) {
         const titleEl = document.getElementById('next-task-title');
         const timerEl = document.getElementById('countdown-timer');
+        const delayActions = document.getElementById('delay-actions');
+        const targetStamp = document.getElementById('target-timestamp');
+        const liveClock = document.getElementById('live-clock');
+
+        // Update top-right live clock
+        const now = new Date();
+        liveClock.innerText = now.toTimeString().slice(0, 8);
 
         if (!nextTask) {
-            titleEl.innerText = 'STANDBY';
+            titleEl.innerText = 'ALL SYSTEMS CLEAR';
             timerEl.innerText = '00:00:00';
-            timerEl.className = 'font-bebas text-7xl text-gray-700 tracking-wider';
+            timerEl.className = 'font-bebas text-6xl md:text-7xl text-gray-700 tracking-wider leading-none';
+            targetStamp.innerText = 'TARGET: NONE';
+            delayActions.classList.add('hidden');
             return;
         }
 
+        delayActions.classList.remove('hidden');
         titleEl.innerText = nextTask.title;
-        
-        const now = new Date();
-        const target = new Date(nextTask.time);
-        const diffMs = Math.max(0, target - now);
+        targetStamp.innerText = `TARGET: ${new Date(nextTask.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`;
 
-        // Styling based on urgency
+        const target = new Date(nextTask.time);
+        const diffMs = target - now;
+
         if (diffMs <= 0) {
+            // Overdue
             timerEl.innerText = '00:00:00';
-            timerEl.className = 'font-bebas text-7xl text-red-500 tracking-wider shadow-none';
-            // Here we could trigger the push notification logic
+            timerEl.className = 'font-bebas text-6xl md:text-7xl text-red-500 tracking-wider glow-red leading-none animate-pulse';
+            
+            // Trigger emergency push notification once when reaching zero
+            if (!nextTask._alerted) {
+                this.triggerAlert(nextTask.title);
+                nextTask._alerted = true;
+            }
             return;
-        } else if (diffMs < 3600000) { // Less than 1 hour
-            timerEl.className = 'font-bebas text-7xl text-red-400 tracking-wider animate-pulse';
-        } else {
-            timerEl.className = 'font-bebas text-7xl text-yellow-400 tracking-wider shadow-yellow';
         }
 
-        const hours = Math.floor(diffMs / (1000 * 60 * 60));
-        const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+        const hours = Math.floor(diffMs / 3600000);
+        const minutes = Math.floor((diffMs % 3600000) / 60000);
+        const seconds = Math.floor((diffMs % 60000) / 1000);
 
         timerEl.innerText = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+
+        if (diffMs < 600000) { // Less than 10 mins
+            timerEl.className = 'font-bebas text-6xl md:text-7xl text-red-500 tracking-wider glow-red leading-none';
+        } else {
+            timerEl.className = 'font-bebas text-6xl md:text-7xl text-yellow-400 tracking-wider glow-yellow leading-none';
+        }
+    }
+
+    /* ================= Mini Calendar ================= */
+    renderCalendar() {
+        const grid = document.getElementById('cal-grid-days');
+        const monthTitle = document.getElementById('cal-month-title');
+        if (!grid || !monthTitle) return;
+
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth();
+        const monthNames = ['JANUARY', 'FEBRUARY', 'MARCH', 'APRIL', 'MAY', 'JUNE', 'JULY', 'AUGUST', 'SEPTEMBER', 'OCTOBER', 'NOVEMBER', 'DECEMBER'];
+        monthTitle.innerText = `${monthNames[month]} ${year}`;
+
+        const firstDayIndex = new Date(year, month, 1).getDay();
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
+        const tasks = this.app.store.getTasks();
+
+        let html = '';
+        for (let i = 0; i < firstDayIndex; i++) {
+            html += `<div class="cal-cell opacity-20 pointer-events-none"></div>`;
+        }
+
+        for (let day = 1; day <= daysInMonth; day++) {
+            const isToday = day === now.getDate();
+            const dateObj = new Date(year, month, day);
+            const hasTask = tasks.some(t => {
+                const td = new Date(t.time);
+                return td.getFullYear() === year && td.getMonth() === month && td.getDate() === day;
+            });
+            const isSelected = this.selectedDateFilter && this.selectedDateFilter.getDate() === day;
+
+            html += `
+                <div class="cal-cell ${isToday ? 'today' : ''} ${hasTask ? 'has-task' : ''} ${isSelected ? 'selected' : ''}" onclick="app.ui.filterDate(${year}, ${month}, ${day})">
+                    <span>${day}</span>
+                    ${hasTask ? '<div class="cal-dot"></div>' : ''}
+                </div>
+            `;
+        }
+
+        grid.innerHTML = html;
+    }
+
+    filterDate(year, month, day) {
+        if (this.selectedDateFilter && this.selectedDateFilter.getDate() === day) {
+            this.selectedDateFilter = null; // Unselect
+        } else {
+            this.selectedDateFilter = new Date(year, month, day);
+        }
+        this.renderCalendar();
+        this.renderTasks();
+    }
+
+    /* ================= Intelligence & ENTJ Stats ================= */
+    renderStats() {
+        const stats = this.app.store.getStats();
+        const rateEl = document.getElementById('stat-rate');
+        const delayedEl = document.getElementById('stat-delayed');
+        const completedEl = document.getElementById('stat-completed');
+        const rankEl = document.getElementById('rank-stamp-badge');
+
+        if (rateEl) rateEl.innerText = `${stats.completionRate}%`;
+        if (delayedEl) delayedEl.innerText = stats.totalDelays;
+        if (completedEl) completedEl.innerText = stats.completed;
+
+        if (rankEl) {
+            rankEl.className = `rank-stamp rank-${stats.grade.toLowerCase()}`;
+            rankEl.innerText = `RANK ${stats.grade}`;
+        }
+    }
+
+    renderGoals() {
+        const goals = this.app.store.getGoals();
+        const shortEl = document.getElementById('display-short-goal');
+        const longEl = document.getElementById('display-long-goal');
+        if (shortEl) shortEl.innerText = goals.shortTerm || 'No active directive set.';
+        if (longEl) longEl.innerText = goals.longTerm || 'No active directive set.';
+    }
+
+    /* ================= Network Portals ================= */
+    renderLinks() {
+        const list = document.getElementById('link-list');
+        if (!list) return;
+
+        let links = this.app.store.getLinks();
+        if (this.currentLinkCategory !== 'ALL') {
+            links = links.filter(l => l.category === this.currentLinkCategory);
+        }
+
+        if (links.length === 0) {
+            list.innerHTML = `
+                <div class="p-6 text-center text-xs text-gray-600 font-mono border border-dashed border-gray-900 rounded">
+                    NO PORTALS REGISTERED IN [${this.currentLinkCategory}].
+                </div>
+            `;
+            return;
+        }
+
+        list.innerHTML = links.map(link => `
+            <div class="persona-card p-3 rounded flex items-center justify-between border-l-4 border-yellow-500 group">
+                <a href="${link.url}" target="_blank" rel="noopener noreferrer" class="min-w-0 flex-1 block">
+                    <span class="text-[9px] font-mono text-yellow-400 font-bold uppercase tracking-wider block mb-0.5">${link.category}</span>
+                    <h4 class="font-bold text-white text-sm group-hover:text-yellow-300 transition-colors truncate">${link.title}</h4>
+                    <span class="text-[11px] font-mono text-gray-500 block truncate">${link.url}</span>
+                </a>
+                <button class="text-gray-600 hover:text-red-500 p-2 transition-colors" onclick="app.store.deleteLink('${link.id}'); app.ui.renderLinks();">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                </button>
+            </div>
+        `).join('');
+    }
+
+    /* ================= Push Notification Logic ================= */
+    initNotificationState() {
+        const badge = document.getElementById('notify-badge');
+        if (!badge) return;
+
+        if (!('Notification' in window)) {
+            badge.innerText = '🔔 PUSH: N/A';
+            return;
+        }
+
+        if (Notification.permission === 'granted') {
+            badge.innerText = '🔔 PUSH: ON';
+            badge.parentElement.classList.add('text-emerald-400');
+        } else {
+            badge.innerText = '🔔 PUSH: OFF';
+        }
+    }
+
+    requestNotificationPermission() {
+        if (!('Notification' in window)) {
+            alert('Notifications not supported by this browser.');
+            return;
+        }
+
+        Notification.requestPermission().then(permission => {
+            this.initNotificationState();
+            if (permission === 'granted') {
+                new Notification('CHRONOS ENGAGED', {
+                    body: 'Tactical notification protocol successfully authorized.',
+                    icon: 'icon-192.png'
+                });
+            }
+        });
+    }
+
+    triggerAlert(title) {
+        if ('Notification' in window && Notification.permission === 'granted') {
+            new Notification('⚡ CHRONOS // OBJECTIVE IMMINENT', {
+                body: `Directive expired or requires immediate action: ${title}`,
+                icon: 'icon-192.png',
+                requireInteraction: true
+            });
+        }
+        if (navigator.vibrate) {
+            navigator.vibrate([300, 100, 300, 100, 500]);
+        }
     }
 }

@@ -1,12 +1,36 @@
-/* Font imports handled in HTML */
+/* ===================================================
+   CHRONOS - PERSONA THEME SYSTEM
+   Ultra-High Contrast / Tactical Minimalist / Mobile-First
+   =================================================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap');
+
+:root {
+    --color-p-red: #ff1f3d;
+    --color-p-yellow: #facc15;
+    --color-p-blue: #38bdf8;
+    --color-p-purple: #a855f7;
+    --color-p-black: #08080a;
+    --color-p-card: #121318;
+}
+
+body {
+    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    background-color: var(--color-p-black);
+    color: #ffffff;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
 .font-bebas {
     font-family: 'Bebas Neue', cursive;
 }
-.font-sans {
-    font-family: 'Inter', sans-serif;
+
+.font-mono {
+    font-family: 'JetBrains Mono', monospace;
 }
 
-/* Hide Scrollbars for sleek look */
+/* Hide Scrollbars */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
@@ -15,66 +39,275 @@
     scrollbar-width: none;
 }
 
-/* Vertical Text for Side Tabs */
+/* Persona Halftone Background Pattern */
+.bg-halftone {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: 8px 8px;
+}
+
+/* Vertical Text for Navigation Bookmark */
 .vertical-text {
     writing-mode: vertical-rl;
     text-orientation: mixed;
     transform: rotate(180deg);
 }
 
-/* Tab Active State Indicators */
-.nav-btn.active .vertical-text {
-    color: white;
-}
-.nav-btn.active .indicator {
-    opacity: 1;
-    transform: scaleY(1) translateY(-50%);
+/* Persona Jagged / Skewed Clippings */
+.clip-persona-skew {
+    clip-path: polygon(6% 0%, 100% 0%, 94% 100%, 0% 100%);
 }
 
-/* Persona 4/5 Inspired Slash Animation */
+.clip-badge {
+    clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+}
+
+.clip-slash {
+    clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
+}
+
+/* Custom Persona Buttons */
+.persona-btn {
+    position: relative;
+    background: #000;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    padding: 0.5rem 0.9rem;
+    border: 2px solid #fff;
+    clip-path: polygon(10% 0, 100% 0, 90% 100%, 0% 100%);
+    transition: all 0.18s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+}
+
+.persona-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -120%;
+    width: 120%;
+    height: 100%;
+    background: var(--color-p-red);
+    transition: left 0.25s ease;
+    z-index: -1;
+    transform: skewX(-20deg);
+}
+
+.persona-btn:hover {
+    color: #000;
+    border-color: var(--color-p-red);
+    transform: scale(1.05) rotate(-1.5deg);
+    box-shadow: 3px 3px 0 #fff;
+}
+
+.persona-btn:hover::before {
+    left: -10%;
+}
+
+.persona-btn:active {
+    transform: scale(0.96);
+}
+
+/* Blue & Yellow variants */
+.persona-btn.btn-blue::before {
+    background: var(--color-p-blue);
+}
+.persona-btn.btn-blue:hover {
+    border-color: var(--color-p-blue);
+}
+
+.persona-btn.btn-yellow::before {
+    background: var(--color-p-yellow);
+}
+.persona-btn.btn-yellow:hover {
+    border-color: var(--color-p-yellow);
+}
+
+.persona-btn.btn-done {
+    border-color: #22c55e;
+    color: #22c55e;
+}
+.persona-btn.btn-done::before {
+    background: #22c55e;
+}
+.persona-btn.btn-done:hover {
+    color: #000;
+}
+
+/* Card Styling */
+.persona-card {
+    background: var(--color-p-card);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: relative;
+    transition: transform 0.2s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.2s;
+}
+
+.persona-card:hover {
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-2px);
+}
+
+.persona-card-active {
+    border-left: 4px solid var(--color-p-red);
+    background: linear-gradient(90deg, rgba(255, 31, 61, 0.08) 0%, rgba(18, 19, 24, 0.95) 100%);
+}
+
+/* Task Completed Strikethrough */
+.task-completed {
+    opacity: 0.45;
+    filter: grayscale(0.8);
+}
+.task-completed .task-title {
+    text-decoration: line-through;
+    color: #9ca3af;
+}
+
+/* Persona 4/5 Slash Animation */
 @keyframes persona-slash {
-    0% { transform: scale(1.5) rotate(-5deg); opacity: 0; filter: blur(10px); }
-    20% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0px); text-shadow: 4px 4px 0px #ef4444; }
-    80% { transform: scale(1.05) rotate(0deg); opacity: 1; text-shadow: -4px 4px 0px #3b82f6; }
-    100% { transform: scale(1.5) rotate(5deg); opacity: 0; filter: blur(10px); }
+    0% { transform: scale(1.6) rotate(-7deg); opacity: 0; filter: blur(12px); }
+    25% { transform: scale(1) rotate(0deg); opacity: 1; filter: blur(0px); text-shadow: 6px 6px 0px var(--color-p-red); }
+    75% { transform: scale(1.04) rotate(0deg); opacity: 1; text-shadow: -6px 6px 0px var(--color-p-blue); }
+    100% { transform: scale(1.7) rotate(7deg); opacity: 0; filter: blur(12px); }
 }
 
 .animate-persona {
-    animation: persona-slash 1.5s cubic-bezier(0.19, 1, 0.22, 1) forwards;
+    animation: persona-slash 1.2s cubic-bezier(0.19, 1, 0.22, 1) forwards;
 }
 
-/* Custom glow */
-.shadow-yellow {
-    text-shadow: 0 0 15px rgba(250, 204, 21, 0.4);
+/* Persona View Transition (3D Slash Swipe) */
+@keyframes swipeInLeft {
+    0% { transform: perspective(800px) rotateY(-35deg) translateX(-30%); opacity: 0; }
+    100% { transform: perspective(800px) rotateY(0deg) translateX(0); opacity: 1; }
 }
 
-/* Task Card Hover FX */
-.task-card {
+@keyframes swipeInRight {
+    0% { transform: perspective(800px) rotateY(35deg) translateX(30%); opacity: 0; }
+    100% { transform: perspective(800px) rotateY(0deg) translateX(0); opacity: 1; }
+}
+
+.animate-swipe-left {
+    animation: swipeInLeft 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1) forwards;
+}
+
+.animate-swipe-right {
+    animation: swipeInRight 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.1) forwards;
+}
+
+/* Glowing Neon Elements */
+.glow-yellow {
+    text-shadow: 0 0 18px rgba(250, 204, 21, 0.5), 0 0 32px rgba(250, 204, 21, 0.25);
+}
+
+.glow-red {
+    text-shadow: 0 0 18px rgba(255, 31, 61, 0.6), 0 0 35px rgba(255, 31, 61, 0.35);
+}
+
+/* Rank S / A / B / C Persona Style Stamp */
+.rank-stamp {
+    font-family: 'Bebas Neue', cursive;
+    font-size: 3.5rem;
+    line-height: 1;
+    display: inline-block;
+    padding: 0.2rem 0.8rem;
+    border: 3px solid;
+    transform: rotate(-10deg);
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.8);
+}
+.rank-s {
+    color: var(--color-p-yellow);
+    border-color: var(--color-p-yellow);
+    text-shadow: 0 0 12px rgba(250, 204, 21, 0.6);
+}
+.rank-a {
+    color: var(--color-p-blue);
+    border-color: var(--color-p-blue);
+}
+.rank-b {
+    color: #ffffff;
+    border-color: #ffffff;
+}
+.rank-c {
+    color: var(--color-p-red);
+    border-color: var(--color-p-red);
+}
+
+/* Calendar Grid Styling */
+.cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+.cal-cell {
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
     position: relative;
-    overflow: hidden;
-    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(18, 19, 24, 0.7);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s ease;
 }
-.task-card::before {
+.cal-cell:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--color-p-yellow);
+}
+.cal-cell.today {
+    border-color: var(--color-p-red);
+    color: #fff;
+    font-weight: 700;
+}
+.cal-cell.today::after {
     content: '';
     position: absolute;
-    left: 0;
-    top: 0;
-    height: 100%;
+    top: 2px;
+    right: 2px;
     width: 4px;
-    background: #374151;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    height: 4px;
+    background: var(--color-p-red);
+    border-radius: 50%;
 }
-.task-card:hover::before {
-    width: 100%;
-    opacity: 0.05;
-    background: #ef4444;
+.cal-cell.has-task .cal-dot {
+    width: 4px;
+    height: 4px;
+    background: var(--color-p-yellow);
+    border-radius: 50%;
+    margin-top: 2px;
+}
+.cal-cell.selected {
+    background: var(--color-p-red);
+    color: #000;
+    font-weight: 900;
 }
 
-/* Fade in for views */
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+/* Swipe Indicator Pill at bottom */
+.swipe-pill {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 6px;
+    z-index: 30;
 }
-.animate-fade-in {
-    animation: fadeIn 0.3s ease-out forwards;
+.swipe-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4b5563;
+    transition: all 0.3s ease;
+}
+.swipe-dot.active {
+    width: 16px;
+    border-radius: 3px;
+    background: var(--color-p-red);
 }

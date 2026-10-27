@@ -15,32 +15,47 @@ class ChronosApp {
     }
 
     init() {
-        // Mock data insertion for first boot
+        // Mock data insertion for first boot if store is completely empty
         if (this.store.getTasks().length === 0) {
             const tmr = new Date();
             tmr.setHours(tmr.getHours() + 2); // Next task in 2 hours
             
             this.store.addTask({
-                id: Date.now().toString(),
-                title: 'Review Prototype System',
+                title: 'Review Tactical Architecture & PWA Cache',
                 time: tmr.toISOString(),
                 type: 'critical'
+            });
+
+            const later = new Date();
+            later.setHours(later.getHours() + 6);
+            this.store.addTask({
+                title: 'Verify ENTJ Productivity Protocol',
+                time: later.toISOString(),
+                type: 'normal'
             });
         }
         
         // Boot Sequence
         this.ui.playIntroAnimation();
         this.ui.renderTasks();
+        this.ui.renderCalendar();
+        this.ui.renderStats();
+        this.ui.renderGoals();
+        this.ui.renderLinks();
         this.startTimer();
     }
 
     startTimer() {
-        if(this.timerInterval) clearInterval(this.timerInterval);
+        if (this.timerInterval) clearInterval(this.timerInterval);
         
-        // Ticks every second to update the massive countdown
+        // Immediate first tick
+        const nextTask = this.store.getNextTask();
+        this.ui.updateCountdown(nextTask);
+
+        // Ticks every second to update countdown & real-time clock
         this.timerInterval = setInterval(() => {
-            const nextTask = this.store.getNextTask();
-            this.ui.updateCountdown(nextTask);
+            const task = this.store.getNextTask();
+            this.ui.updateCountdown(task);
         }, 1000);
     }
 }
