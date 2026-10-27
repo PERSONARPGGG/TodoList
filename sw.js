@@ -1,19 +1,20 @@
-const CACHE_NAME = 'chronos-v0.2.0';
+const CACHE_NAME = 'chronos-v0.4.0-kinetic';
 const ASSETS = [
     './',
     './index.html',
     './style.css',
     './manifest.json',
+    './icon.svg',
     './js/main.js',
     './js/store.js',
     './js/ui.js'
 ];
 
 self.addEventListener('install', event => {
+    self.skipWaiting();
     event.waitUntil(
         caches.open(CACHE_NAME)
         .then(cache => cache.addAll(ASSETS))
-        .then(() => self.skipWaiting())
     );
 });
 
@@ -28,8 +29,14 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', event => {
+    // Network-first for development smoothness, fallback to cache
     event.respondWith(
-        caches.match(event.request)
-        .then(response => response || fetch(event.request).catch(() => caches.match('./index.html')))
+        fetch(event.request)
+        .then(response => {
+            const clone = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(event.request, clone));
+            return response;
+        })
+        .catch(() => caches.match(event.request))
     );
 });

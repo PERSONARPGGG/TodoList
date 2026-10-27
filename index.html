@@ -6,7 +6,7 @@
     <title>CHRONOS // Tactical Objective Protocol</title>
     <!-- Tailwind CSS (Rapid Architecture) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=0.4.0">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#ff1f3d">
@@ -25,13 +25,13 @@
     <main class="h-screen w-screen flex relative overflow-hidden" id="app-container">
         
         <!-- Central Content Area (Takes Gestures) -->
-        <div class="flex-1 flex flex-col p-3.5 md:p-6 h-full relative z-10 overflow-hidden" id="main-content">
+        <div class="flex-1 flex flex-col p-3 md:p-6 h-full relative z-10 overflow-hidden" id="main-content">
             
             <!-- System Top Status Bar -->
             <div class="flex justify-between items-center text-[10px] font-mono tracking-widest uppercase text-gray-400 border-b border-gray-900 pb-2 mb-2">
                 <div class="flex items-center gap-2">
                     <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span id="system-status">SYS: ONLINE // 120Hz OPT</span>
+                    <span id="system-status">SYS: ONLINE // v0.4.0 KINETIC</span>
                 </div>
                 <div class="flex items-center gap-3">
                     <button id="btn-request-notify" class="hover:text-red-400 transition-colors flex items-center gap-1 cursor-pointer">
@@ -41,13 +41,13 @@
                 </div>
             </div>
 
-            <!-- Focus Objective Widget (Hero Persona Box with Gauge) -->
+            <!-- Focus Objective Widget (Hero Persona Box with Cyber Hourglass) -->
             <header class="mb-3 relative p-3.5 md:p-4 rounded-lg hero-countdown-box shrink-0">
                 <div class="absolute left-0 top-0 w-2 h-full bg-red-600 clip-tag"></div>
                 <div class="flex justify-between items-start mb-1">
-                    <span class="text-red-500 font-bold tracking-widest uppercase text-[11px] flex items-center gap-1">
+                    <span class="text-red-500 font-bold tracking-widest uppercase text-[11px] flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 bg-red-500 inline-block rotate-45"></span>
-                        PRIME DIRECTIVE
+                        <span class="shine-badge font-black">PRIME DIRECTIVE</span>
                     </span>
                     <div class="flex items-center gap-1.5">
                         <span id="task-badge-time-left" class="text-[9px] font-mono uppercase bg-yellow-950/80 border border-yellow-700 text-yellow-300 px-1.5 py-0.5 rounded font-black">IN 0H 0M</span>
@@ -55,14 +55,38 @@
                     </div>
                 </div>
                 
-                <h2 id="next-task-title" class="text-xl md:text-2xl font-black leading-tight mb-2 truncate text-white tracking-tight">STANDBY</h2>
+                <!-- Fluid Title with 3D Persona Chromatic Aberration -->
+                <h2 id="next-task-title" class="fluid-hero-title text-white tracking-tight mb-2 truncate max-w-full">STANDBY</h2>
                 
-                <!-- Mega Persona Countdown (Seconds) -->
-                <div class="flex items-baseline justify-between flex-wrap gap-2 mb-2">
-                    <div class="font-bebas text-5xl md:text-6xl text-yellow-400 tracking-wider glow-yellow leading-none animate-timer-beat" id="countdown-timer">
-                        00:00:00
+                <!-- Timer Row: Cyber Hourglass + Mega Fluid Timer + Target Info -->
+                <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
+                    <div class="flex items-center gap-3">
+                        <!-- Cyber Hourglass Interactive SVG -->
+                        <div id="cyber-hourglass" class="cyber-hourglass-box" title="Tap to spin temporal engine">
+                            <svg class="cyber-hourglass-svg" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Top Frame -->
+                                <polygon points="10,10 90,10 80,22 20,22" fill="#20222e" stroke="#ff1f3d" stroke-width="3"/>
+                                <!-- Bottom Frame -->
+                                <polygon points="10,110 90,110 80,98 20,98" fill="#20222e" stroke="#ff1f3d" stroke-width="3"/>
+                                <!-- Glass Chambers -->
+                                <polygon points="20,22 80,22 55,60 45,60" fill="rgba(250, 204, 21, 0.08)" stroke="#facc15" stroke-width="2"/>
+                                <polygon points="45,60 55,60 80,98 20,98" fill="rgba(250, 204, 21, 0.08)" stroke="#facc15" stroke-width="2"/>
+                                <!-- Top Chamber Sand -->
+                                <polygon points="28,32 72,32 50,56" fill="#facc15"/>
+                                <!-- Center Dropping Sand Stream -->
+                                <line x1="50" y1="58" x2="50" y2="78" stroke="#facc15" stroke-width="3.5" stroke-linecap="round" class="sand-stream"/>
+                                <!-- Bottom Chamber Accumulated Sand -->
+                                <polygon points="35,96 65,96 50,82" fill="#facc15"/>
+                            </svg>
+                        </div>
+
+                        <!-- Fluid Kinetic Timer -->
+                        <div class="font-bebas fluid-timer-text text-yellow-400 tracking-wider glow-yellow leading-none animate-timer-beat" id="countdown-timer">
+                            00:00:00
+                        </div>
                     </div>
-                    <div class="text-right">
+
+                    <div class="text-right ml-auto">
                         <div id="target-timestamp" class="text-[11px] font-mono text-gray-400 font-bold">TARGET: NONE</div>
                         <div id="gauge-percent" class="text-[9px] font-mono text-yellow-400 font-bold">RESOURCES: 100%</div>
                     </div>
@@ -102,7 +126,7 @@
                     <!-- Fast Natural Language Command Bar -->
                     <form id="form-quick-cmd" class="mb-2.5 shrink-0">
                         <div class="quick-cmd-bar flex items-center px-3 py-1.5 rounded">
-                            <span class="text-red-500 font-mono font-black text-xs mr-2">▶</span>
+                            <span class="text-red-500 font-mono font-black text-xs mr-2 animate-pulse">▶</span>
                             <input type="text" id="input-quick-cmd" placeholder="Quick Engage (e.g. 매일 08:00 브리핑, 30분 뒤 검토)" class="quick-cmd-input w-full bg-transparent text-white text-xs outline-none placeholder-gray-600 font-medium">
                             <button type="submit" class="persona-btn text-[10px] py-1 px-2.5 shrink-0 ml-1">ENGAGE</button>
                         </div>
@@ -366,12 +390,15 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('SW Registered:', reg.scope))
+                navigator.serviceWorker.register('./sw.js?v=0.4.0')
+                .then(reg => {
+                    console.log('SW Registered:', reg.scope);
+                    reg.update(); // Force immediate background check
+                })
                 .catch(err => console.error('SW Error:', err));
             });
         }
     </script>
-    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/main.js?v=0.4.0"></script>
 </body>
 </html>

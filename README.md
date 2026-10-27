@@ -1,4 +1,4 @@
-# ⚡️ CHRONOS // Tactical Objective Protocol (v0.3.5 Optimized)
+# ⚡️ CHRONOS // Tactical Objective Protocol (v0.4.0 Kinetic Master)
 
 ## 🤖 Dedicated AI Agents & Governance
 1. `persona-stylist`: Motion director for Persona 4/5 comic-book panels, skewed angles, and kinetic 3D micro-animations.
@@ -8,13 +8,20 @@
 
 ---
 
-### 🚀 Core Architecture & Optimizations (v0.3.5)
-- **120Hz Mobile Ready & GPU Accelerated**:
-  - `will-change: transform` and `translate3d` applied to all dynamic components, card elevations, and blade slash swipes.
-  - `tabular-nums` enforced across all timers and timestamps to eliminate typography jitter and Cumulative Layout Shift (CLS).
-- **Event Delegation**:
-  - Directives list operates through single event delegation (`data-action="toggle-complete"`, `data-action="delete-task"`), minimizing memory footprint and DOM recreation overhead.
-- **Visual Time Resource Gauge**:
+### 🚀 Core Architecture & Kinetic Innovations (v0.4.0)
+- **Cyber Hourglass (Interactive Temporal Engine)**:
+  - Custom vector-rendered cyberpunk hourglass with animated dropping sand stream (`.sand-stream`).
+  - Interactive 180-degree 3D spin on tap with kinetic feedback.
+  - Urgent quake warning (`.hourglass-urgent`) when time falls under 10 minutes or expires.
+- **Fluid & Kinetic Typography**:
+  - `clamp()` responsive fluid typography scaling seamlessly without JavaScript resize reflows.
+  - Persona chromatic 3D split text shadows on titles and cards (Red/Cyan offset).
+  - Sweeping scanline shine animation on directive badges (`.shine-badge`).
+- **High-Performance PWA Architecture**:
+  - Network-first caching strategy with instant service worker update check (`sw.js?v=0.4.0`).
+  - Zero CLS (Cumulative Layout Shift) with `tabular-nums`.
+  - Event delegation across all directive actions (`data-action="toggle-complete"`, `data-action="delete-task"`).
+- **Time Resource Gauge Bar**:
   - Real-time animated progress bar reflecting resource exhaustion percentage.
   - Relative temporal badges: `IN 45M`, `IN 2H 10M`, `OVERDUE`, `CLEARED`.
 - **Vertical Neon Timeline**:

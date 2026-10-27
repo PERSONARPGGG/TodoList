@@ -27,6 +27,13 @@ export class UI {
     }
 
     bindEvents() {
+        // Cyber Hourglass Temporal Interaction
+        const hourglass = document.getElementById('cyber-hourglass');
+        hourglass?.addEventListener('click', () => {
+            hourglass.classList.toggle('flip');
+            this.playSlashEffect('TEMPORAL SHIFT');
+        });
+
         // Fast Command Bar Submission (Natural Language Parser)
         const quickForm = document.getElementById('form-quick-cmd');
         const quickInput = document.getElementById('input-quick-cmd');
@@ -610,11 +617,14 @@ export class UI {
         const now = new Date();
         liveClock.innerText = now.toTimeString().slice(0, 8);
 
+        const hourglass = document.getElementById('cyber-hourglass');
+
         if (!nextTask) {
             titleEl.innerText = 'ALL DIRECTIVES COMPLETE';
             timerEl.innerText = '00:00:00';
-            timerEl.className = 'font-bebas text-5xl md:text-6xl text-gray-700 tracking-wider leading-none';
+            timerEl.className = 'font-bebas fluid-timer-text text-gray-700 tracking-wider leading-none';
             targetStamp.innerText = 'TARGET: NONE';
+            hourglass?.classList.remove('hourglass-urgent');
             if (badgeTimeLeft) badgeTimeLeft.innerText = 'STANDBY';
             if (gaugeFill) gaugeFill.style.width = '0%';
             if (gaugePercent) gaugePercent.innerText = 'RESOURCES: 0%';
@@ -631,7 +641,8 @@ export class UI {
 
         if (diffMs <= 0) {
             timerEl.innerText = '00:00:00';
-            timerEl.className = 'font-bebas text-5xl md:text-6xl text-red-500 tracking-wider glow-red leading-none animate-pulse';
+            timerEl.className = 'font-bebas fluid-timer-text text-red-500 tracking-wider glow-red leading-none animate-pulse';
+            hourglass?.classList.add('hourglass-urgent');
             if (badgeTimeLeft) {
                 badgeTimeLeft.className = "text-[9px] font-mono uppercase bg-red-950/90 border border-red-700 text-red-300 px-1.5 py-0.5 rounded font-black animate-pulse";
                 badgeTimeLeft.innerText = 'OVERDUE';
@@ -664,9 +675,11 @@ export class UI {
         if (gaugePercent) gaugePercent.innerText = `RESOURCES: ${remainingPct}% REMAINING`;
 
         if (diffMs < 600000) { // Less than 10 mins
-            timerEl.className = 'font-bebas text-5xl md:text-6xl text-red-500 tracking-wider glow-red leading-none animate-timer-beat';
+            timerEl.className = 'font-bebas fluid-timer-text text-red-500 tracking-wider glow-red leading-none animate-timer-beat';
+            hourglass?.classList.add('hourglass-urgent');
         } else {
-            timerEl.className = 'font-bebas text-5xl md:text-6xl text-yellow-400 tracking-wider glow-yellow leading-none animate-timer-beat';
+            timerEl.className = 'font-bebas fluid-timer-text text-yellow-400 tracking-wider glow-yellow leading-none animate-timer-beat';
+            hourglass?.classList.remove('hourglass-urgent');
         }
     }
 
