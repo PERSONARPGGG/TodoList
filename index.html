@@ -2,14 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>CHRONOS // Tactical Protocol</title>
     <!-- Tailwind CSS (Rapid Architecture) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css?v=0.5.0">
+    <link rel="stylesheet" href="style.css?v=0.5.2">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon.svg">
 </head>
 <body class="bg-black text-white font-sans overflow-hidden antialiased selection:bg-red-600 bg-persona-dynamic">
     
@@ -52,9 +55,9 @@
             <!-- Focus Objective Widget (Hero Box with Calm Cyber Hourglass) -->
             <header class="mb-2.5 relative p-3 md:p-4 rounded-lg hero-countdown-box shrink-0">
                 <div class="flex justify-between items-start mb-1">
-                    <span class="text-red-500 font-bold tracking-widest uppercase text-[11px] flex items-center gap-1.5" id="label-prime-directive">
+                    <span class="text-red-500 font-bold tracking-widest uppercase text-[11px] flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 bg-red-500 inline-block rotate-45"></span>
-                        PRIME DIRECTIVE
+                        <span id="label-prime-directive">PRIME DIRECTIVE</span>
                     </span>
                     <div class="flex items-center gap-1.5">
                         <span id="task-badge-time-left" class="text-[9px] font-mono uppercase bg-yellow-950/80 border border-yellow-700 text-yellow-300 px-1.5 py-0.5 rounded font-black">IN 0H 0M</span>
@@ -69,7 +72,7 @@
                 <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
                     <div class="flex items-center gap-3">
                         <!-- Cyber Hourglass Interactive SVG (Calm, No Jitter) -->
-                        <div id="cyber-hourglass" class="cyber-hourglass-box" title="Tap to flip temporal engine">
+                        <div id="cyber-hourglass" class="cyber-hourglass-box" role="button" tabindex="0" aria-label="Flip hourglass" title="Tap to flip temporal engine">
                             <svg class="cyber-hourglass-svg" viewBox="0 0 100 120" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <polygon points="10,10 90,10 80,22 20,22" fill="#151722" stroke="#ff1f3d" stroke-width="3"/>
                                 <polygon points="10,110 90,110 80,98 20,98" fill="#151722" stroke="#ff1f3d" stroke-width="3"/>
@@ -128,7 +131,7 @@
                     <form id="form-quick-cmd" class="mb-2.5 shrink-0">
                         <div class="chronos-cmd-bar">
                             <span class="text-red-500 font-mono font-black text-xs mr-2">▶</span>
-                            <input type="text" id="input-quick-cmd" placeholder="Quick Engage (e.g. Daily 08:00 Briefing, +30m review)" class="chronos-input">
+                            <input type="text" id="input-quick-cmd" aria-label="Quick add" autocomplete="off" enterkeyhint="send" placeholder="Quick Engage (e.g. Daily 08:00 Briefing, +30m review)" class="chronos-input">
                             <button type="submit" class="persona-btn text-[10px] py-1 px-2.5 shrink-0 ml-1.5" id="btn-quick-engage">ENGAGE</button>
                         </div>
                     </form>
@@ -161,7 +164,7 @@
                             <h4 id="cal-month-title" class="font-bold text-sm tracking-wide text-yellow-400 font-mono">OCTOBER 2026</h4>
                             <button id="btn-cal-next" class="text-gray-400 hover:text-white text-xs font-mono px-2 py-1 bg-gray-900 rounded">NEXT ▶</button>
                         </div>
-                        <div class="grid grid-cols-7 gap-1 text-center font-mono text-[10px] text-gray-500 mb-1">
+                        <div id="cal-weekdays" class="grid grid-cols-7 gap-1 text-center font-mono text-[10px] text-gray-500 mb-1">
                             <span class="text-red-500">SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span class="text-blue-400">SAT</span>
                         </div>
                         <div id="cal-grid-days" class="cal-grid">
@@ -265,7 +268,7 @@
             </div>
 
             <!-- Mobile Swipe Gesture Hint Dots -->
-            <div class="swipe-pill">
+            <div class="swipe-pill" aria-hidden="true">
                 <div class="swipe-dot active" data-index="0"></div>
                 <div class="swipe-dot" data-index="1"></div>
                 <div class="swipe-dot" data-index="2"></div>
@@ -297,20 +300,20 @@
     </main>
 
     <!-- Modal 1: Detailed Add Objective -->
-    <div id="add-modal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
+    <div id="add-modal" role="dialog" aria-modal="true" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
         <div class="w-full max-w-md bg-black border border-red-600/70 p-6 shadow-2xl relative rounded-lg">
-            <h2 class="text-base font-bold uppercase mb-4 text-white tracking-wider flex items-center gap-2" id="modal-add-title">
-                <span class="text-red-500">▶</span> Deploy Detailed Directive
+            <h2 class="text-base font-bold uppercase mb-4 text-white tracking-wider flex items-center gap-2">
+                <span class="text-red-500" aria-hidden="true">▶</span> <span id="modal-add-title">Deploy Detailed Directive</span>
             </h2>
             
             <div class="space-y-3.5">
                 <div>
-                    <label class="block text-[10px] font-mono text-gray-400 uppercase mb-1" id="label-modal-title">Directive Title</label>
+                    <label class="block text-[10px] font-mono text-gray-400 uppercase mb-1" for="input-task" id="label-modal-title">Directive Title</label>
                     <input type="text" id="input-task" placeholder="e.g. Sync Vercel Deployment" class="chronos-modal-input">
                 </div>
                 
                 <div>
-                    <label class="block text-[10px] font-mono text-gray-400 uppercase mb-1" id="label-modal-target">Target Time</label>
+                    <label class="block text-[10px] font-mono text-gray-400 uppercase mb-1" for="input-time" id="label-modal-target">Target Time</label>
                     <input type="datetime-local" id="input-time" class="chronos-modal-input">
                 </div>
 
@@ -320,7 +323,7 @@
                 </div>
 
                 <div>
-                    <label class="block text-[10px] font-mono text-gray-400 uppercase mb-1" id="label-modal-priority">Priority Tier</label>
+                    <label class="block text-[10px] font-mono text-gray-400 uppercase mb-1" for="input-priority" id="label-modal-priority">Priority Tier</label>
                     <select id="input-priority" class="chronos-modal-input">
                         <option value="critical">CRITICAL (Red Alert)</option>
                         <option value="normal" selected>STANDARD (Routine)</option>
@@ -337,7 +340,7 @@
     </div>
 
     <!-- Modal 2: Custom Delay Time -->
-    <div id="delay-custom-modal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
+    <div id="delay-custom-modal" role="dialog" aria-modal="true" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
         <div class="w-full max-w-sm bg-black border border-yellow-500/60 p-6 shadow-2xl relative rounded-lg">
             <h3 class="text-sm font-bold uppercase mb-4 text-yellow-400 tracking-wider" id="modal-delay-title">Tactical Reschedule</h3>
             <p class="text-xs text-gray-400 mb-3" id="modal-delay-sub">Postpone target by specified minutes:</p>
@@ -353,7 +356,7 @@
     </div>
 
     <!-- Modal 3: Add Network Portal -->
-    <div id="add-link-modal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
+    <div id="add-link-modal" role="dialog" aria-modal="true" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
         <div class="w-full max-w-md bg-black border border-yellow-500/60 p-6 shadow-2xl relative rounded-lg">
             <h3 class="text-sm font-bold uppercase mb-4 text-yellow-400 tracking-wider" id="modal-portal-title">Register Network Portal</h3>
             <div class="space-y-3">
@@ -374,7 +377,7 @@
     </div>
 
     <!-- Modal 4: Edit Goal Directive -->
-    <div id="edit-goal-modal" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
+    <div id="edit-goal-modal" role="dialog" aria-modal="true" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
         <div class="w-full max-w-md bg-black border border-blue-500/60 p-6 shadow-2xl relative rounded-lg">
             <h3 id="edit-goal-title" class="text-sm font-bold uppercase mb-4 text-blue-400 tracking-wider">Update Directive</h3>
             <textarea id="input-goal-text" rows="3" class="chronos-modal-input resize-none"></textarea>
@@ -385,14 +388,6 @@
         </div>
     </div>
 
-    <!-- Purge Old Service Worker Cache for Instant Freshness -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(regs => {
-                for (let r of regs) r.update();
-            });
-        }
-    </script>
-    <script type="module" src="js/main.js?v=0.5.0"></script>
+    <script type="module" src="js/main.js?v=0.5.2"></script>
 </body>
 </html>

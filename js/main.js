@@ -1,66 +1,73 @@
+/**
+ * Entry point: wires Store (data) + UI (view), runs the 1s clock, registers the service worker.
+ * Nothing is attached to `window` — modules talk through imports only.
+ */
+import { STORAGE_KEYS } from './config.js';
+import { has, writeString } from './data/storage.js';
 import { Store } from './store.js';
 import { UI } from './ui.js';
 
-/**
- * Main Application Orchestrator
- * STRICT MODULARITY: Logic is isolated here, Data in store.js, View in ui.js.
- */
-class ChronosApp {
+export class ChronosApp {
     constructor() {
         this.store = new Store();
         this.ui = new UI(this);
-        
         this.timerInterval = null;
-        this.init();
+        this.onVisibilityChange = () => {
+            if (document.visibilityState === 'visible') this.ui.refresh();
+        };
     }
 
-    init() {
-        // Mock data insertion for first boot if store is completely empty
-        if (this.store.getTasks().length === 0) {
-            const tmr = new Date();
-            tmr.setHours(tmr.getHours() + 2); // Next task in 2 hours
-            
-            this.store.addTask({
-                title: 'Review Tactical Architecture & PWA Cache',
-                time: tmr.toISOString(),
-                type: 'critical'
-            });
-
-            const later = new Date();
-            later.setHours(later.getHours() + 6);
-            this.store.addTask({
-                title: 'Verify ENTJ Productivity Protocol',
-                time: later.toISOString(),
-                type: 'normal'
-            });
-        }
-        
-        // Boot Sequence
+    start() {
+        this.seedOnce();
         this.ui.playIntroAnimation();
-        this.ui.renderTasks();
-        this.ui.renderCalendar();
-        this.ui.renderStats();
-        this.ui.renderGoals();
-        this.ui.renderLinks();
+        this.ui.renderAll();
         this.startTimer();
+
+        // Timers are throttled in background tabs; resync immediately when the user returns.
+        document.removeEventListener('visibilitychange', this.onVisibilityChange);
+        document.addEventListener('visibilitychange', this.onVisibilityChange);
+        return this;
+    }
+
+    /** Sample data only on the very first boot — not every time the list becomes empty. */
+    seedOnce() {
+        if (has(STORAGE_KEYS.seeded)) return;
+        writeString(STORAGE_KEYS.seeded, '1');
+        if (this.store.getTasks().length > 0) return;
+
+        const soon = new Date();
+        soon.setHours(soon.getHours() + 2);
+        this.store.addTask({ title: 'Review Tactical Architecture & PWA Cache', time: soon.toISOString(), type: 'critical' });
+
+        const later = new Date();
+        later.setHours(later.getHours() + 6);
+        this.store.addTask({ title: 'Verify ENTJ Productivity Protocol', time: later.toISOString(), type: 'normal' });
+    }
+
+    tick() {
+        this.ui.updateCountdown(this.store.getNextTask());
     }
 
     startTimer() {
-        if (this.timerInterval) clearInterval(this.timerInterval);
-        
-        // Immediate first tick
-        const nextTask = this.store.getNextTask();
-        this.ui.updateCountdown(nextTask);
+        clearInterval(this.timerInterval);
+        this.tick();
+        this.timerInterval = setInterval(() => this.tick(), 1000);
+    }
 
-        // Ticks every second to update countdown & real-time clock
-        this.timerInterval = setInterval(() => {
-            const task = this.store.getNextTask();
-            this.ui.updateCountdown(task);
-        }, 1000);
+    stop() {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+        document.removeEventListener('visibilitychange', this.onVisibilityChange);
     }
 }
 
-// Ensure DOM is ready, then boot the system.
-document.addEventListener('DOMContentLoaded', () => {
-    window.app = new ChronosApp();
-});
+// Auto-boot in the browser; tests import ChronosApp and boot it themselves.
+if (typeof document !== 'undefined' && !globalThis.__CHRONOS_NO_AUTOBOOT__) {
+    document.addEventListener('DOMContentLoaded', () => new ChronosApp().start());
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').catch(err => console.warn('SW registration failed', err));
+        });
+    }
+}

@@ -75,7 +75,6 @@ body {
     will-change: transform;
 }
 
-.cyber-hourglass-box:hover .cyber-hourglass-svg,
 .cyber-hourglass-box.flip .cyber-hourglass-svg {
     transform: rotate(180deg);
 }
@@ -256,13 +255,14 @@ body {
     align-items: center;
     justify-content: center;
     gap: 0.25rem;
-    will-change: transform;
 }
 
+@media (hover: hover) {
 .persona-btn:hover {
     background: var(--color-p-red);
     border-color: var(--color-p-red);
     transform: translateY(-1px);
+}
 }
 
 .persona-btn:active {
@@ -319,7 +319,6 @@ body {
     border-radius: 6px;
     position: relative;
     transition: transform 0.14s ease, border-color 0.14s, background 0.14s;
-    will-change: transform;
 }
 
 .task-card-persona::before {
@@ -336,7 +335,7 @@ body {
     z-index: 10;
 }
 
-.task-card-persona:hover, .task-card-persona:active {
+.task-card-persona:active {
     border-color: rgba(255, 255, 255, 0.3);
     transform: translateX(2px);
     background: #0f1016;
@@ -510,3 +509,60 @@ body {
 .nav-btn.active .vertical-text {
     color: #fff;
 }
+
+/* ================= v0.5.1 Mobile Resilience ================= */
+/* 100vh overshoots behind mobile browser toolbars; dvh tracks the visible viewport. */
+#app-container {
+    height: 100vh;
+    height: 100dvh;
+}
+
+/* viewport-fit=cover lets content run under notches / home indicator. */
+@media (max-width: 767px) {
+    #main-content {
+        padding-top: max(0.75rem, env(safe-area-inset-top));
+        padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+        padding-left: max(0.75rem, env(safe-area-inset-left));
+    }
+}
+
+.cal-cell:focus-visible,
+button:focus-visible,
+a:focus-visible {
+    outline: 2px solid #ff1f3d;
+    outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Hover effects only for real pointers; touch devices otherwise get "sticky" hover after a tap. */
+@media (hover: hover) {
+    .cyber-hourglass-box:hover .cyber-hourglass-svg { transform: rotate(180deg); }
+    .cyber-hourglass-box.flip:hover .cyber-hourglass-svg { transform: rotate(0deg); }
+    .task-card-persona:hover {
+        border-color: rgba(255, 255, 255, 0.3);
+        transform: translateX(2px);
+        background: #0f1016;
+    }
+}
+
+/* iOS Safari zooms into inputs whose font-size is below 16px. */
+@media (max-width: 767px) {
+    .chronos-input, .chronos-modal-input { font-size: 16px !important; }
+}
+
+/* Body disables selection for the app feel; keep content and fields selectable. */
+input, textarea, select, .task-title, #link-list h4, #link-list span, #display-short-goal, #display-long-goal {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+/* Bigger touch targets for the tiny language pills. */
+.lang-btn { min-height: 24px; min-width: 28px; }
+html { touch-action: manipulation; }
