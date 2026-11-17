@@ -3,7 +3,9 @@
    Pure Deep Black Minimal / Snappy 0.12s Transitions / Zero Blur
    =================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@500;700;900&family=JetBrains+Mono:wght@600;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
     --color-p-red: #ff1f3d;
@@ -20,7 +22,7 @@
 }
 
 body {
-    font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: Inter, "Noto Sans KR", "Noto Sans JP", "Apple SD Gothic Neo", "Hiragino Kaku Gothic ProN", "Malgun Gothic", system-ui, sans-serif;
     background-color: var(--color-p-black);
     color: #ffffff;
     user-select: none;
@@ -30,12 +32,12 @@ body {
 }
 
 .font-bebas {
-    font-family: 'Bebas Neue', cursive;
+    font-family: Impact, "Arial Narrow", "Noto Sans KR", "Noto Sans JP", sans-serif;
     font-variant-numeric: tabular-nums;
 }
 
 .font-mono {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: "SFMono-Regular", Consolas, "Liberation Mono", "Noto Sans Mono", monospace;
     font-variant-numeric: tabular-nums;
 }
 
@@ -199,6 +201,139 @@ body {
 
 .hero-countdown-box:hover {
     border-color: rgba(255, 31, 61, 0.5);
+}
+
+/* ================= SINGLE-SCREEN COMMAND DASHBOARD ================= */
+.dashboard-views {
+    display: grid !important;
+    grid-template-rows: minmax(0, 1.9fr) minmax(0, 0.4fr);
+    gap: 0.6rem;
+    overflow: hidden !important;
+}
+
+.dashboard-schedule {
+    display: grid !important;
+    grid-template-rows: auto auto minmax(2.5rem, 1fr) 8rem;
+    gap: 0.45rem;
+    min-height: 0;
+    overflow: hidden !important;
+    padding-bottom: 0 !important;
+}
+
+.dashboard-schedule #schedule-task-list-wrap {
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.dashboard-schedule #calendar-widget {
+    order: 4;
+    margin-bottom: 0;
+    padding: 0.55rem;
+    overflow: hidden;
+}
+
+.dashboard-schedule #calendar-widget > div:first-child {
+    margin-bottom: 0.35rem;
+}
+
+.dashboard-schedule .cal-grid {
+    gap: 2px;
+}
+
+.dashboard-schedule .cal-cell {
+    aspect-ratio: auto;
+    height: 0.75rem;
+    min-height: 0;
+    font-size: 0.66rem;
+}
+
+.dashboard-schedule .cal-cell .cal-dot-container {
+    margin-top: 1px;
+}
+
+.dashboard-schedule #tab-sub-timeline,
+.dashboard-schedule #tab-sub-calendar {
+    display: none;
+}
+
+.dashboard-info {
+    display: grid !important;
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+    gap: 0.35rem;
+    min-height: 0;
+    overflow: hidden !important;
+    padding-bottom: 0 !important;
+}
+
+.dashboard-info > .space-y-3 {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.45rem;
+    min-height: 0;
+    overflow: auto;
+}
+
+.dashboard-info > .space-y-3 > div {
+    min-width: 0;
+    padding: 0.65rem;
+}
+
+.dashboard-info > .space-y-3 > div:nth-child(n + 2) {
+    display: none;
+}
+
+.system-alert-card {
+    box-shadow: 5px 5px 0 rgba(255, 31, 61, 0.12), 0 0 24px rgba(255, 31, 61, 0.12);
+}
+
+/* Taller displays get the spacious calendar and the full intelligence cards. */
+@media (min-height: 760px) {
+    .dashboard-views {
+        grid-template-rows: minmax(0, 1.55fr) minmax(0, 0.65fr);
+    }
+
+    .dashboard-schedule {
+        grid-template-rows: auto auto minmax(7rem, 1fr) 15rem;
+    }
+
+    .dashboard-schedule .cal-cell {
+        height: 2rem;
+        font-size: 0.78rem;
+    }
+
+    .dashboard-info > .space-y-3 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .dashboard-info > .space-y-3 > div:nth-child(n + 2) {
+        display: block;
+    }
+}
+
+.dashboard-info #label-backup-title,
+.dashboard-info #btn-export-json,
+.dashboard-info #btn-import-json-trigger {
+    font-size: 0.65rem;
+}
+
+#prime-directive-card > #next-task-title {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+.task-title {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+#app-container > nav,
+.swipe-pill {
+    display: none !important;
 }
 
 /* Time Resource Gauge Bar */
@@ -519,6 +654,22 @@ body {
 
 /* viewport-fit=cover lets content run under notches / home indicator. */
 @media (max-width: 767px) {
+    .dashboard-views {
+        grid-template-rows: minmax(0, 1.9fr) minmax(0, 0.4fr);
+    }
+
+    .dashboard-info > .space-y-3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dashboard-info > .space-y-3 > div:first-child {
+        grid-column: 1 / -1;
+    }
+
+    .dashboard-info > .space-y-3 > div:nth-child(n + 3) {
+        display: none;
+    }
+
     #main-content {
         padding-top: max(0.75rem, env(safe-area-inset-top));
         padding-bottom: max(0.75rem, env(safe-area-inset-bottom));

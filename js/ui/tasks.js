@@ -28,6 +28,7 @@ export class TaskListView {
     /** @param {import('../ui.js').UI} ui */
     constructor(ui) {
         this.ui = ui;
+        this.editingTaskId = null;
     }
 
     get store() {
@@ -62,6 +63,7 @@ export class TaskListView {
         });
 
         const list = $('task-list');
+        delegate(list, '[data-action="open-task"]', (btn) => this.openDetail(btn.dataset.id));
         delegate(list, '[data-action="toggle-complete"]', (btn) => this.toggleComplete(btn.dataset.id));
         delegate(list, '[data-action="delete-task"]', (btn) => {
             const task = this.store.getTasks().find(t => t.id === btn.dataset.id);
@@ -77,6 +79,7 @@ export class TaskListView {
     bindDetailModal() {
         const modal = $('add-modal');
         $('btn-add')?.addEventListener('click', () => {
+            this.editingTaskId = null;
             const tzoffset = new Date().getTimezoneOffset() * 60000;
             $('input-time').value = new Date(Date.now() - tzoffset + 3600000).toISOString().slice(0, 16);
             $('input-task').value = '';
@@ -88,15 +91,30 @@ export class TaskListView {
             const title = $('input-task').value.trim();
             const time = $('input-time').value;
             if (!title || !time) return;
-            this.store.addTask({
+            const patch = {
                 title,
                 time: new Date(time).toISOString(),
                 type: $('input-priority').value,
                 isDaily: $('input-is-daily').checked
-            });
+            };
+            if (this.editingTaskId) this.store.updateTask(this.editingTaskId, patch);
+            else this.store.addTask(patch);
+            this.editingTaskId = null;
             this.ui.refresh();
             this.ui.modals.close(modal);
         });
+    }
+
+    openDetail(id) {
+        const task = this.store.getTasks().find(t => t.id === id);
+        if (!task) return;
+        this.editingTaskId = id;
+        const tzoffset = new Date().getTimezoneOffset() * 60000;
+        $('input-task').value = task.title;
+        $('input-time').value = new Date(new Date(task.time).getTime() - tzoffset).toISOString().slice(0, 16);
+        $('input-is-daily').checked = !!task.isDaily;
+        $('input-priority').value = task.type;
+        this.ui.modals.open($('add-modal'), $('input-task'));
     }
 
     toggleComplete(id) {
@@ -168,7 +186,7 @@ export class TaskListView {
                             ${task.delayCount > 0 ? `<span class="text-[9px] font-mono bg-red-950/80 border border-red-800 text-red-300 px-1 rounded">+${Number(task.delayCount)}D</span>` : ''}
                             ${task.type === 'critical' ? `<span class="text-[9px] font-mono text-red-400 font-bold">${escapeHTML(i18n.t('tagCritical'))}</span>` : ''}
                         </div>
-                        <h4 class="task-title font-bold text-white text-sm truncate tracking-tight">${escapeHTML(task.title)}</h4>
+                        <button type="button" data-action="open-task" data-id="${id}" class="task-title font-bold text-white text-sm truncate tracking-tight text-left w-full" title="${escapeHTML(task.title)}">${escapeHTML(task.title)}</button>
                     </div>
                 </div>
 

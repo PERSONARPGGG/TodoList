@@ -3,6 +3,7 @@
  * Nothing is attached to `window` — modules talk through imports only.
  */
 import { STORAGE_KEYS } from './config.js';
+import '../style.css';
 import { has, writeString } from './data/storage.js';
 import { Store } from './store.js';
 import { UI } from './ui.js';

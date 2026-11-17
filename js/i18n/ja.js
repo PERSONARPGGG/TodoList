@@ -77,6 +77,7 @@ export default {
     pushNA: '🔔 通知: 非対応',
     importInvalid: '無効なバックアップファイルです。',
     notifyUnsupported: 'このブラウザは通知に対応していません。',
+    notifyPermissionDenied: '通知権限がブロックされています。ブラウザ設定で許可してください。',
     notifyEngagedTitle: 'CHRONOS 通知有効',
     notifyEngagedBody: '予定通知がオンになりました。',
     alertTitle: '⚡ CHRONOS // 予定時刻到達',

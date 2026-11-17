@@ -49,15 +49,18 @@ export function renderPushBadge() {
     badge.parentElement.classList.toggle('text-emerald-400', granted);
 }
 
-export function requestPermission() {
+export function requestPermission(onUnsupported = null) {
     if (!('Notification' in window)) {
-        alert(i18n.t('notifyUnsupported'));
+        if (onUnsupported) onUnsupported(i18n.t('notifyUnsupported'));
+        else console.warn(i18n.t('notifyUnsupported'));
         return;
     }
     Notification.requestPermission().then(permission => {
         renderPushBadge();
         if (permission === 'granted') {
             showNotification(i18n.t('notifyEngagedTitle'), { body: i18n.t('notifyEngagedBody') });
+        } else if (permission === 'denied' && onUnsupported) {
+            onUnsupported(i18n.t('notifyPermissionDenied'));
         }
     });
 }

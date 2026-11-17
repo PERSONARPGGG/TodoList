@@ -84,7 +84,8 @@ export class UI {
         });
         activateOnKey(hourglass, () => hourglass.click());
 
-        $('btn-request-notify')?.addEventListener('click', () => requestPermission());
+        $('btn-request-notify')?.addEventListener('click', () => requestPermission((message) => this.showAlert(message)));
+        $('btn-close-system-alert')?.addEventListener('click', () => this.modals.close($('system-alert-modal')));
     }
 
     onTabShown(viewId) {
@@ -134,10 +135,18 @@ export class UI {
     switchTabByIndex(index, direction) { this.nav.switchTo(index, direction); }
     filterDate(year, month, day) { this.views.calendar.toggleDate(new Date(year, month, day)); }
     toggleTaskComplete(id) { this.views.tasks.toggleComplete(id); }
+    openTaskDetail(id) { this.views.tasks.openDetail(id); }
     playIntroAnimation() { playIntroAnimation(); }
     playSlashEffect(message) { playSlashEffect(message); }
     initNotificationState() { renderPushBadge(); }
-    requestNotificationPermission() { requestPermission(); }
+    requestNotificationPermission() { requestPermission((message) => this.showAlert(message)); }
+    showAlert(message, title = 'SYSTEM MESSAGE') {
+        const modal = $('system-alert-modal');
+        if (!modal) return;
+        $('system-alert-title').textContent = title;
+        $('system-alert-message').textContent = message;
+        this.modals.open(modal, $('btn-close-system-alert'));
+    }
     triggerAlert(title, minutesLeft = null) { deliverAlert(title, minutesLeft); }
 
     // Pre-0.5.2 field names, mapped onto shared state.

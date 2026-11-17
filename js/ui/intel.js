@@ -67,7 +67,7 @@ export class IntelView {
             const reader = new FileReader();
             reader.onload = (event) => {
                 if (!this.store.importData(event.target.result)) {
-                    alert(i18n.t('importInvalid'));
+                    this.ui.showAlert(i18n.t('importInvalid'));
                     return;
                 }
                 this.ui.alerts.reset();

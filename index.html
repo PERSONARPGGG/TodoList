@@ -4,9 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>CHRONOS // Tactical Protocol</title>
-    <!-- Tailwind CSS (Rapid Architecture) -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="style.css?v=0.5.2">
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
@@ -53,7 +50,7 @@
             </div>
 
             <!-- Focus Objective Widget (Hero Box with Calm Cyber Hourglass) -->
-            <header class="mb-2.5 relative p-3 md:p-4 rounded-lg hero-countdown-box shrink-0">
+            <header id="prime-directive-card" class="mb-2.5 relative p-3 md:p-4 rounded-lg hero-countdown-box shrink-0" aria-label="Prime directive">
                 <div class="flex justify-between items-start mb-1">
                     <span class="text-red-500 font-bold tracking-widest uppercase text-[11px] flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 bg-red-500 inline-block rotate-45"></span>
@@ -66,7 +63,7 @@
                 </div>
                 
                 <!-- Fluid Title with Snappy Shift -->
-                <h2 id="next-task-title" class="fluid-hero-title text-white tracking-tight mb-2 truncate max-w-full">STANDBY</h2>
+                <button type="button" id="next-task-title" class="fluid-hero-title text-white tracking-tight mb-2 truncate max-w-full text-left w-full">STANDBY</button>
                 
                 <!-- Timer Row: Cyber Hourglass + Mega Fluid Timer + Target Info -->
                 <div class="flex items-center justify-between flex-wrap gap-2 mb-2">
@@ -122,10 +119,10 @@
             </header>
 
             <!-- Dynamic Views Container (Supports Swipe Gestures) -->
-            <div class="flex-1 relative overflow-hidden flex flex-col min-h-0" id="views-container">
+            <div class="flex-1 relative overflow-hidden flex flex-col min-h-0 dashboard-views" id="views-container">
                 
                 <!-- VIEW 1: TIMELINE & FAST CAPTURE -->
-                <section id="view-schedule" class="flex-1 overflow-y-auto pb-14 no-scrollbar view-section active flex flex-col">
+                <section id="view-schedule" class="flex-1 overflow-y-auto pb-14 no-scrollbar view-section active flex flex-col dashboard-schedule">
                     
                     <!-- Fast Natural Language Command Bar with Pure High-End Input -->
                     <form id="form-quick-cmd" class="mb-2.5 shrink-0">
@@ -158,7 +155,7 @@
                     </div>
 
                     <!-- Enhanced Mini Calendar View (Toggled) -->
-                    <div id="calendar-widget" class="hidden mb-3 p-3 bg-gray-950 border border-gray-900 rounded-lg shrink-0">
+                    <div id="calendar-widget" class="mb-3 p-3 bg-gray-950 border border-gray-900 rounded-lg shrink-0">
                         <div class="flex justify-between items-center mb-2.5">
                             <button id="btn-cal-prev" class="text-gray-400 hover:text-white text-xs font-mono px-2 py-1 bg-gray-900 rounded">◀ PREV</button>
                             <h4 id="cal-month-title" class="font-bold text-sm tracking-wide text-yellow-400 font-mono">OCTOBER 2026</h4>
@@ -177,7 +174,7 @@
                     </div>
 
                     <!-- Task List Vertical Timeline -->
-                    <div class="flex-1 overflow-y-auto no-scrollbar">
+                    <div id="schedule-task-list-wrap" class="flex-1 overflow-y-auto no-scrollbar">
                         <ul id="task-list" class="space-y-2 timeline-container">
                             <!-- Tasks injected dynamically by ui.js -->
                         </ul>
@@ -185,7 +182,7 @@
                 </section>
                 
                 <!-- VIEW 2: INTELLIGENCE & ENTJ PROTOCOL -->
-                <section id="view-info" class="flex-1 overflow-y-auto pb-14 no-scrollbar view-section hidden flex flex-col">
+                <section id="view-info" class="flex-1 overflow-y-auto pb-14 no-scrollbar view-section dashboard-info flex flex-col">
                     <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-900 shrink-0">
                         <h3 class="text-sm font-bold uppercase tracking-wider text-blue-400" id="label-intel-title">Tactical Intelligence</h3>
                         <span class="text-[10px] font-mono text-gray-500" id="label-intel-sub">ENTJ PERFORMANCE MATRIX</span>
@@ -384,6 +381,20 @@
             <div class="flex justify-end gap-2 mt-4">
                 <button id="btn-cancel-goal" class="text-gray-500 text-xs uppercase px-3 py-1.5 font-bold hover:text-white">Cancel</button>
                 <button id="btn-save-goal" class="persona-btn btn-blue text-xs py-1.5 px-4">Update</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Alert: replaces browser-native alert dialogs with the CHRONOS visual system. -->
+    <div id="system-alert-modal" role="dialog" aria-modal="true" aria-labelledby="system-alert-title" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
+        <div class="w-full max-w-sm bg-black border border-red-500/70 p-5 shadow-2xl relative rounded-lg system-alert-card">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-red-500 font-mono" aria-hidden="true">⚠</span>
+                <h3 id="system-alert-title" class="text-sm font-bold uppercase tracking-wider text-red-400">SYSTEM MESSAGE</h3>
+            </div>
+            <p id="system-alert-message" class="text-sm text-gray-200 leading-relaxed"></p>
+            <div class="flex justify-end mt-5">
+                <button id="btn-close-system-alert" class="persona-btn text-xs py-1.5 px-4">ACKNOWLEDGE</button>
             </div>
         </div>
     </div>

@@ -77,6 +77,7 @@ export default {
     pushNA: '🔔 PUSH: N/A',
     importInvalid: 'Invalid JSON backup file.',
     notifyUnsupported: 'Notifications not supported by this browser.',
+    notifyPermissionDenied: 'Notification permission is blocked. Enable it in browser settings.',
     notifyEngagedTitle: 'CHRONOS ENGAGED',
     notifyEngagedBody: 'Tactical notification protocol authorized.',
     alertTitle: '⚡ CHRONOS // OBJECTIVE IMMINENT',

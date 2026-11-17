@@ -77,6 +77,7 @@ export default {
     pushNA: '🔔 알림: 미지원',
     importInvalid: '올바르지 않은 백업 파일입니다.',
     notifyUnsupported: '이 브라우저는 알림을 지원하지 않습니다.',
+    notifyPermissionDenied: '알림 권한이 차단되어 있습니다. 브라우저 설정에서 허용해 주세요.',
     notifyEngagedTitle: 'CHRONOS 알림 활성화',
     notifyEngagedBody: '일정 알림이 켜졌습니다.',
     alertTitle: '⚡ CHRONOS // 일정 시간 도달',

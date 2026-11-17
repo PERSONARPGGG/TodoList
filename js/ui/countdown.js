@@ -23,6 +23,10 @@ export class CountdownView {
     }
 
     bind() {
+        $('next-task-title')?.addEventListener('click', () => {
+            const next = this.store.getNextTask();
+            if (next) this.ui.views.tasks.openDetail(next.id);
+        });
         $('btn-complete-prime')?.addEventListener('click', () => {
             const next = this.store.getNextTask();
             if (!next) return;
