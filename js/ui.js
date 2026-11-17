@@ -140,10 +140,10 @@ export class UI {
     playSlashEffect(message) { playSlashEffect(message); }
     initNotificationState() { renderPushBadge(); }
     requestNotificationPermission() { requestPermission((message) => this.showAlert(message)); }
-    showAlert(message, title = 'SYSTEM MESSAGE') {
+    showAlert(message, title = null) {
         const modal = $('system-alert-modal');
         if (!modal) return;
-        $('system-alert-title').textContent = title;
+        $('system-alert-title').textContent = title || i18n.t('systemAlertTitle');
         $('system-alert-message').textContent = message;
         this.modals.open(modal, $('btn-close-system-alert'));
     }

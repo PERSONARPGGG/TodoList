@@ -18,6 +18,7 @@ export default {
     chipDaily: "日課",
     chipCleared: "完了済",
     btnDetailForm: "+ 詳細入力",
+    btnQuickEngage: "追加",
     calFiltered: "日付絞り込み中",
     calViewAll: "全て表示",
     noDirectives: "タスクがありません",
@@ -46,6 +47,10 @@ export default {
     labelTarget: "予定日時",
     labelRepeatDaily: "毎日アラーム設定",
     labelPriority: "優先度ランク",
+    priorityCritical: "緊急 (即時対応)",
+    priorityNormal: "標準 (通常)",
+    priorityLow: "低 (余裕)",
+    minutes: "分",
     btnAbort: "中止",
     btnEngage: "登録",
     modalRescheduleTitle: "スケジュール延期",
@@ -85,5 +90,10 @@ export default {
     confirmDelete: (t) => `「${t}」を削除しますか?`,
     deleteTitle: 'タスク削除',
     preAlertTitle: '⏳ CHRONOS // まもなく開始',
-    preAlertBody: (t, m) => `${t} — ${m}分後に開始`
+    preAlertBody: (t, m) => `${t} · ${m}分後に開始`,
+    systemAlertTitle: 'システムメッセージ',
+    btnAcknowledge: '確認',
+    placeholderTaskTitle: 'タスク名',
+    placeholderPortalTitle: 'リンク名',
+    placeholderPortalUrl: 'https://example.com'
 };

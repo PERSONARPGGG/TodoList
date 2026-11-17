@@ -11,7 +11,7 @@ export const TEXT_BINDINGS = [
     ['btn-complete-prime', 'btnComplete'], ['btn-delay-custom', 'btnCustom'],
     ['tab-sub-timeline', 'tabTimeline'], ['tab-sub-calendar', 'tabCalendar'],
     ['chip-all', 'chipAll'], ['chip-pending', 'chipPending'], ['chip-daily', 'chipDaily'], ['chip-cleared', 'chipCleared'],
-    ['btn-add', 'btnDetailForm'], ['btn-clear-date-filter', 'calViewAll'],
+    ['btn-add', 'btnDetailForm'], ['btn-quick-engage', 'btnQuickEngage'], ['btn-clear-date-filter', 'calViewAll'],
     ['btn-cal-prev', 'prev'], ['btn-cal-next', 'next'],
     ['label-intel-title', 'intelTitle'], ['label-intel-sub', 'intelSubtitle'],
     ['label-exec-rating', 'execRating'], ['label-eff-index', 'efficiencyIndex'],
@@ -22,12 +22,13 @@ export const TEXT_BINDINGS = [
     ['label-net-title', 'netTitle'], ['btn-add-link', 'btnAddPortal'],
     ['nav-text-schedule', 'navSchedule'], ['nav-text-intel', 'navIntel'], ['nav-text-network', 'navNetwork'],
     ['modal-add-title', 'modalAddTitle'], ['label-modal-title', 'labelTitle'], ['label-modal-target', 'labelTarget'],
-    ['label-modal-daily', 'labelRepeatDaily'], ['label-modal-priority', 'labelPriority'],
+    ['label-modal-daily', 'labelRepeatDaily'], ['label-modal-priority', 'labelPriority'], ['label-minutes', 'minutes'],
     ['btn-cancel', 'btnAbort'], ['btn-save', 'btnEngage'],
     ['modal-delay-title', 'modalRescheduleTitle'], ['modal-delay-sub', 'modalRescheduleSub'],
     ['btn-cancel-custom-delay', 'btnCancel'], ['btn-confirm-custom-delay', 'btnApplyDelay'],
     ['modal-portal-title', 'modalPortalTitle'], ['btn-cancel-link', 'btnCancel'], ['btn-save-link', 'btnStoreLink'],
     ['edit-goal-title', 'modalGoalTitle'], ['btn-cancel-goal', 'btnCancel'], ['btn-save-goal', 'btnUpdate']
+    ,['system-alert-title', 'systemAlertTitle'], ['btn-close-system-alert', 'btnAcknowledge']
 ];
 
 
@@ -43,8 +44,14 @@ export function applyStaticTranslations() {
 
     TEXT_BINDINGS.forEach(([id, key]) => setText(id, i18n.t(key)));
 
+    [['option-priority-critical', 'priorityCritical'], ['option-priority-normal', 'priorityNormal'], ['option-priority-low', 'priorityLow']]
+        .forEach(([id, key]) => setText(id, i18n.t(key)));
+
     const quickInput = $('input-quick-cmd');
     if (quickInput) quickInput.placeholder = i18n.t('quickPlaceholder');
+
+    [['input-task', 'placeholderTaskTitle'], ['input-link-title', 'placeholderPortalTitle'], ['input-link-url', 'placeholderPortalUrl']]
+        .forEach(([id, key]) => { const input = $(id); if (input) input.placeholder = i18n.t(key); });
 
     // Calendar weekday header (Sunday-first). 2026-11-01 is a Sunday.
     const weekdays = $('cal-weekdays');

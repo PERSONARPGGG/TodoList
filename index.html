@@ -129,7 +129,7 @@
                         <div class="chronos-cmd-bar">
                             <span class="text-red-500 font-mono font-black text-xs mr-2">▶</span>
                             <input type="text" id="input-quick-cmd" aria-label="Quick add" autocomplete="off" enterkeyhint="send" placeholder="Quick Engage (e.g. Daily 08:00 Briefing, +30m review)" class="chronos-input">
-                            <button type="submit" class="persona-btn text-[10px] py-1 px-2.5 shrink-0 ml-1.5" id="btn-quick-engage">ENGAGE</button>
+                            <button type="submit" class="persona-btn text-[10px] py-1 px-2.5 shrink-0 ml-1.5" id="btn-quick-engage">ADD</button>
                         </div>
                     </form>
 
@@ -322,9 +322,9 @@
                 <div>
                     <label class="block text-[10px] font-mono text-gray-400 uppercase mb-1" for="input-priority" id="label-modal-priority">Priority Tier</label>
                     <select id="input-priority" class="chronos-modal-input">
-                        <option value="critical">CRITICAL (Red Alert)</option>
-                        <option value="normal" selected>STANDARD (Routine)</option>
-                        <option value="low">SECONDARY (Flexible)</option>
+                        <option id="option-priority-critical" value="critical">CRITICAL (Red Alert)</option>
+                        <option id="option-priority-normal" value="normal" selected>STANDARD (Routine)</option>
+                        <option id="option-priority-low" value="low">SECONDARY (Flexible)</option>
                     </select>
                 </div>
             </div>
@@ -343,7 +343,7 @@
             <p class="text-xs text-gray-400 mb-3" id="modal-delay-sub">Postpone target by specified minutes:</p>
             <div class="flex gap-2">
                 <input type="number" id="input-custom-minutes" value="30" min="5" max="1440" step="5" class="chronos-modal-input font-mono">
-                <span class="flex items-center text-xs text-gray-500 font-mono">MIN</span>
+                <span class="flex items-center text-xs text-gray-500 font-mono" id="label-minutes">MIN</span>
             </div>
             <div class="flex justify-end gap-2 mt-6">
                 <button id="btn-cancel-custom-delay" class="text-gray-500 text-xs uppercase px-3 py-1.5 font-bold hover:text-white">Cancel</button>

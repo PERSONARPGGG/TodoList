@@ -290,15 +290,15 @@ body {
 /* Taller displays get the spacious calendar and the full intelligence cards. */
 @media (min-height: 760px) {
     .dashboard-views {
-        grid-template-rows: minmax(0, 1.55fr) minmax(0, 0.65fr);
+        grid-template-rows: minmax(0, 1.45fr) minmax(0, 0.8fr);
     }
 
     .dashboard-schedule {
-        grid-template-rows: auto auto minmax(7rem, 1fr) 15rem;
+        grid-template-rows: auto auto minmax(8rem, 1fr) 17rem;
     }
 
     .dashboard-schedule .cal-cell {
-        height: 2rem;
+        height: 2.2rem;
         font-size: 0.78rem;
     }
 
@@ -309,6 +309,15 @@ body {
     .dashboard-info > .space-y-3 > div:nth-child(n + 2) {
         display: block;
     }
+
+    .dashboard-info > .space-y-3 > div:nth-child(4) {
+        display: none;
+    }
+}
+
+/* Keep the intelligence panel scannable: the heading carries the context. */
+#label-intel-sub {
+    display: none;
 }
 
 .dashboard-info #label-backup-title,
@@ -714,6 +723,17 @@ input, textarea, select, .task-title, #link-list h4, #link-list span, #display-s
     -webkit-user-select: text;
 }
 
-/* Bigger touch targets for the tiny language pills. */
-.lang-btn { min-height: 24px; min-width: 28px; }
+/* Comfortable touch targets without making the tactical controls bulky. */
+.persona-btn {
+    min-height: 36px;
+    padding-inline: 0.85rem;
+}
+.task-chip,
+.filter-btn,
+#btn-cal-prev,
+#btn-cal-next,
+#btn-clear-date-filter {
+    min-height: 34px;
+}
+.lang-btn { min-height: 32px; min-width: 36px; }
 html { touch-action: manipulation; }
