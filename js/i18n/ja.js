@@ -19,6 +19,7 @@ export default {
     chipCleared: "完了済",
     btnDetailForm: "+ 詳細入力",
     btnQuickEngage: "追加",
+    btnClearCompleted: "完了を削除",
     calFiltered: "日付絞り込み中",
     calViewAll: "全て表示",
     noDirectives: "タスクがありません",
@@ -93,6 +94,9 @@ export default {
     preAlertBody: (t, m) => `${t} · ${m}分後に開始`,
     systemAlertTitle: 'システムメッセージ',
     btnAcknowledge: '確認',
+    clearCompletedTitle: '完了済みを削除',
+    clearCompletedMessage: '完了した予定をすべて削除しますか？',
+    confirmClearCompleted: '削除',
     placeholderTaskTitle: 'タスク名',
     placeholderPortalTitle: 'リンク名',
     placeholderPortalUrl: 'https://example.com'

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>CHRONOS // Tactical Protocol</title>
     <link rel="icon" type="image/svg+xml" href="icon.svg">
     <link rel="manifest" href="manifest.json">
@@ -147,6 +148,7 @@
                             <button class="px-2 py-0.5 text-[9px] font-mono font-bold rounded bg-gray-900 text-gray-400 hover:text-white task-chip" data-filter="PENDING" id="chip-pending">PENDING</button>
                             <button class="px-2 py-0.5 text-[9px] font-mono font-bold rounded bg-gray-900 text-gray-400 hover:text-white task-chip" data-filter="DAILY" id="chip-daily">DAILY</button>
                             <button class="px-2 py-0.5 text-[9px] font-mono font-bold rounded bg-gray-900 text-gray-400 hover:text-white task-chip" data-filter="CLEARED" id="chip-cleared">CLEARED</button>
+                            <button id="btn-clear-completed" class="persona-btn btn-yellow text-[9px] py-0.5 px-2 hidden">CLEAR DONE</button>
                         </div>
 
                         <button id="btn-add" class="persona-btn text-[10px] py-0.5 px-2.5 ml-auto">
@@ -395,6 +397,20 @@
             <p id="system-alert-message" class="text-sm text-gray-200 leading-relaxed"></p>
             <div class="flex justify-end mt-5">
                 <button id="btn-close-system-alert" class="persona-btn text-xs py-1.5 px-4">ACKNOWLEDGE</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="clear-completed-modal" role="dialog" aria-modal="true" aria-labelledby="clear-completed-title" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
+        <div class="w-full max-w-sm bg-black border border-yellow-500/70 p-5 shadow-2xl relative rounded-lg system-alert-card">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-yellow-400 font-mono" aria-hidden="true">⚠</span>
+                <h3 id="clear-completed-title" class="text-sm font-bold uppercase tracking-wider text-yellow-400">CLEAR COMPLETED</h3>
+            </div>
+            <p id="clear-completed-message" class="text-sm text-gray-200 leading-relaxed">Remove all completed tasks?</p>
+            <div class="flex justify-end gap-2 mt-5">
+                <button id="btn-cancel-clear-completed" class="text-gray-500 uppercase text-xs font-bold px-3 py-2">CANCEL</button>
+                <button id="btn-confirm-clear-completed" class="persona-btn btn-yellow text-xs px-4">CLEAR</button>
             </div>
         </div>
     </div>

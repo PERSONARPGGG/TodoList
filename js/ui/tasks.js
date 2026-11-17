@@ -73,6 +73,19 @@ export class TaskListView {
             }
         });
 
+        $('btn-clear-completed')?.addEventListener('click', () => {
+            if (this.store.getTasks().some(task => task.completed)) {
+                this.ui.modals.open($('clear-completed-modal'), $('btn-cancel-clear-completed'));
+            }
+        });
+        $('btn-cancel-clear-completed')?.addEventListener('click', () => this.ui.modals.close($('clear-completed-modal')));
+        $('btn-confirm-clear-completed')?.addEventListener('click', () => {
+            const removed = this.store.clearCompletedTasks();
+            this.ui.modals.close($('clear-completed-modal'));
+            if (removed > 0) playSlashEffect(i18n.t('fxCleared'));
+            this.ui.refresh();
+        });
+
         this.bindDetailModal();
     }
 
@@ -134,7 +147,9 @@ export class TaskListView {
         if (!list) return;
 
         const { selectedDate, taskFilter } = this.ui.state;
-        const tasks = this.store.getTasks()
+        const allTasks = this.store.getTasks();
+        $('btn-clear-completed')?.classList.toggle('hidden', !allTasks.some(task => task.completed));
+        const tasks = allTasks
             .filter(t => !selectedDate || isSameDay(new Date(t.time), selectedDate))
             .filter(FILTERS[taskFilter] || FILTERS.ALL);
 

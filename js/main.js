@@ -68,6 +68,13 @@ if (typeof document !== 'undefined' && !globalThis.__CHRONOS_NO_AUTOBOOT__) {
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
+            if (import.meta.env?.DEV) {
+                // A production SW can serve a stale index/Vite client during local development.
+                navigator.serviceWorker.getRegistrations()
+                    .then(registrations => Promise.all(registrations.map(registration => registration.unregister())))
+                    .catch(() => {});
+                return;
+            }
             navigator.serviceWorker.register('./sw.js').catch(err => console.warn('SW registration failed', err));
         });
     }

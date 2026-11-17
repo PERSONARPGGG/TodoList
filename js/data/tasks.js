@@ -117,6 +117,15 @@ export class TaskRepository {
         this.save(this.getAll().filter(t => t.id !== id));
     }
 
+    /** Remove completed tasks in one operation and return the number removed. */
+    removeCompleted() {
+        const tasks = this.getAll();
+        const remaining = tasks.filter(task => !task.completed);
+        const removed = tasks.length - remaining.length;
+        if (removed > 0) this.save(remaining);
+        return removed;
+    }
+
     complete(id) {
         this._mutate(id, task => {
             task.completed = true;

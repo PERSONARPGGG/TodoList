@@ -3,7 +3,7 @@
  */
 import { $ } from './dom.js';
 
-export const MODAL_IDS = ['add-modal', 'delay-custom-modal', 'add-link-modal', 'edit-goal-modal', 'system-alert-modal'];
+export const MODAL_IDS = ['add-modal', 'delay-custom-modal', 'add-link-modal', 'edit-goal-modal', 'system-alert-modal', 'clear-completed-modal'];
 
 /** Which button Enter in a single-line input should press, per modal. */
 const SUBMIT_BUTTON = {

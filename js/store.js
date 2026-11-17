@@ -43,6 +43,7 @@ export class Store {
     addTask(task) { return this.repos.tasks.add(task); }
     updateTask(id, patch) { return this.repos.tasks.update(id, patch); }
     deleteTask(id) { this.repos.tasks.remove(id); }
+    clearCompletedTasks() { return this.repos.tasks.removeCompleted(); }
     completeTask(id) { this.repos.tasks.complete(id); }
     uncompleteTask(id) { this.repos.tasks.uncomplete(id); }
     delayTask(id, minutes) { return this.repos.tasks.delay(id, minutes); }

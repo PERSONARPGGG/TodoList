@@ -19,6 +19,7 @@ export default {
     chipCleared: "완료",
     btnDetailForm: "+ 일정 추가",
     btnQuickEngage: "추가",
+    btnClearCompleted: "완료 비우기",
     calFiltered: "선택한 날짜",
     calViewAll: "전체 보기",
     noDirectives: "일정 없음",
@@ -93,6 +94,9 @@ export default {
     preAlertBody: (t, m) => `${t} · ${m}분 뒤`,
     systemAlertTitle: '시스템 메시지',
     btnAcknowledge: '확인',
+    clearCompletedTitle: '완료 일정 비우기',
+    clearCompletedMessage: '완료한 일정을 모두 삭제할까요?',
+    confirmClearCompleted: '비우기',
     placeholderTaskTitle: '일정 이름',
     placeholderPortalTitle: '링크 이름',
     placeholderPortalUrl: 'https://example.com'

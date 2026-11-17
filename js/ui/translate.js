@@ -11,8 +11,8 @@ export const TEXT_BINDINGS = [
     ['btn-complete-prime', 'btnComplete'], ['btn-delay-custom', 'btnCustom'],
     ['tab-sub-timeline', 'tabTimeline'], ['tab-sub-calendar', 'tabCalendar'],
     ['chip-all', 'chipAll'], ['chip-pending', 'chipPending'], ['chip-daily', 'chipDaily'], ['chip-cleared', 'chipCleared'],
-    ['btn-add', 'btnDetailForm'], ['btn-quick-engage', 'btnQuickEngage'], ['btn-clear-date-filter', 'calViewAll'],
-    ['btn-cal-prev', 'prev'], ['btn-cal-next', 'next'],
+    ['btn-add', 'btnDetailForm'], ['btn-quick-engage', 'btnQuickEngage'], ['btn-clear-completed', 'btnClearCompleted'], ['btn-clear-date-filter', 'calViewAll'],
+    ['btn-cal-prev', 'prev'], ['btn-cal-next', 'next'], ['cal-filter-text', 'calFiltered'],
     ['label-intel-title', 'intelTitle'], ['label-intel-sub', 'intelSubtitle'],
     ['label-exec-rating', 'execRating'], ['label-eff-index', 'efficiencyIndex'],
     ['label-rate', 'rate'], ['label-delayed', 'delayed'], ['label-done', 'done'],
@@ -28,7 +28,8 @@ export const TEXT_BINDINGS = [
     ['btn-cancel-custom-delay', 'btnCancel'], ['btn-confirm-custom-delay', 'btnApplyDelay'],
     ['modal-portal-title', 'modalPortalTitle'], ['btn-cancel-link', 'btnCancel'], ['btn-save-link', 'btnStoreLink'],
     ['edit-goal-title', 'modalGoalTitle'], ['btn-cancel-goal', 'btnCancel'], ['btn-save-goal', 'btnUpdate']
-    ,['system-alert-title', 'systemAlertTitle'], ['btn-close-system-alert', 'btnAcknowledge']
+    ,['system-alert-title', 'systemAlertTitle'], ['btn-close-system-alert', 'btnAcknowledge'],
+    ['clear-completed-title', 'clearCompletedTitle'], ['clear-completed-message', 'clearCompletedMessage'], ['btn-cancel-clear-completed', 'btnCancel'], ['btn-confirm-clear-completed', 'confirmClearCompleted']
 ];
 
 

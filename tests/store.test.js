@@ -35,6 +35,15 @@ describe('addTask / deleteTask', () => {
         expect(left[0].title).toBe('B');
     });
 
+    it('clearCompletedTasks removes only completed tasks', () => {
+        const done = store.addTask({ title: 'done', time: iso('2026-11-13T15:00:00+09:00') });
+        store.addTask({ title: 'pending', time: iso('2026-11-13T16:00:00+09:00') });
+        store.completeTask(done.id);
+        expect(store.clearCompletedTasks()).toBe(1);
+        expect(store.getTasks().map(t => t.title)).toEqual(['pending']);
+        expect(store.clearCompletedTasks()).toBe(0);
+    });
+
     it('rejects invalid task input at the repository boundary', () => {
         expect(store.addTask({ title: '   ', time: 'not-a-date' })).toBeNull();
         expect(store.getTasks()).toEqual([]);

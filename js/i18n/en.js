@@ -19,6 +19,7 @@ export default {
     chipCleared: "CLEARED",
     btnDetailForm: "+ ADD TASK",
     btnQuickEngage: "ADD",
+    btnClearCompleted: "CLEAR DONE",
     calFiltered: "FILTERED",
     calViewAll: "VIEW ALL",
     noDirectives: "NO TASKS",
@@ -93,6 +94,9 @@ export default {
     preAlertBody: (t, m) => `${t} · ${m} min left`,
     systemAlertTitle: 'SYSTEM MESSAGE',
     btnAcknowledge: 'OK',
+    clearCompletedTitle: 'CLEAR COMPLETED',
+    clearCompletedMessage: 'Remove all completed tasks?',
+    confirmClearCompleted: 'CLEAR',
     placeholderTaskTitle: 'Task name',
     placeholderPortalTitle: 'Link name',
     placeholderPortalUrl: 'https://example.com'
