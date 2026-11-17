@@ -7,11 +7,11 @@ import { $, setText } from './dom.js';
 
 /** [elementId, dictKey] pairs. Exported so tests can verify ids and keys exist. */
 export const TEXT_BINDINGS = [
-    ['system-status', 'sysReady'], ['label-prime-directive', 'primeDirective'],
+    ['label-prime-directive', 'primeDirective'],
     ['btn-complete-prime', 'btnComplete'], ['btn-delay-custom', 'btnCustom'],
     ['tab-sub-timeline', 'tabTimeline'], ['tab-sub-calendar', 'tabCalendar'],
     ['chip-all', 'chipAll'], ['chip-pending', 'chipPending'], ['chip-daily', 'chipDaily'], ['chip-cleared', 'chipCleared'],
-    ['btn-add', 'btnDetailForm'], ['btn-quick-engage', 'btnQuickEngage'], ['btn-clear-completed', 'btnClearCompleted'], ['btn-clear-date-filter', 'calViewAll'],
+    ['btn-add', 'btnDetailForm'], ['btn-quick-engage', 'btnQuickEngage'], ['btn-clear-completed', 'btnClearCompleted'], ['btn-clear-calendar-completed', 'btnClearCompleted'], ['btn-clear-date-filter', 'calViewAll'],
     ['btn-cal-prev', 'prev'], ['btn-cal-next', 'next'], ['cal-filter-text', 'calFiltered'],
     ['label-intel-title', 'intelTitle'], ['label-intel-sub', 'intelSubtitle'],
     ['label-exec-rating', 'execRating'], ['label-eff-index', 'efficiencyIndex'],

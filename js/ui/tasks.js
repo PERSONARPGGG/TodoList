@@ -73,11 +73,13 @@ export class TaskListView {
             }
         });
 
-        $('btn-clear-completed')?.addEventListener('click', () => {
+        const openClearCompleted = () => {
             if (this.store.getTasks().some(task => task.completed)) {
                 this.ui.modals.open($('clear-completed-modal'), $('btn-cancel-clear-completed'));
             }
-        });
+        };
+        $('btn-clear-completed')?.addEventListener('click', openClearCompleted);
+        $('btn-clear-calendar-completed')?.addEventListener('click', openClearCompleted);
         $('btn-cancel-clear-completed')?.addEventListener('click', () => this.ui.modals.close($('clear-completed-modal')));
         $('btn-confirm-clear-completed')?.addEventListener('click', () => {
             const removed = this.store.clearCompletedTasks();
@@ -148,7 +150,9 @@ export class TaskListView {
 
         const { selectedDate, taskFilter } = this.ui.state;
         const allTasks = this.store.getTasks();
-        $('btn-clear-completed')?.classList.toggle('hidden', !allTasks.some(task => task.completed));
+        const hasCompleted = allTasks.some(task => task.completed);
+        $('btn-clear-completed')?.classList.toggle('hidden', !hasCompleted);
+        $('btn-clear-calendar-completed')?.classList.toggle('hidden', !hasCompleted);
         const tasks = allTasks
             .filter(t => !selectedDate || isSameDay(new Date(t.time), selectedDate))
             .filter(FILTERS[taskFilter] || FILTERS.ALL);

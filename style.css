@@ -814,3 +814,62 @@ input, textarea, select, .task-title, #link-list h4, #link-list span, #display-s
 }
 .lang-btn { min-height: 32px; min-width: 36px; }
 html { touch-action: manipulation; }
+
+/* Final spacious layout override: the dashboard must grow with its content. */
+html,
+body {
+    min-height: 100%;
+}
+
+body {
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+}
+
+#app-container,
+#main-content {
+    height: auto !important;
+    min-height: 100dvh;
+    overflow: visible !important;
+}
+
+#views-container {
+    height: auto !important;
+    flex: none !important;
+    overflow: visible !important;
+    grid-template-rows: auto auto !important;
+}
+
+#view-schedule,
+#view-info {
+    height: auto !important;
+    overflow: visible !important;
+}
+
+.dashboard-schedule {
+    grid-template-rows: auto auto minmax(9rem, 1fr) 24rem !important;
+}
+
+.dashboard-schedule #calendar-widget {
+    height: 24rem !important;
+    min-height: 24rem !important;
+}
+
+.dashboard-schedule .cal-cell {
+    height: 3rem !important;
+    min-height: 3rem !important;
+    font-size: 0.82rem;
+}
+
+.dashboard-info {
+    min-height: 18rem;
+    margin-top: 1rem;
+}
+
+.dashboard-info > .space-y-3 > div:nth-child(n + 2) {
+    display: block !important;
+}
+
+.dashboard-info > .space-y-3 > div:nth-child(4) {
+    display: none !important;
+}

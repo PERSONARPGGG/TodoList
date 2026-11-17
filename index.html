@@ -30,12 +30,7 @@
             
             <!-- System Top Status Bar with Instant Language Switcher -->
             <div class="flex justify-between items-center text-[10px] font-mono tracking-widest uppercase text-gray-400 border-b border-gray-900 pb-2 mb-2 shrink-0">
-                <div class="flex items-center gap-2">
-                    <span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span>
-                    <span id="system-status">SYS: ONLINE // SNAPPY</span>
-                </div>
-                
-                <!-- Center/Right Language Switcher (EN | KR | JP) -->
+                <!-- Language and notification controls -->
                 <div class="flex items-center gap-2.5">
                     <div class="lang-pill" id="lang-switcher">
                         <button class="lang-btn active" data-lang="EN">EN</button>
@@ -158,10 +153,11 @@
 
                     <!-- Enhanced Mini Calendar View (Toggled) -->
                     <div id="calendar-widget" class="mb-3 p-3 bg-gray-950 border border-gray-900 rounded-lg shrink-0">
-                        <div class="flex justify-between items-center mb-2.5">
+                        <div class="flex justify-between items-center mb-2.5 gap-2">
                             <button id="btn-cal-prev" class="text-gray-400 hover:text-white text-xs font-mono px-2 py-1 bg-gray-900 rounded">◀ PREV</button>
                             <h4 id="cal-month-title" class="font-bold text-sm tracking-wide text-yellow-400 font-mono">OCTOBER 2026</h4>
                             <button id="btn-cal-next" class="text-gray-400 hover:text-white text-xs font-mono px-2 py-1 bg-gray-900 rounded">NEXT ▶</button>
+                            <button id="btn-clear-calendar-completed" class="persona-btn btn-yellow text-[9px] px-2 hidden">CLEAR DONE</button>
                         </div>
                         <div id="cal-weekdays" class="grid grid-cols-7 gap-1 text-center font-mono text-[10px] text-gray-500 mb-1">
                             <span class="text-red-500">SUN</span><span>MON</span><span>TUE</span><span>WED</span><span>THU</span><span>FRI</span><span class="text-blue-400">SAT</span>

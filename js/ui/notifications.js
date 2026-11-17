@@ -4,6 +4,8 @@
 import { i18n } from '../i18n.js';
 import { $ } from './dom.js';
 
+let permissionRequest = null;
+
 /**
  * Prefer the service-worker registration (required on Android Chrome, where `new Notification`
  * throws), even on the first visit before the SW controls the page.
@@ -55,12 +57,33 @@ export function requestPermission(onUnsupported = null) {
         else console.warn(i18n.t('notifyUnsupported'));
         return;
     }
-    Notification.requestPermission().then(permission => {
+
+    if (Notification.permission === 'granted') {
+        renderPushBadge();
+        return Promise.resolve('granted');
+    }
+
+    if (Notification.permission === 'denied') {
+        renderPushBadge();
+        if (onUnsupported) onUnsupported(i18n.t('notifyPermissionDenied'));
+        return Promise.resolve('denied');
+    }
+
+    if (permissionRequest) return permissionRequest;
+
+    permissionRequest = Notification.requestPermission().then(permission => {
         renderPushBadge();
         if (permission === 'granted') {
             showNotification(i18n.t('notifyEngagedTitle'), { body: i18n.t('notifyEngagedBody') });
         } else if (permission === 'denied' && onUnsupported) {
             onUnsupported(i18n.t('notifyPermissionDenied'));
         }
+        return permission;
+    }).catch(error => {
+        console.warn('Notification permission request failed', error);
+        return 'error';
+    }).finally(() => {
+        permissionRequest = null;
     });
+    return permissionRequest;
 }

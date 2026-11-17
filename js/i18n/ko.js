@@ -24,7 +24,7 @@ export default {
     calViewAll: "전체 보기",
     noDirectives: "일정 없음",
     noDirectivesSub: "위 입력창에서 바로 추가하세요",
-    intelTitle: "생산성 인사이트",
+    intelTitle: "생산성 요약",
     intelSubtitle: "현재 성과 요약",
     execRating: "현재 등급",
     efficiencyIndex: "업무 효율",
