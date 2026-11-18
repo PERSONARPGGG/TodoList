@@ -1,8 +1,8 @@
-# ⚡️ CHRONOS // Tactical Objective Protocol (v0.5.3)
+# ⚡️ CHRONOS // Tactical Objective Protocol (v0.5.4)
 
 CHRONOS는 자연어로 일정을 입력하고 카운트다운, 반복 일정, 캘린더, 생산성 요약, PWA 오프라인 동작을 한 화면에서 관리하는 클라이언트 사이드 일정 앱입니다.
 
-현재 상태: 핵심 기능 구현과 안정화가 완료되었고, 테스트 및 프로덕션 빌드가 통과합니다. 개발 모드에서만 샘플 일정이 생성되며 운영 빌드에는 샘플 데이터가 포함되지 않습니다.
+현재 상태: 핵심 기능 구현과 안정화가 완료되었고, 테스트 및 프로덕션 빌드가 통과합니다. 개발 모드에서만 샘플 일정이 생성되며 운영 빌드에는 샘플 데이터가 포함되지 않습니다. 자연어 입력은 다음 주/이번 주 요일과 월·일을 계산하고, 날짜가 빠진 다음 주·다음 달·특정 월 입력은 확인창에서 구체적인 날짜와 시간을 다시 받습니다.
 
 모바일 만료 알림은 유지형 OS 알림, 반복 진동, `알림 종료` 모달을 사용합니다. 모바일에서는 캘린더 중심 화면과 하단 탭을 사용하고, PC 레이아웃은 기존 우측 탭과 생산성 정보를 유지합니다.
 
@@ -17,7 +17,7 @@ CHRONOS는 자연어로 일정을 입력하고 카운트다운, 반복 일정, �
 ### 🛠 Development
 ```bash
 npm.cmd install
-npm.cmd test                                    # Vitest + jsdom, 현재 96개 테스트
+npm.cmd test                                    # Vitest + jsdom, 현재 99개 테스트
 npm.cmd run build                               # Vite production bundle validation
 ```
 
@@ -46,7 +46,7 @@ npm.cmd run preview -- --port 5187
 
 배포 주소: `https://personarpggg.github.io/TodoList/`
 
-### 🧱 Module Map (v0.5.3)
+### 🧱 Module Map (v0.5.4)
 ```
 js/
 ├─ main.js            entry: boot, 1s clock, SW registration
@@ -68,7 +68,7 @@ Rules enforced by `tests/architecture.test.js`: core/data never touch the DOM or
 - **Data integrity**: collision-free ids (`crypto.randomUUID`) with automatic repair of duplicate ids from older versions; backup import validated before any write.
 - **Alerts**: expired-task notification fires once per task/time instead of every second; delivered via the service worker when available.
 - **Offline/PWA**: service worker is actually registered now; cache list includes every module and fonts.
-- **Parser**: no more false matches on bare numbers ("Review 3 PRs"); supports `1시간 30분 뒤`, `3pm`, `3:30pm`, `3시반`, `모레`, `in 45 minutes`.
+- **Parser**: no more false matches on bare numbers ("Review 3 PRs"); supports `1시간 30분 뒤`, `3pm`, `3:30pm`, `3시반`, `모레`, `in 45 minutes`, next-week weekdays, and month/day phrases.
 - **Daily routines**: missed daily runs roll forward instead of staying overdue forever; year-safe day comparison.
 - **i18n**: modal buttons, calendar month/weekdays, effects, alerts and dates follow the selected language.
 - **Mobile**: `100dvh` layout, safe-area insets, swipe ignores horizontal chip rows/inputs, ESC/backdrop closes modals, reduced-motion support.
@@ -81,7 +81,9 @@ Rules enforced by `tests/architecture.test.js`: core/data never touch the DOM or
 - 서비스 워커 기반 PWA 캐시와 개발 모드 SW 해제 처리 완료
 - 입력값 escaping, 중복 ID 복구, 만료 알림 중복 방지 완료
 - 모바일 safe-area, `100dvh`, 스와이프·모달·ESC·reduced-motion 대응 완료
-- `npm.cmd test` 96개 통과, `npm.cmd run build` 성공
+- `npm.cmd test` 99개 통과, `npm.cmd run build` 성공
+- 일정 목록은 모바일에서도 캘린더 아래에 표시되며 날짜/시간을 누르면 편집창에서 예약 시간이 열림
+- 모호한 자연어 입력은 일정 등록 전에 정확한 날짜·시간을 재확인
 
 ### 🚀 배포 전 체크리스트
 

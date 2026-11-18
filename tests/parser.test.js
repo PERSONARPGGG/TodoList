@@ -81,4 +81,23 @@ describe('Store.parseQuickInput (now = 2026-11-13 14:00 KST)', () => {
         const r = store.parseQuickInput('30분 뒤 x', other);
         expect(r.time).toBe(new Date(other.getTime() + 30 * 60000).toISOString());
     });
+
+    it('resolves next week weekday and Korean afternoon time', () => {
+        const r = parse('다음주 월요일 오후 5시 약속 일정 잡아줘');
+        expect(r.title).toBe('약속');
+        expect(r.time).toBe(at('2026-11-16T17:00:00+09:00'));
+        expect(r.needsClarification).toBeUndefined();
+    });
+
+    it('asks for a concrete day when only a week is provided', () => {
+        const r = parse('다음주 약속 잡아줘');
+        expect(r.needsClarification).toBe(true);
+        expect(r.time).toBeNull();
+    });
+
+    it('asks for a concrete day when only a month is provided', () => {
+        const r = parse('다음달 회의');
+        expect(r.needsClarification).toBe(true);
+        expect(r.time).toBeNull();
+    });
 });

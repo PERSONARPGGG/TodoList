@@ -31,7 +31,42 @@ export function parseQuickInput(text, now = new Date()) {
     else if (take(/(?<=\s)(?:내일|tomorrow|tmrw?)(?=\s)/i) || take(/(?<=\s)내일/)) dayOffset = 1;
     else take(/(?<=\s)(?:오늘|today)(?=\s)/i);
 
-    // 3. Relative offsets
+    // 3. Calendar phrases (week/month/day). Keep these separate from offsets
+    // so "next Monday" resolves to the calendar week the user meant.
+    let calendarDate = null;
+    let calendarNeedsClarification = false;
+    let weekday = null;
+    const weekdayMap = {
+        '일요일': 0, '일': 0, sunday: 0, sun: 0,
+        '월요일': 1, '월': 1, monday: 1, mon: 1,
+        '화요일': 2, '화': 2, tuesday: 2, tue: 2, tues: 2,
+        '수요일': 3, '수': 3, wednesday: 3, wed: 3,
+        '목요일': 4, '목': 4, thursday: 4, thu: 4, thurs: 4,
+        '금요일': 5, '금': 5, friday: 5, fri: 5,
+        '토요일': 6, '토': 6, saturday: 6, sat: 6
+    };
+    const weekPhrase = take(/(?<=\s)(다음주|이번주|next\s+week|this\s+week)(?=\s)/i);
+    const weekdayPhrase = take(/(?<=\s)(일요일|월요일|화요일|수요일|목요일|금요일|토요일|일|월|화|수|목|금|토|sunday|monday|tuesday|wednesday|thursday|friday|saturday|sun|mon|tue|wed|thu|fri|sat)(?=\s)/i);
+    if (weekdayPhrase) weekday = weekdayMap[weekdayPhrase[1].toLowerCase()];
+
+    const monthDay = take(/(?<=\s)(\d{1,2})월\s*(\d{1,2})일(?=\s)/);
+    const monthPhrase = !monthDay && take(/(?<=\s)(다음달|이번달|next\s+month|this\s+month|\d{1,2}월|january|february|march|april|may|june|july|august|september|october|november|december)(?=\s)/i);
+    if (monthDay) {
+        const month = Number(monthDay[1]);
+        const day = Number(monthDay[2]);
+        if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+            calendarDate = new Date(now);
+            calendarDate.setMonth(month - 1, day);
+            if (calendarDate < now) calendarDate.setFullYear(calendarDate.getFullYear() + 1);
+        }
+    } else if (monthPhrase && !weekdayPhrase) {
+        calendarNeedsClarification = true;
+    }
+
+    // "next week" without a concrete weekday/date is intentionally ambiguous.
+    if (weekPhrase && !weekdayPhrase) calendarNeedsClarification = true;
+
+    // 4. Relative offsets
     let relativeMs = null;
     const toMs = (h, m) => (parseInt(h || '0', 10) * HOUR) + (parseInt(m || '0', 10) * MINUTE);
     const koRel = take(/(?<=\s)(?:(\d+)\s*시간(?:\s*(\d+)\s*분)?|(\d+)\s*분)\s*(?:뒤|후)(?:에)?(?=\s)/);
@@ -46,7 +81,7 @@ export function parseQuickInput(text, now = new Date()) {
         if (enRel) relativeMs = toMs(enRel[1], enRel[2] || enRel[3]);
     }
 
-    // 4. Absolute clock time (only when no relative offset)
+    // 5. Absolute clock time (only when no relative offset)
     let clock = null; // { hour, minute, explicitMeridiem }
     if (relativeMs === null) {
         const applyMeridiem = (hour, mer) => {
@@ -76,9 +111,33 @@ export function parseQuickInput(text, now = new Date()) {
         }
     }
 
-    // 5. Resolve target time
+    // 6. Resolve target time
     let target;
-    if (relativeMs !== null) {
+    if (calendarNeedsClarification) {
+        const title = s.replace(/\s+/g, ' ').trim();
+        return {
+            title: cleanTitle(title) || 'Quick Objective',
+            time: null,
+            isDaily,
+            needsClarification: true,
+            clarification: 'Please provide the exact day and time for this schedule.'
+        };
+    } else if (calendarDate) {
+        target = new Date(calendarDate);
+        if (clock) target.setHours(clock.hour, clock.minute, 0, 0);
+        else target.setHours(9, 0, 0, 0);
+    } else if (weekday !== null) {
+        target = new Date(now);
+        const currentDay = target.getDay();
+        let days = (weekday - currentDay + 7) % 7;
+        if (days === 0) days = 7;
+        if (weekPhrase && /다음주|next\s+week/i.test(weekPhrase[1])) {
+            const mondayOffset = (1 - currentDay + 7) % 7;
+            days = (mondayOffset || 7) + (weekday - 1 + 7) % 7;
+        }
+        target.setDate(target.getDate() + days);
+        target.setHours(clock?.hour ?? 9, clock?.minute ?? 0, 0, 0);
+    } else if (relativeMs !== null) {
         target = new Date(now.getTime() + relativeMs + dayOffset * 24 * HOUR);
     } else if (clock) {
         target = new Date(now);
@@ -105,10 +164,18 @@ export function parseQuickInput(text, now = new Date()) {
         target = new Date(now.getTime() + HOUR);
     }
 
-    const title = s.replace(/\s+/g, ' ').trim();
+    const title = cleanTitle(s.replace(/\s+/g, ' ').trim());
     return {
         title: title || 'Quick Objective',
         time: target.toISOString(),
         isDaily
     };
+}
+
+function cleanTitle(value) {
+    return value
+        .replace(/^(?:일정|schedule)\s*/i, '')
+        .replace(/\s+(?:일정\s*)?(?:잡아줘|잡아|등록해줘|등록|추가해줘|추가|예약해줘|예약)\s*$/i, '')
+        .replace(/\s+/g, ' ')
+        .trim();
 }

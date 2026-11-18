@@ -882,10 +882,18 @@ body {
         padding-bottom: calc(4.75rem + env(safe-area-inset-bottom)) !important;
     }
 
-    #schedule-task-list-wrap,
     #cal-filter-banner,
     #btn-clear-calendar-completed {
         display: none !important;
+    }
+
+    /* Keep the newly-added schedule visible below the compact calendar. */
+    #schedule-task-list-wrap {
+        display: block !important;
+        flex: 0 0 auto;
+        max-height: 15rem;
+        overflow-y: auto;
+        padding-bottom: 0.5rem;
     }
 
     .dashboard-schedule {

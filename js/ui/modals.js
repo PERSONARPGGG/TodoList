@@ -3,13 +3,14 @@
  */
 import { $ } from './dom.js';
 
-export const MODAL_IDS = ['add-modal', 'delay-custom-modal', 'add-link-modal', 'edit-goal-modal', 'system-alert-modal', 'clear-completed-modal'];
+export const MODAL_IDS = ['add-modal', 'delay-custom-modal', 'add-link-modal', 'edit-goal-modal', 'system-alert-modal', 'clear-completed-modal', 'quick-clarification-modal'];
 
 /** Which button Enter in a single-line input should press, per modal. */
 const SUBMIT_BUTTON = {
     'add-modal': 'btn-save',
     'delay-custom-modal': 'btn-confirm-custom-delay',
-    'add-link-modal': 'btn-save-link'
+    'add-link-modal': 'btn-save-link',
+    'quick-clarification-modal': 'btn-confirm-quick-clarification'
 };
 
 export class ModalManager {

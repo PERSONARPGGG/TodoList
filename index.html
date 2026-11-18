@@ -397,6 +397,21 @@
         </div>
     </div>
 
+    <div id="quick-clarification-modal" role="dialog" aria-modal="true" aria-labelledby="quick-clarification-title" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
+        <div class="w-full max-w-sm bg-black border border-blue-500/70 p-5 shadow-2xl relative rounded-lg system-alert-card">
+            <div class="flex items-center gap-2 mb-3">
+                <span class="text-blue-400 font-mono" aria-hidden="true">?</span>
+                <h3 id="quick-clarification-title" data-i18n="quickClarificationTitle" class="text-sm font-bold uppercase tracking-wider text-blue-400">일정 시간 확인</h3>
+            </div>
+            <p id="quick-clarification-message" class="text-sm text-gray-200 leading-relaxed mb-3"></p>
+            <input id="input-quick-clarification" data-i18n-placeholder="quickClarificationPlaceholder" type="text" class="chronos-input w-full" autocomplete="off" placeholder="예: 다음주 월요일 오후 5시">
+            <div class="flex justify-end gap-2 mt-5">
+                <button id="btn-cancel-quick-clarification" data-i18n="btnAbort" class="persona-btn text-xs py-1.5 px-4">취소</button>
+                <button id="btn-confirm-quick-clarification" data-i18n="quickClarificationConfirm" class="persona-btn text-xs py-1.5 px-4 border-blue-500 text-blue-300">등록</button>
+            </div>
+        </div>
+    </div>
+
     <div id="clear-completed-modal" role="dialog" aria-modal="true" aria-labelledby="clear-completed-title" class="fixed inset-0 bg-black/90 z-50 flex items-center justify-center hidden opacity-0 transition-opacity duration-150 p-4">
         <div class="w-full max-w-sm bg-black border border-yellow-500/70 p-5 shadow-2xl relative rounded-lg system-alert-card">
             <div class="flex items-center gap-2 mb-3">
@@ -411,6 +426,6 @@
         </div>
     </div>
 
-    <script type="module" src="js/main.js?v=0.5.3"></script>
+    <script type="module" src="js/main.js?v=0.5.4"></script>
 </body>
 </html>

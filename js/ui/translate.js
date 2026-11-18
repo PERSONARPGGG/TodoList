@@ -29,7 +29,8 @@ export const TEXT_BINDINGS = [
     ['modal-portal-title', 'modalPortalTitle'], ['btn-cancel-link', 'btnCancel'], ['btn-save-link', 'btnStoreLink'],
     ['edit-goal-title', 'modalGoalTitle'], ['btn-cancel-goal', 'btnCancel'], ['btn-save-goal', 'btnUpdate']
     ,['system-alert-title', 'systemAlertTitle'], ['btn-close-system-alert', 'btnAcknowledge'],
-    ['clear-completed-title', 'clearCompletedTitle'], ['clear-completed-message', 'clearCompletedMessage'], ['btn-cancel-clear-completed', 'btnCancel'], ['btn-confirm-clear-completed', 'confirmClearCompleted']
+    ['clear-completed-title', 'clearCompletedTitle'], ['clear-completed-message', 'clearCompletedMessage'], ['btn-cancel-clear-completed', 'btnCancel'], ['btn-confirm-clear-completed', 'confirmClearCompleted'],
+    ['quick-clarification-title', 'quickClarificationTitle'], ['btn-cancel-quick-clarification', 'btnAbort'], ['btn-confirm-quick-clarification', 'quickClarificationConfirm']
 ];
 
 
@@ -50,6 +51,8 @@ export function applyStaticTranslations() {
 
     const quickInput = $('input-quick-cmd');
     if (quickInput) quickInput.placeholder = i18n.t('quickPlaceholder');
+    const clarificationInput = $('input-quick-clarification');
+    if (clarificationInput) clarificationInput.placeholder = i18n.t('quickClarificationPlaceholder');
 
     [['input-task', 'placeholderTaskTitle'], ['input-link-title', 'placeholderPortalTitle'], ['input-link-url', 'placeholderPortalUrl']]
         .forEach(([id, key]) => { const input = $(id); if (input) input.placeholder = i18n.t(key); });

@@ -29,6 +29,7 @@ export class TaskListView {
     constructor(ui) {
         this.ui = ui;
         this.editingTaskId = null;
+        this.pendingQuickInput = null;
     }
 
     get store() {
@@ -42,15 +43,34 @@ export class TaskListView {
             const text = quickInput.value.trim();
             if (!text) return;
             const parsed = this.store.parseQuickInput(text);
-            this.store.addTask({
-                title: parsed.title,
-                time: parsed.time,
-                isDaily: parsed.isDaily,
-                type: parsed.isDaily ? 'critical' : 'normal'
-            });
+            if (parsed.needsClarification) {
+                this.pendingQuickInput = text;
+                $('quick-clarification-message').textContent = i18n.t('quickClarificationMessage');
+                $('input-quick-clarification').value = '';
+                this.ui.modals.open($('quick-clarification-modal'), $('input-quick-clarification'));
+                return;
+            }
+            this.addParsedTask(parsed);
             quickInput.value = '';
-            playSlashEffect(i18n.t('fxEngaged'));
-            this.ui.refresh();
+        });
+
+        $('btn-cancel-quick-clarification')?.addEventListener('click', () => {
+            this.pendingQuickInput = null;
+            this.ui.modals.close($('quick-clarification-modal'));
+        });
+        $('btn-confirm-quick-clarification')?.addEventListener('click', () => {
+            const detail = $('input-quick-clarification').value.trim();
+            if (!this.pendingQuickInput || !detail) return;
+            const original = this.store.parseQuickInput(this.pendingQuickInput);
+            const parsed = this.store.parseQuickInput(`${detail} ${original.title}`);
+            if (parsed.needsClarification) {
+                $('quick-clarification-message').textContent = i18n.t('quickClarificationMessage');
+                return;
+            }
+            this.addParsedTask(parsed);
+            $('input-quick-cmd').value = '';
+            this.pendingQuickInput = null;
+            this.ui.modals.close($('quick-clarification-modal'));
         });
 
         document.querySelectorAll('#task-filter-chips .task-chip').forEach(chip => {
@@ -89,6 +109,17 @@ export class TaskListView {
         });
 
         this.bindDetailModal();
+    }
+
+    addParsedTask(parsed) {
+        this.store.addTask({
+            title: parsed.title,
+            time: parsed.time,
+            isDaily: parsed.isDaily,
+            type: parsed.isDaily ? 'critical' : 'normal'
+        });
+        playSlashEffect(i18n.t('fxEngaged'));
+        this.ui.refresh();
     }
 
     bindDetailModal() {
@@ -199,7 +230,7 @@ export class TaskListView {
 
                     <div class="min-w-0 flex-1">
                         <div class="flex items-center gap-1.5 flex-wrap mb-0.5">
-                            <span class="text-[10px] font-mono text-gray-400 font-bold uppercase tracking-wider">${escapeHTML(fmt.format(taskDate))}</span>
+                            <button type="button" data-action="open-task" data-id="${id}" class="text-[10px] font-mono text-gray-400 hover:text-white font-bold uppercase tracking-wider text-left" aria-label="${escapeHTML(`${task.title} ${fmt.format(taskDate)}`)}">${escapeHTML(fmt.format(taskDate))}</button>
                             ${relativeBadge}
                             ${task.isDaily ? `<span class="text-[9px] font-mono bg-yellow-950/80 border border-yellow-700 text-yellow-300 px-1.5 rounded font-black">${escapeHTML(i18n.t('tagDaily'))}</span>` : ''}
                             ${task.delayCount > 0 ? `<span class="text-[9px] font-mono bg-red-950/80 border border-red-800 text-red-300 px-1 rounded">+${Number(task.delayCount)}D</span>` : ''}
