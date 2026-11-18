@@ -94,6 +94,7 @@ export default {
     preAlertBody: (t, m) => `${t} · ${m} min left`,
     systemAlertTitle: 'SYSTEM MESSAGE',
     btnAcknowledge: 'OK',
+    alertStop: 'STOP ALERT',
     clearCompletedTitle: 'CLEAR COMPLETED',
     clearCompletedMessage: 'Remove all completed tasks?',
     confirmClearCompleted: 'CLEAR',

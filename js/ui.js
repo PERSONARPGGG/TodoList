@@ -25,7 +25,7 @@ import { IntelView } from './ui/intel.js';
 import { LinksView } from './ui/links.js';
 import { applyStaticTranslations } from './ui/translate.js';
 import { playIntroAnimation, playSlashEffect } from './ui/effects.js';
-import { deliverAlert, renderPushBadge, requestPermission } from './ui/notifications.js';
+import { deliverAlert, renderPushBadge, requestPermission, stopDueAlert } from './ui/notifications.js';
 import { $, activateOnKey } from './ui/dom.js';
 
 export class UI {
@@ -85,7 +85,10 @@ export class UI {
         activateOnKey(hourglass, () => hourglass.click());
 
         $('btn-request-notify')?.addEventListener('click', () => requestPermission((message) => this.showAlert(message)));
-        $('btn-close-system-alert')?.addEventListener('click', () => this.modals.close($('system-alert-modal')));
+        $('btn-close-system-alert')?.addEventListener('click', () => {
+            stopDueAlert();
+            this.modals.close($('system-alert-modal'));
+        });
     }
 
     onTabShown(viewId) {
@@ -140,14 +143,21 @@ export class UI {
     playSlashEffect(message) { playSlashEffect(message); }
     initNotificationState() { renderPushBadge(); }
     requestNotificationPermission() { requestPermission((message) => this.showAlert(message)); }
-    showAlert(message, title = null) {
+    showAlert(message, title = null, isDueAlert = false) {
         const modal = $('system-alert-modal');
         if (!modal) return;
         $('system-alert-title').textContent = title || i18n.t('systemAlertTitle');
         $('system-alert-message').textContent = message;
+        $('btn-close-system-alert').textContent = i18n.t(isDueAlert ? 'alertStop' : 'btnAcknowledge');
         this.modals.open(modal, $('btn-close-system-alert'));
     }
-    triggerAlert(title, minutesLeft = null) { deliverAlert(title, minutesLeft); }
+    triggerAlert(title, minutesLeft = null) {
+        deliverAlert(title, minutesLeft);
+        const isMobile = window.matchMedia?.('(max-width: 767px)').matches ?? window.innerWidth <= 767;
+        if (minutesLeft === null && isMobile) {
+            this.showAlert(i18n.fn('alertBody', title), i18n.t('alertTitle'), true);
+        }
+    }
 
     // Pre-0.5.2 field names, mapped onto shared state.
     get calYear() { return this.state.calYear; }

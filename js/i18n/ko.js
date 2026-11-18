@@ -94,6 +94,7 @@ export default {
     preAlertBody: (t, m) => `${t} · ${m}분 뒤`,
     systemAlertTitle: '시스템 메시지',
     btnAcknowledge: '확인',
+    alertStop: '알림 종료',
     clearCompletedTitle: '완료 일정 비우기',
     clearCompletedMessage: '완료한 일정을 모두 삭제할까요?',
     confirmClearCompleted: '비우기',

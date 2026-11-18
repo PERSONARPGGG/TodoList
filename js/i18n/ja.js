@@ -94,6 +94,7 @@ export default {
     preAlertBody: (t, m) => `${t} · ${m}分後に開始`,
     systemAlertTitle: 'システムメッセージ',
     btnAcknowledge: '確認',
+    alertStop: '通知を停止',
     clearCompletedTitle: '完了済みを削除',
     clearCompletedMessage: '完了した予定をすべて削除しますか？',
     confirmClearCompleted: '削除',

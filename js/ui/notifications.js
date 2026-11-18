@@ -5,6 +5,32 @@ import { i18n } from '../i18n.js';
 import { $ } from './dom.js';
 
 let permissionRequest = null;
+let dueVibrationTimer = null;
+
+const DUE_VIBRATION_PATTERN = [900, 250, 900, 650];
+
+function startDueVibration() {
+    stopDueAlert(false);
+    const pulse = () => navigator.vibrate?.(DUE_VIBRATION_PATTERN);
+    pulse();
+    dueVibrationTimer = setInterval(pulse, 2700);
+}
+
+/** Stop the repeating mobile due-alert feedback and close its persistent notification. */
+export function stopDueAlert(closeNotification = true) {
+    if (dueVibrationTimer !== null) {
+        clearInterval(dueVibrationTimer);
+        dueVibrationTimer = null;
+    }
+    navigator.vibrate?.(0);
+    if (closeNotification) {
+        const registrationPromise = navigator.serviceWorker?.getRegistration?.();
+        registrationPromise?.then(registration =>
+            registration?.getNotifications?.({ tag: 'chronos-alert' })
+                .then(notifications => notifications.forEach(notification => notification.close()))
+        ).catch(() => {});
+    }
+}
 
 /**
  * Prefer the service-worker registration (required on Android Chrome, where `new Notification`
@@ -35,7 +61,8 @@ export function deliverAlert(title, minutesLeft = null) {
             tag: pre ? 'chronos-pre-alert' : 'chronos-alert'
         });
     }
-    if (navigator.vibrate) navigator.vibrate(pre ? [80] : [200, 100, 200]);
+    if (pre) navigator.vibrate?.([80]);
+    else startDueVibration();
 }
 
 export function renderPushBadge() {

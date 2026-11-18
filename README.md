@@ -4,6 +4,8 @@ CHRONOS는 자연어로 일정을 입력하고 카운트다운, 반복 일정, �
 
 현재 상태: 핵심 기능 구현과 안정화가 완료되었고, 테스트 및 프로덕션 빌드가 통과합니다. 개발 모드에서만 샘플 일정이 생성되며 운영 빌드에는 샘플 데이터가 포함되지 않습니다.
 
+모바일 만료 알림은 유지형 OS 알림, 반복 진동, `알림 종료` 모달을 사용합니다. 모바일에서는 캘린더 중심 화면과 하단 탭을 사용하고, PC 레이아웃은 기존 우측 탭과 생산성 정보를 유지합니다.
+
 ## 🤖 Dedicated AI Agents & Governance
 1. `persona-stylist`: Motion director for Persona 4/5 comic-book panels, skewed angles, and kinetic 3D micro-animations.
 2. `nlp-fast-parser`: Natural language parser for Korean/English expressions ("매일 08:00", "30분 뒤") and recurring routine engines.
