@@ -38,6 +38,12 @@ npm.cmd run build
 npm.cmd run preview -- --port 5187
 ```
 
+### GitHub Pages 배포
+
+`main` 브랜치에 push하면 `.github/workflows/deploy.yml`이 테스트와 프로덕션 빌드를 실행한 뒤 GitHub Pages에 `dist`를 자동 배포합니다. 프로젝트 사이트 경로(`/TodoList/`)를 지원하도록 빌드 asset은 상대 경로로 생성됩니다.
+
+배포 주소: `https://personarpggg.github.io/TodoList/`
+
 ### 🧱 Module Map (v0.5.2)
 ```
 js/

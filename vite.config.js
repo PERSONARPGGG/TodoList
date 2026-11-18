@@ -18,6 +18,8 @@ function serviceWorkerPlugin() {
 }
 
 export default defineConfig({
+    // Relative assets work both at localhost root and GitHub Pages project paths (/TodoList/).
+    base: './',
     plugins: [serviceWorkerPlugin()],
     server: {
         host: '127.0.0.1',
