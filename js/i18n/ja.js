@@ -44,6 +44,7 @@ export default {
     navIntel: "情報",
     navNetwork: "回線",
     modalAddTitle: "タスク詳細登録",
+    modalEditTitle: "タスクを編集",
     labelTitle: "タスク名",
     labelTarget: "予定日時",
     labelRepeatDaily: "毎日アラーム設定",

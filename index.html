@@ -357,12 +357,10 @@
             <div class="space-y-3">
                 <input type="text" id="input-link-title" placeholder="Portal Title (e.g. Gemini AI Studio)" class="chronos-modal-input">
                 <input type="text" id="input-link-url" placeholder="URL (e.g. https://aistudio.google.com)" class="chronos-modal-input">
-                <select id="input-link-cat" class="chronos-modal-input">
-                    <option value="DEV">DEV</option>
-                    <option value="AI">AI</option>
-                    <option value="FINANCE">FINANCE</option>
-                    <option value="OPS">OPS</option>
-                </select>
+                <input type="text" id="input-link-cat" list="link-category-options" placeholder="Category (e.g. DEV, STUDY)" class="chronos-modal-input" autocomplete="off">
+                <datalist id="link-category-options">
+                    <option value="DEV"></option><option value="AI"></option><option value="FINANCE"></option><option value="OPS"></option>
+                </datalist>
             </div>
             <div class="flex justify-end gap-2 mt-6">
                 <button id="btn-cancel-link" class="text-gray-500 text-xs uppercase px-3 py-1.5 font-bold hover:text-white">Cancel</button>
@@ -426,6 +424,6 @@
         </div>
     </div>
 
-    <script type="module" src="js/main.js?v=0.5.4"></script>
+    <script type="module" src="js/main.js?v=0.5.5"></script>
 </body>
 </html>

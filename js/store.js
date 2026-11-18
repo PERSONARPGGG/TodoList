@@ -57,6 +57,7 @@ export class Store {
     /* ---------- Links ---------- */
     getLinks() { return this.repos.links.getAll(); }
     addLink(title, category, url) { return this.repos.links.add(title, category, url); }
+    updateLink(id, patch) { return this.repos.links.update(id, patch); }
     deleteLink(id) { this.repos.links.remove(id); }
 
     /* ---------- Settings ---------- */

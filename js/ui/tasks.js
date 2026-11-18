@@ -126,6 +126,7 @@ export class TaskListView {
         const modal = $('add-modal');
         $('btn-add')?.addEventListener('click', () => {
             this.editingTaskId = null;
+            $('modal-add-title').textContent = i18n.t('modalAddTitle');
             const tzoffset = new Date().getTimezoneOffset() * 60000;
             $('input-time').value = new Date(Date.now() - tzoffset + 3600000).toISOString().slice(0, 16);
             $('input-task').value = '';
@@ -155,6 +156,7 @@ export class TaskListView {
         const task = this.store.getTasks().find(t => t.id === id);
         if (!task) return;
         this.editingTaskId = id;
+        $('modal-add-title').textContent = i18n.t('modalEditTitle');
         const tzoffset = new Date().getTimezoneOffset() * 60000;
         $('input-task').value = task.title;
         $('input-time').value = new Date(new Date(task.time).getTime() - tzoffset).toISOString().slice(0, 16);

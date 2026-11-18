@@ -44,6 +44,7 @@ export default {
     navIntel: "정보",
     navNetwork: "네트워크",
     modalAddTitle: "일정 추가",
+    modalEditTitle: "일정 수정",
     labelTitle: "일정 이름",
     labelTarget: "시간",
     labelRepeatDaily: "매일 반복",

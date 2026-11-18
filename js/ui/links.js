@@ -12,6 +12,7 @@ export class LinksView {
     /** @param {import('../ui.js').UI} ui */
     constructor(ui) {
         this.ui = ui;
+        this.editingLinkId = null;
     }
 
     get store() {
@@ -32,9 +33,19 @@ export class LinksView {
             this.store.deleteLink(btn.dataset.id);
             this.render();
         });
+        delegate($('link-list'), '[data-action="edit-link"]', (btn) => {
+            const link = this.store.getLinks().find(item => item.id === btn.dataset.id);
+            if (!link) return;
+            this.editingLinkId = link.id;
+            $('input-link-title').value = link.title;
+            $('input-link-url').value = link.url === '#' ? '' : link.url;
+            $('input-link-cat').value = link.category;
+            this.ui.modals.open($('add-link-modal'), $('input-link-title'));
+        });
 
         const modal = $('add-link-modal');
         $('btn-add-link')?.addEventListener('click', () => {
+            this.editingLinkId = null;
             $('input-link-title').value = '';
             $('input-link-url').value = '';
             this.ui.modals.open(modal, $('input-link-title'));
@@ -44,7 +55,10 @@ export class LinksView {
             const title = $('input-link-title').value.trim();
             const url = $('input-link-url').value.trim();
             if (!title || !url) return;
-            this.store.addLink(title, $('input-link-cat').value, url);
+            const category = $('input-link-cat').value.trim();
+            if (this.editingLinkId) this.store.updateLink(this.editingLinkId, { title, category, url });
+            else this.store.addLink(title, category, url);
+            this.editingLinkId = null;
             this.render();
             this.ui.modals.close(modal);
         });
@@ -76,9 +90,12 @@ export class LinksView {
                     <h4 class="font-bold text-white text-sm group-hover:text-yellow-300 transition-colors truncate">${escapeHTML(link.title)}</h4>
                     <span class="text-[11px] font-mono text-gray-500 block truncate">${href}</span>
                 </a>
+                <div class="flex shrink-0 items-center">
+                <button data-action="edit-link" data-id="${escapeHTML(link.id)}" aria-label="Edit ${escapeHTML(link.title)}" class="text-gray-600 hover:text-yellow-300 p-2 transition-colors">✎</button>
                 <button data-action="delete-link" data-id="${escapeHTML(link.id)}" aria-label="${deleteLabel}: ${escapeHTML(link.title)}" class="text-gray-600 hover:text-red-500 p-2 transition-colors">
                     <svg class="w-4 h-4 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                 </button>
+                </div>
             </div>
         `;
         }).join('');

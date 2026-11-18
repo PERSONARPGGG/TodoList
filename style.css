@@ -539,6 +539,13 @@ body {
     animation: persona-slash 0.75s ease-out forwards;
 }
 
+/* Action feedback stays centered but slightly above the visual midpoint so it
+   remains clear of the mobile bottom navigation and browser chrome. */
+#date-transition {
+    align-items: flex-start !important;
+    padding-top: 32vh;
+}
+
 /* Rank S / A / B / C Stamp */
 .rank-stamp {
     font-family: 'Bebas Neue', cursive;
@@ -721,6 +728,18 @@ body {
     }
 }
 
+/* Final mobile calendar sizing override. */
+@media (max-width: 767px) {
+    .dashboard-schedule #calendar-widget {
+        height: 28rem !important;
+        min-height: 28rem !important;
+    }
+    .dashboard-schedule .cal-cell {
+        height: 2.75rem !important;
+        min-height: 2.75rem !important;
+    }
+}
+
 /* Short mobile viewports cannot fit the hero, a readable calendar, and intelligence cards
    inside one fixed 100dvh frame. Let the document grow here so the calendar is not clipped. */
 @media (max-width: 767px) and (max-height: 700px) {
@@ -896,6 +915,16 @@ body {
         padding-bottom: 0.5rem;
     }
 
+    .dashboard-schedule #calendar-widget {
+        height: 28rem !important;
+        min-height: 28rem !important;
+    }
+
+    .dashboard-schedule .cal-cell {
+        height: 2.75rem !important;
+        min-height: 2.75rem !important;
+    }
+
     .dashboard-schedule {
         grid-template-rows: auto auto auto !important;
         gap: 0.5rem;
@@ -976,5 +1005,17 @@ body {
         width: auto;
         height: 3px;
         transform: none !important;
+    }
+}
+
+@media (max-width: 767px) {
+    /* Keep six calendar rows comfortably readable on phones. */
+    .dashboard-schedule #calendar-widget {
+        height: 28rem !important;
+        min-height: 28rem !important;
+    }
+    .dashboard-schedule .cal-cell {
+        height: 2.75rem !important;
+        min-height: 2.75rem !important;
     }
 }

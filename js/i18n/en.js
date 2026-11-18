@@ -44,6 +44,7 @@ export default {
     navIntel: "Intel",
     navNetwork: "Network",
     modalAddTitle: "ADD TASK",
+    modalEditTitle: "EDIT TASK",
     labelTitle: "TASK NAME",
     labelTarget: "TIME",
     labelRepeatDaily: "REPEAT DAILY",

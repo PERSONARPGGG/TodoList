@@ -79,7 +79,7 @@ export class CalendarView {
 
         // Bucket tasks by day once instead of filtering the whole list for every cell.
         const byDay = new Map();
-        this.ui.store.getTasks().forEach(t => {
+        this.ui.store.getTasks().filter(t => !t.completed).forEach(t => {
             const td = new Date(t.time);
             if (td.getFullYear() !== year || td.getMonth() !== month) return;
             if (!byDay.has(td.getDate())) byDay.set(td.getDate(), []);
