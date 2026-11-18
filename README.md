@@ -1,4 +1,8 @@
-# ⚡️ CHRONOS // Tactical Objective Protocol (v0.5.2 Modular)
+# ⚡️ CHRONOS // Tactical Objective Protocol (v0.5.2)
+
+CHRONOS는 자연어로 일정을 입력하고 카운트다운, 반복 일정, 캘린더, 생산성 요약, PWA 오프라인 동작을 한 화면에서 관리하는 클라이언트 사이드 일정 앱입니다.
+
+현재 상태: 핵심 기능 구현과 안정화가 완료되었고, 테스트 및 프로덕션 빌드가 통과합니다. 개발 모드에서만 샘플 일정이 생성되며 운영 빌드에는 샘플 데이터가 포함되지 않습니다.
 
 ## 🤖 Dedicated AI Agents & Governance
 1. `persona-stylist`: Motion director for Persona 4/5 comic-book panels, skewed angles, and kinetic 3D micro-animations.
@@ -10,9 +14,28 @@
 
 ### 🛠 Development
 ```bash
-python -m http.server 5500 --bind 127.0.0.1   # http://localhost:5500/
-npm install && npm test                         # vitest + jsdom
-npm run build                                   # production bundle validation
+npm.cmd install
+npm.cmd test                                    # Vitest + jsdom, 현재 96개 테스트
+npm.cmd run build                               # Vite production bundle validation
+```
+
+PowerShell 실행 정책에 따라 `npm` 대신 `npm.cmd`를 사용해야 할 수 있습니다.
+
+### 개발 서버와 포트
+
+포트 충돌을 피하기 위해 실행 시 포트를 직접 지정합니다. `vite.config.js`의 기본 포트는 변경하지 않았습니다.
+
+```bash
+npm.cmd run dev -- --port 5187
+```
+
+브라우저에서 `http://127.0.0.1:5187/`로 접속합니다. 다른 로컬 서비스가 사용 중이면 `5187`을 비어 있는 포트로 바꿉니다.
+
+프로덕션 미리보기:
+
+```bash
+npm.cmd run build
+npm.cmd run preview -- --port 5187
 ```
 
 ### 🧱 Module Map (v0.5.2)
@@ -41,6 +64,24 @@ Rules enforced by `tests/architecture.test.js`: core/data never touch the DOM or
 - **Daily routines**: missed daily runs roll forward instead of staying overdue forever; year-safe day comparison.
 - **i18n**: modal buttons, calendar month/weekdays, effects, alerts and dates follow the selected language.
 - **Mobile**: `100dvh` layout, safe-area insets, swipe ignores horizontal chip rows/inputs, ESC/backdrop closes modals, reduced-motion support.
+
+### ✅ 현재 진행 상황
+
+- EN / KR / JP 언어 전환과 날짜·모달·알림 번역 완료
+- 자연어 일정 파싱, 일일 반복, 누락 실행일 보정 완료
+- localStorage 저장, JSON 백업/복원, 링크 검증 완료
+- 서비스 워커 기반 PWA 캐시와 개발 모드 SW 해제 처리 완료
+- 입력값 escaping, 중복 ID 복구, 만료 알림 중복 방지 완료
+- 모바일 safe-area, `100dvh`, 스와이프·모달·ESC·reduced-motion 대응 완료
+- `npm.cmd test` 96개 통과, `npm.cmd run build` 성공
+
+### 🚀 배포 전 체크리스트
+
+1. `npm.cmd test`
+2. `npm.cmd run build`
+3. 모바일 뷰포트에서 일정 추가, 언어 전환, 모달, 캘린더, 완료/삭제 동작 확인
+4. HTTPS 환경에서 서비스 워커와 알림 권한 확인
+5. 현재 데이터는 브라우저별 localStorage에 저장되므로 기기 간 동기화가 필요하면 별도 백엔드 또는 Notion 연동 구현
 
 ---
 

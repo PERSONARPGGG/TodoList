@@ -32,6 +32,8 @@ export class ChronosApp {
 
     /** Sample data only on the very first boot — not every time the list becomes empty. */
     seedOnce() {
+        // Demo tasks are useful during local development, but must never appear in production.
+        if (!import.meta.env?.DEV) return;
         if (has(STORAGE_KEYS.seeded)) return;
         writeString(STORAGE_KEYS.seeded, '1');
         if (this.store.getTasks().length > 0) return;
