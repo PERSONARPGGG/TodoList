@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chronos-v0.5.2'; // keep in sync with js/config.js APP_VERSION (checked by tests)
+const CACHE_NAME = 'chronos-v0.5.3'; // keep in sync with js/config.js APP_VERSION (checked by tests)
 const ASSETS = [
     './',
     './index.html',
