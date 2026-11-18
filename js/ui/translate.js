@@ -21,6 +21,7 @@ export const TEXT_BINDINGS = [
     ['label-backup-title', 'backupTitle'], ['btn-export-json', 'btnExport'], ['btn-import-json-trigger', 'btnRestore'],
     ['label-net-title', 'netTitle'], ['btn-add-link', 'btnAddPortal'],
     ['nav-text-schedule', 'navSchedule'], ['nav-text-intel', 'navIntel'], ['nav-text-network', 'navNetwork'],
+    ['label-install-app', 'installApp'],
     ['modal-add-title', 'modalAddTitle'], ['label-modal-title', 'labelTitle'], ['label-modal-target', 'labelTarget'],
     ['label-modal-daily', 'labelRepeatDaily'], ['label-modal-priority', 'labelPriority'], ['label-minutes', 'minutes'],
     ['btn-cancel', 'btnAbort'], ['btn-save', 'btnEngage'],

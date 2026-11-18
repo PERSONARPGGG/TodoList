@@ -58,6 +58,7 @@ export function deliverAlert(title, minutesLeft = null) {
         showNotification(i18n.t(pre ? 'preAlertTitle' : 'alertTitle'), {
             body: pre ? i18n.fn('preAlertBody', title, minutesLeft) : i18n.fn('alertBody', title),
             requireInteraction: !pre,
+            vibrate: pre ? [80] : DUE_VIBRATION_PATTERN,
             tag: pre ? 'chronos-pre-alert' : 'chronos-alert'
         });
     }

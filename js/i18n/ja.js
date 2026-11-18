@@ -96,6 +96,8 @@ export default {
     systemAlertTitle: 'システムメッセージ',
     btnAcknowledge: '確認',
     alertStop: '通知を停止',
+    installApp: 'アプリ追加',
+    installHelp: 'ブラウザメニューから「ホーム画面に追加」を選ぶとCHRONOSをアプリとして追加できます。',
     quickClarificationTitle: '予定時刻を確認',
     quickClarificationMessage: '具体的な日付と時刻を入力してください。',
     quickClarificationPlaceholder: '例：来週月曜日 午後5時',

@@ -7,12 +7,15 @@ import '../style.css';
 import { has, writeString } from './data/storage.js';
 import { Store } from './store.js';
 import { UI } from './ui.js';
+import { i18n } from './i18n.js';
 
 export class ChronosApp {
     constructor() {
         this.store = new Store();
         this.ui = new UI(this);
         this.timerInterval = null;
+        this.deferredInstallPrompt = null;
+        this.setupInstallPrompt();
         this.onVisibilityChange = () => {
             if (document.visibilityState === 'visible') this.ui.refresh();
         };
@@ -28,6 +31,34 @@ export class ChronosApp {
         document.removeEventListener('visibilitychange', this.onVisibilityChange);
         document.addEventListener('visibilitychange', this.onVisibilityChange);
         return this;
+    }
+
+    setupInstallPrompt() {
+        const button = document.getElementById('btn-install-app');
+        if (!button) return;
+        const isMobile = () => window.matchMedia?.('(max-width: 767px)').matches ?? false;
+        const isStandalone = () => window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
+        const sync = () => {
+            button.classList.toggle('hidden', !isMobile() || isStandalone());
+            button.classList.toggle('flex', isMobile() && !isStandalone());
+        };
+        window.addEventListener('beforeinstallprompt', (event) => {
+            event.preventDefault();
+            this.deferredInstallPrompt = event;
+            sync();
+        });
+        button.addEventListener('click', async () => {
+            if (!this.deferredInstallPrompt) {
+                this.ui.showAlert(i18n.t('installHelp'));
+                return;
+            }
+            this.deferredInstallPrompt.prompt();
+            await this.deferredInstallPrompt.userChoice;
+            this.deferredInstallPrompt = null;
+            sync();
+        });
+        window.addEventListener('resize', sync);
+        sync();
     }
 
     /** Sample data only on the very first boot — not every time the list becomes empty. */

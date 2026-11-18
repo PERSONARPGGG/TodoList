@@ -96,6 +96,8 @@ export default {
     systemAlertTitle: 'SYSTEM MESSAGE',
     btnAcknowledge: 'OK',
     alertStop: 'STOP ALERT',
+    installApp: 'INSTALL APP',
+    installHelp: 'Use your browser menu and choose "Add to Home screen" to install CHRONOS.',
     quickClarificationTitle: 'CONFIRM SCHEDULE TIME',
     quickClarificationMessage: 'Please provide the exact day and time.',
     quickClarificationPlaceholder: 'e.g. next Monday at 5pm',

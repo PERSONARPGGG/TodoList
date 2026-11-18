@@ -728,6 +728,12 @@ body {
     }
 }
 
+@media (min-width: 768px) {
+    #btn-install-app {
+        display: none !important;
+    }
+}
+
 /* Final mobile calendar sizing override. */
 @media (max-width: 767px) {
     .dashboard-schedule #calendar-widget {
@@ -1011,11 +1017,17 @@ body {
 @media (max-width: 767px) {
     /* Keep six calendar rows comfortably readable on phones. */
     .dashboard-schedule #calendar-widget {
-        height: 28rem !important;
-        min-height: 28rem !important;
+        height: auto !important;
+        min-height: 0 !important;
     }
     .dashboard-schedule .cal-cell {
-        height: 2.75rem !important;
-        min-height: 2.75rem !important;
+        height: clamp(2.35rem, 11vw, 3.2rem) !important;
+        min-height: clamp(2.35rem, 11vw, 3.2rem) !important;
+    }
+
+    .mobile-install-btn {
+        font-size: 0.65rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
     }
 }

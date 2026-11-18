@@ -96,6 +96,8 @@ export default {
     systemAlertTitle: '시스템 메시지',
     btnAcknowledge: '확인',
     alertStop: '알림 종료',
+    installApp: '앱 추가',
+    installHelp: '브라우저 메뉴에서 "홈 화면에 추가"를 선택하면 CHRONOS를 앱으로 설치할 수 있습니다.',
     quickClarificationTitle: '일정 시간 확인',
     quickClarificationMessage: '정확한 날짜와 시간을 입력해 주세요.',
     quickClarificationPlaceholder: '예: 다음주 월요일 오후 5시',

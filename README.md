@@ -1,4 +1,4 @@
-# ⚡️ CHRONOS // Tactical Objective Protocol (v0.5.5)
+# ⚡️ CHRONOS // Tactical Objective Protocol (v0.5.6)
 
 CHRONOS는 자연어로 일정을 입력하고 카운트다운, 반복 일정, 캘린더, 생산성 요약, PWA 오프라인 동작을 한 화면에서 관리하는 클라이언트 사이드 일정 앱입니다.
 
@@ -46,7 +46,7 @@ npm.cmd run preview -- --port 5187
 
 배포 주소: `https://personarpggg.github.io/TodoList/`
 
-### 🧱 Module Map (v0.5.5)
+### 🧱 Module Map (v0.5.6)
 ```
 js/
 ├─ main.js            entry: boot, 1s clock, SW registration
@@ -86,6 +86,8 @@ Rules enforced by `tests/architecture.test.js`: core/data never touch the DOM or
 - 모호한 자연어 입력은 일정 등록 전에 정확한 날짜·시간을 재확인
 - 완료된 일정은 캘린더 날짜 표시에서 제외되며, 네트워크 샘플 포털은 기본 비활성화
 - 네트워크 포털의 제목·주소·사용자 지정 카테고리를 직접 수정 가능
+- 모바일 상단에 PWA 앱 추가 버튼 제공; 설치 프롬프트 미지원 브라우저는 홈 화면 추가 안내 제공
+- 화면 꺼짐 진동은 OS의 알림·절전 정책에 좌우되므로 실제 기기에서 알림 권한과 배터리 예외를 확인해야 함
 
 ### 🚀 배포 전 체크리스트
 

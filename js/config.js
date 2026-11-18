@@ -2,7 +2,7 @@
  * Single source of truth for app-wide constants.
  * Every localStorage key lives here so modules can never collide on a key name.
  */
-export const APP_VERSION = '0.5.5';
+export const APP_VERSION = '0.5.6';
 
 export const STORAGE_KEYS = Object.freeze({
     tasks: 'chronos_objectives',
