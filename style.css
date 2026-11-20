@@ -797,18 +797,26 @@ input, textarea, select, .task-title, #link-list h4, #link-list span, #display-s
 
 /* Comfortable touch targets without making the tactical controls bulky. */
 .persona-btn {
-    min-height: 36px;
-    padding-inline: 0.85rem;
+    min-height: 40px;
+    padding-inline: 1rem;
+    font-size: clamp(0.72rem, 1.8vw, 0.82rem);
+    line-height: 1.1;
+    transition: transform 0.14s ease, filter 0.14s ease, background-color 0.14s ease;
 }
+.persona-btn:active { transform: translateY(1px) scale(0.98); }
 .task-chip,
 .filter-btn,
 #btn-cal-prev,
 #btn-cal-next,
 #btn-clear-date-filter {
-    min-height: 34px;
+    min-height: 40px;
 }
 .lang-btn { min-height: 32px; min-width: 36px; }
 html { touch-action: manipulation; }
+
+.task-card-persona .task-title { font-size: clamp(0.92rem, 2.2vw, 1rem); }
+#schedule-task-list-wrap.is-empty { height: auto !important; min-height: 0 !important; }
+#schedule-task-list-wrap.is-empty #task-list { min-height: 0 !important; }
 
 /* Final spacious layout override: the dashboard must grow with its content. */
 html,
@@ -890,6 +898,7 @@ body {
         overflow-y: auto;
         padding-bottom: 0.5rem;
     }
+    #schedule-task-list-wrap.is-empty { max-height: 7rem; overflow: visible; }
 
     .dashboard-schedule #calendar-widget {
         height: 28rem !important;
@@ -985,6 +994,13 @@ body {
 }
 
 @media (max-width: 767px) {
+    .chronos-input { min-height: 3rem; font-size: 16px !important; }
+    .persona-btn { min-height: 44px; }
+    .task-chip, .filter-btn, #btn-cal-prev, #btn-cal-next { min-height: 42px; font-size: 0.75rem; }
+    #task-filter-chips { gap: 0.35rem; }
+    #task-filter-chips .task-chip { padding-inline: 0.7rem; }
+    .fluid-hero-title { font-size: clamp(1.35rem, 6vw, 1.8rem); }
+    #countdown-timer { font-size: clamp(3.7rem, 17vw, 5.5rem); }
     /* Keep six calendar rows comfortably readable on phones. */
     .dashboard-schedule #calendar-widget {
         height: auto !important;

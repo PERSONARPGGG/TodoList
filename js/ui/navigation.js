@@ -3,7 +3,7 @@
  */
 import { $ } from './dom.js';
 
-export const TABS = ['view-schedule', 'view-info', 'view-settings', 'view-urls'];
+export const TABS = ['view-schedule', 'view-info', 'view-settings'];
 /** Touches starting here never switch tabs (chip rows scroll sideways, inputs select text). */
 const SWIPE_IGNORE = 'input, textarea, select, .overflow-x-auto, #calendar-widget';
 

@@ -191,6 +191,7 @@ export class TaskListView {
             .filter(FILTERS[taskFilter] || FILTERS.ALL);
 
         if (tasks.length === 0) {
+            list.parentElement?.classList.add('is-empty');
             list.innerHTML = `
                 <li class="p-6 text-center border border-dashed border-gray-900 rounded-lg">
                     <p class="font-bebas text-xl text-gray-700 tracking-wider">${escapeHTML(i18n.t('noDirectives'))}</p>
@@ -200,6 +201,7 @@ export class TaskListView {
             return;
         }
 
+        list.parentElement?.classList.remove('is-empty');
         const now = new Date();
         const fmt = new Intl.DateTimeFormat(i18n.locale(), {
             month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false
