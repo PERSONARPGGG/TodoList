@@ -546,36 +546,6 @@ body {
     padding-top: 32vh;
 }
 
-/* Rank S / A / B / C Stamp */
-.rank-stamp {
-    font-family: 'Bebas Neue', cursive;
-    font-size: 3.2rem;
-    line-height: 1;
-    display: inline-block;
-    padding: 0.15rem 0.6rem;
-    border: 2px solid;
-    border-radius: 4px;
-    transform: rotate(-8deg);
-}
-
-.rank-s {
-    color: var(--color-p-yellow);
-    border-color: var(--color-p-yellow);
-    text-shadow: 0 0 10px rgba(250, 204, 21, 0.5);
-}
-.rank-a {
-    color: var(--color-p-blue);
-    border-color: var(--color-p-blue);
-}
-.rank-b {
-    color: #ffffff;
-    border-color: #ffffff;
-}
-.rank-c {
-    color: var(--color-p-red);
-    border-color: var(--color-p-red);
-}
-
 /* Calendar Grid */
 .cal-grid {
     display: grid;

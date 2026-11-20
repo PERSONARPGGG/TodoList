@@ -66,6 +66,14 @@ export function deliverAlert(title, minutesLeft = null) {
     else startDueVibration();
 }
 
+export function deliverBriefing(briefing) {
+    if (!('Notification' in window) || Notification.permission !== 'granted') return;
+    const body = briefing.count === 0
+        ? i18n.t('briefingEmpty')
+        : i18n.fn('briefingBody', briefing.count, briefing.tasks.slice(0, 3).map(task => task.title).join(', '));
+    showNotification(i18n.t('briefingTitle'), { body, tag: 'chronos-briefing' });
+}
+
 export function renderPushBadge() {
     const badge = $('notify-badge');
     if (!badge) return;

@@ -23,9 +23,11 @@ import { CountdownView } from './ui/countdown.js';
 import { CalendarView } from './ui/calendar.js';
 import { IntelView } from './ui/intel.js';
 import { LinksView } from './ui/links.js';
+import { SettingsView } from './ui/settings.js';
 import { applyStaticTranslations } from './ui/translate.js';
 import { playIntroAnimation, playSlashEffect } from './ui/effects.js';
-import { deliverAlert, renderPushBadge, requestPermission, stopDueAlert } from './ui/notifications.js';
+import { deliverAlert, deliverBriefing, renderPushBadge, requestPermission, stopDueAlert } from './ui/notifications.js';
+import { DailyBriefingScheduler } from './core/briefing.js';
 import { $, activateOnKey } from './ui/dom.js';
 
 export class UI {
@@ -50,8 +52,10 @@ export class UI {
             countdown: new CountdownView(this),
             calendar: new CalendarView(this),
             intel: new IntelView(this),
-            links: new LinksView(this)
+            links: new LinksView(this),
+            settings: new SettingsView(this)
         };
+        this.briefing = new DailyBriefingScheduler(this.store, briefing => deliverBriefing(briefing));
         this.nav = new Navigation({
             onShow: (viewId) => this.onTabShown(viewId),
             isBlocked: () => !!this.modals.current()
@@ -97,6 +101,8 @@ export class UI {
             this.renderGoals();
         } else if (viewId === 'view-urls') {
             this.renderLinks();
+        } else if (viewId === 'view-settings') {
+            this.renderSettings();
         }
     }
 
@@ -113,6 +119,7 @@ export class UI {
         this.refresh();
         this.renderGoals();
         this.renderLinks();
+        this.renderSettings();
     }
 
     applyTranslations() {
@@ -125,11 +132,13 @@ export class UI {
     renderStats() { this.views.intel.renderStats(); }
     renderGoals() { this.views.intel.renderGoals(); }
     renderLinks() { this.views.links.render(); }
+    renderSettings() { this.views.settings.render(); }
 
     /** One clock tick: redraw the hero, then run alert checks for every pending task. */
     updateCountdown(nextTask, now = new Date()) {
         this.views.countdown.render(nextTask, now);
         this.alerts.check(now);
+        this.briefing.check(now);
     }
 
     /* ---------- Delegates kept as the public API (main.js / tests) ---------- */

@@ -1,4 +1,4 @@
-# ⚡️ CHRONOS // Tactical Objective Protocol (v0.5.6)
+# ⚡️ CHRONOS // Tactical Objective Protocol (v0.6.0)
 
 CHRONOS는 자연어로 일정을 입력하고 카운트다운, 반복 일정, 캘린더, 생산성 요약, PWA 오프라인 동작을 한 화면에서 관리하는 클라이언트 사이드 일정 앱입니다.
 
@@ -46,7 +46,7 @@ npm.cmd run preview -- --port 5187
 
 배포 주소: `https://personarpggg.github.io/TodoList/`
 
-### 🧱 Module Map (v0.5.6)
+### 🧱 Module Map (v0.6.0)
 ```
 js/
 ├─ main.js            entry: boot, 1s clock, SW registration
@@ -55,11 +55,11 @@ js/
 ├─ store.js           data facade (the only API the UI uses)
 ├─ i18n.js            translator  ── i18n/en.js · ko.js · ja.js
 ├─ ui.js              UI coordinator + shared view state
-├─ core/   (pure, no DOM)  parser · recurrence · alerts
+├─ core/   (pure, no DOM)  parser · recurrence · alerts · briefing
 ├─ data/   (no DOM)        storage(only localStorage access) · tasks · links · profile · backup
 └─ ui/     (one file per screen area)
            tasks · countdown · calendar · intel · links · navigation
-           modals · effects · notifications · translate · dom
+           modals · effects · notifications · settings · translate · dom
 ```
 Rules enforced by `tests/architecture.test.js`: core/data never touch the DOM or import ui; only `data/storage.js` touches localStorage; storage keys only in `config.js`; views never import each other; no `window.*` globals; every `$('id')` exists in index.html; KR/JP dictionaries match EN keys; `sw.js` precaches every module and its cache name matches `APP_VERSION`.
 

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chronos-v0.5.6'; // keep in sync with js/config.js APP_VERSION (checked by tests)
+const CACHE_NAME = 'chronos-v0.6.0'; // keep in sync with js/config.js APP_VERSION (checked by tests)
 const ASSETS = [
     './',
     './index.html',
@@ -12,6 +12,7 @@ const ASSETS = [
     './js/ui.js',
     './js/utils.js',
     './js/core/alerts.js',
+    './js/core/briefing.js',
     './js/core/parser.js',
     './js/core/recurrence.js',
     './js/data/backup.js',
@@ -31,6 +32,7 @@ const ASSETS = [
     './js/ui/modals.js',
     './js/ui/navigation.js',
     './js/ui/notifications.js',
+    './js/ui/settings.js',
     './js/ui/tasks.js',
     './js/ui/translate.js'
 ];

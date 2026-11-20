@@ -34,20 +34,21 @@ export class ChronosApp {
     }
 
     setupInstallPrompt() {
-        const button = document.getElementById('btn-install-app');
-        if (!button) return;
-        const isMobile = () => window.matchMedia?.('(max-width: 767px)').matches ?? false;
+        const buttons = [...document.querySelectorAll('[data-install-app]')];
+        if (buttons.length === 0) return;
         const isStandalone = () => window.matchMedia?.('(display-mode: standalone)').matches || navigator.standalone === true;
         const sync = () => {
-            button.classList.toggle('hidden', !isMobile() || isStandalone());
-            button.classList.toggle('flex', isMobile() && !isStandalone());
+            buttons.forEach(button => {
+                button.classList.toggle('hidden', isStandalone());
+                button.classList.toggle('flex', !isStandalone());
+            });
         };
         window.addEventListener('beforeinstallprompt', (event) => {
             event.preventDefault();
             this.deferredInstallPrompt = event;
             sync();
         });
-        button.addEventListener('click', async () => {
+        buttons.forEach(button => button.addEventListener('click', async () => {
             if (!this.deferredInstallPrompt) {
                 this.ui.showAlert(i18n.t('installHelp'));
                 return;
@@ -56,7 +57,7 @@ export class ChronosApp {
             await this.deferredInstallPrompt.userChoice;
             this.deferredInstallPrompt = null;
             sync();
-        });
+        }));
         window.addEventListener('resize', sync);
         sync();
     }

@@ -62,6 +62,7 @@ export class Store {
 
     /* ---------- Settings ---------- */
     getSettings() { return this.repos.settings.get(); }
+    saveSettings(patch) { this.repos.settings.update(patch); }
 
     /* ---------- Backup ---------- */
     exportAllData() { return exportAll(this.repos); }

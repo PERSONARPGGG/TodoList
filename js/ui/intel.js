@@ -85,11 +85,6 @@ export class IntelView {
         setText('stat-delayed', String(stats.totalDelays));
         setText('stat-completed', String(stats.completed));
 
-        const rank = $('rank-stamp-badge');
-        if (rank) {
-            rank.className = `rank-stamp rank-${stats.grade.toLowerCase()}`;
-            rank.textContent = `RANK ${stats.grade}`;
-        }
     }
 
     renderGoals() {

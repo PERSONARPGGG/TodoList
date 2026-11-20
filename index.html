@@ -43,9 +43,6 @@
                     </button>
                     <span id="live-clock" class="text-gray-300 font-bold">00:00:00</span>
                 </div>
-                <button id="btn-install-app" class="hidden mobile-install-btn hover:text-yellow-300 transition-colors items-center gap-1 cursor-pointer" type="button">
-                    <span aria-hidden="true">▣</span><span id="label-install-app">INSTALL APP</span>
-                </button>
             </div>
 
             <!-- Focus Objective Widget (Hero Box with Calm Cyber Hourglass) -->
@@ -182,15 +179,15 @@
                     </div>
                 </section>
                 
-                <!-- VIEW 2: INTELLIGENCE & ENTJ PROTOCOL -->
+                <!-- VIEW 2: PRODUCTIVITY SUMMARY -->
                 <section id="view-info" class="flex-1 overflow-y-auto pb-14 no-scrollbar view-section dashboard-info flex flex-col">
                     <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-900 shrink-0">
                         <h3 class="text-sm font-bold uppercase tracking-wider text-blue-400" id="label-intel-title">Tactical Intelligence</h3>
-                        <span class="text-[10px] font-mono text-gray-500" id="label-intel-sub">ENTJ PERFORMANCE MATRIX</span>
+                        <span class="text-[10px] font-mono text-gray-500" id="label-intel-sub">CURRENT PERFORMANCE</span>
                     </div>
 
                     <div class="space-y-3">
-                        <!-- Rank & Productivity Card -->
+                        <!-- Completion summary -->
                         <div class="p-3.5 bg-gray-950 border border-blue-900/40 rounded-lg relative overflow-hidden flex items-center justify-between">
                             <div class="space-y-1 z-10">
                                 <span class="text-[10px] font-mono text-blue-400 uppercase tracking-widest block font-bold" id="label-exec-rating">Executive Rating</span>
@@ -200,9 +197,6 @@
                                     <span><span id="label-delayed">Delayed</span>: <b id="stat-delayed" class="text-yellow-400">0</b></span>
                                     <span><span id="label-done">Done</span>: <b id="stat-completed" class="text-emerald-400">0</b></span>
                                 </div>
-                            </div>
-                            <div id="rank-stamp-badge" class="rank-stamp rank-s">
-                                RANK S
                             </div>
                         </div>
 
@@ -223,23 +217,51 @@
                             <p id="display-long-goal" class="font-bold text-sm text-gray-200">Loading directive...</p>
                         </div>
 
-                        <!-- Data Integrity & Backup Controls -->
+                    </div>
+                </section>
+
+                <!-- VIEW 3: SETTINGS -->
+                <section id="view-settings" class="flex-1 overflow-y-auto pb-14 no-scrollbar view-section hidden flex flex-col">
+                    <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-900 shrink-0">
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-emerald-400" id="label-settings-title">Settings</h3>
+                        <span class="text-[10px] font-mono text-gray-500" id="settings-version">v0.6.0</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-gray-950 border border-gray-900 rounded space-y-3">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-emerald-400" id="label-notify-settings">Notifications</h4>
+                            <button id="btn-settings-notify" class="persona-btn text-[10px] py-1.5 px-3">ENABLE NOTIFICATIONS</button>
+                            <label class="flex items-center justify-between gap-3 text-xs text-gray-300">
+                                <span id="label-briefing-enabled">Daily briefing</span>
+                                <input id="input-daily-briefing" type="checkbox" class="accent-emerald-500 w-4 h-4">
+                            </label>
+                            <label class="flex items-center justify-between gap-3 text-xs text-gray-300" for="input-briefing-time">
+                                <span id="label-briefing-time">Briefing time</span>
+                                <input id="input-briefing-time" type="time" value="08:00" class="chronos-modal-input w-auto">
+                            </label>
+                            <label class="flex items-center justify-between gap-3 text-xs text-gray-300" for="input-notify-before">
+                                <span id="label-notify-before">Reminder lead (min)</span>
+                                <input id="input-notify-before" type="number" min="0" max="1440" step="5" value="10" class="chronos-modal-input w-24">
+                            </label>
+                            <button id="btn-save-settings" class="persona-btn btn-blue text-[10px] py-1.5 px-3 w-full">SAVE SETTINGS</button>
+                        </div>
                         <div class="p-3 bg-gray-950 border border-gray-900 rounded space-y-2">
-                            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400 border-b border-gray-900 pb-1" id="label-backup-title">Offline Data Safeguard</h4>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400" id="label-backup-title">Local data</h4>
+                            <p class="text-[11px] text-gray-500" id="label-backup-sub">Optional manual backup for moving this browser's data.</p>
                             <div class="flex gap-2">
-                                <button id="btn-export-json" class="persona-btn text-[10px] py-1.5 px-3 flex-1">
-                                    Export JSON Backup
-                                </button>
-                                <button id="btn-import-json-trigger" class="persona-btn btn-blue text-[10px] py-1.5 px-3 flex-1">
-                                    Restore Backup
-                                </button>
+                                <button id="btn-export-json" class="persona-btn text-[10px] py-1.5 px-3 flex-1">EXPORT</button>
+                                <button id="btn-import-json-trigger" class="persona-btn btn-blue text-[10px] py-1.5 px-3 flex-1">IMPORT</button>
                                 <input type="file" id="file-import-json" accept=".json" class="hidden">
                             </div>
+                        </div>
+                        <div class="p-3 bg-gray-950 border border-gray-900 rounded space-y-2">
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-gray-400" id="label-install-title">Install app</h4>
+                            <p class="text-[11px] text-gray-500" id="label-install-sub">Install CHRONOS for a focused mobile experience.</p>
+                            <button id="btn-install-app-settings" data-install-app class="hidden persona-btn btn-yellow text-[10px] py-1.5 px-3 w-full" type="button"><span id="label-install-app">INSTALL APP</span></button>
                         </div>
                     </div>
                 </section>
 
-                <!-- VIEW 3: NETWORK & ARCHIVES -->
+                <!-- VIEW 4: NETWORK & ARCHIVES -->
                 <section id="view-urls" class="flex-1 overflow-y-auto pb-14 no-scrollbar view-section hidden flex flex-col">
                     <div class="flex justify-between items-center mb-3 pb-2 border-b border-gray-900 shrink-0">
                         <h3 class="text-sm font-bold uppercase tracking-wider text-yellow-400" id="label-net-title">Network Terminal</h3>
@@ -270,6 +292,7 @@
                 <div class="swipe-dot active" data-index="0"></div>
                 <div class="swipe-dot" data-index="1"></div>
                 <div class="swipe-dot" data-index="2"></div>
+                    <div class="swipe-dot" data-index="3"></div>
             </div>
 
         </div>
@@ -287,8 +310,13 @@
                     <span class="vertical-text uppercase tracking-widest text-[11px] font-bold text-gray-500 group-hover:text-blue-400 transition-colors" id="nav-text-intel">Intel</span>
                     <div class="absolute right-0 top-1/2 -translate-y-1/2 h-14 w-1 bg-blue-500 opacity-0 indicator transition-all duration-150 scale-y-0"></div>
                 </button>
+                <!-- Green Tab: Settings -->
+                <button class="nav-btn group relative w-full py-4" data-target="view-settings" data-index="2">
+                    <span class="vertical-text uppercase tracking-widest text-[11px] font-bold text-gray-500 group-hover:text-emerald-400 transition-colors" id="nav-text-settings">Settings</span>
+                    <div class="absolute right-0 top-1/2 -translate-y-1/2 h-14 w-1 bg-emerald-400 opacity-0 indicator transition-all duration-150 scale-y-0"></div>
+                </button>
                 <!-- Yellow Tab: Network -->
-                <button class="nav-btn group relative w-full py-4" data-target="view-urls" data-index="2">
+                <button class="nav-btn group relative w-full py-4" data-target="view-urls" data-index="3">
                     <span class="vertical-text uppercase tracking-widest text-[11px] font-bold text-gray-500 group-hover:text-yellow-400 transition-colors" id="nav-text-network">Network</span>
                     <div class="absolute right-0 top-1/2 -translate-y-1/2 h-14 w-1 bg-yellow-400 opacity-0 indicator transition-all duration-150 scale-y-0"></div>
                 </button>
@@ -427,6 +455,6 @@
         </div>
     </div>
 
-    <script type="module" src="js/main.js?v=0.5.6"></script>
+    <script type="module" src="js/main.js?v=0.6.0"></script>
 </body>
 </html>

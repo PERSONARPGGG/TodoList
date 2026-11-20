@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { Store } from '../js/store.js';
 import { UI } from '../js/ui.js';
 import { i18n } from '../js/i18n.js';
+import { DailyBriefingScheduler } from '../js/core/briefing.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const bodyHTML = fs.readFileSync(path.resolve(__dirname, '../index.html'), 'utf8')
@@ -127,5 +128,26 @@ describe('app lifecycle', () => {
         expect(refresh).toHaveBeenCalledTimes(1);
         app.stop();
         delete globalThis.__CHRONOS_NO_AUTOBOOT__;
+    });
+});
+
+describe('daily briefing', () => {
+    it('delivers once after the configured local time', () => {
+        store.saveSettings({ dailyBriefingEnabled: true, dailyBriefingTime: '08:00' });
+        store.addTask({ title: 'standup', time: at('2026-11-13T16:00:00+09:00') });
+        const deliver = vi.fn();
+        const scheduler = new DailyBriefingScheduler(store, deliver);
+
+        expect(scheduler.check(new Date('2026-11-13T07:59:59+09:00'))).toBe(false);
+        expect(scheduler.check(new Date('2026-11-13T08:00:00+09:00'))).toBe(true);
+        expect(scheduler.check(new Date('2026-11-13T09:00:00+09:00'))).toBe(false);
+        expect(deliver).toHaveBeenCalledTimes(1);
+        expect(deliver.mock.calls[0][0].tasks[0].title).toBe('standup');
+    });
+
+    it('is opt-in and carries settings defaults forward', () => {
+        expect(store.getSettings().dailyBriefingEnabled).toBe(false);
+        expect(store.getSettings().dailyBriefingTime).toBe('08:00');
+        expect(new DailyBriefingScheduler(store, vi.fn()).check(NOW)).toBe(false);
     });
 });

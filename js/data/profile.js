@@ -39,10 +39,17 @@ export class SettingsRepository {
 
     get() {
         const s = readJSON(this.key, null);
-        return s && typeof s === 'object' && !Array.isArray(s) ? s : {};
+        return {
+            ...DEFAULT_SETTINGS,
+            ...(s && typeof s === 'object' && !Array.isArray(s) ? s : {})
+        };
     }
 
     replace(settings) {
-        writeJSON(this.key, settings);
+        writeJSON(this.key, { ...DEFAULT_SETTINGS, ...(settings || {}) });
+    }
+
+    update(patch) {
+        this.replace({ ...this.get(), ...patch });
     }
 }

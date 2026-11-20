@@ -194,10 +194,9 @@ describe('export / stats', () => {
         expect(JSON.parse(store.exportAllData()).version).toBe(APP_VERSION);
     });
 
-    it('getStats with 0 tasks -> completionRate 100, grade S', () => {
+it('getStats with 0 tasks -> completionRate 100', () => {
         const s = store.getStats();
         expect(s.total).toBe(0);
         expect(s.completionRate).toBe(100);
-        expect(s.grade).toBe('S');
     });
 });

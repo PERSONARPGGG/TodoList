@@ -168,11 +168,6 @@ export class TaskRepository {
         const totalDelays = tasks.reduce((sum, t) => sum + (t.delayCount || 0), 0);
         const completionRate = total > 0 ? Math.round((completed / total) * 100) : 100;
 
-        let grade = 'S';
-        if (completionRate < 60 || totalDelays > 5) grade = 'C';
-        else if (completionRate < 80 || totalDelays > 2) grade = 'B';
-        else if (completionRate < 95 || totalDelays > 0) grade = 'A';
-
-        return { total, completed, pending: total - completed, totalDelays, completionRate, grade };
+        return { total, completed, pending: total - completed, totalDelays, completionRate };
     }
 }
