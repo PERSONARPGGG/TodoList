@@ -35,6 +35,13 @@ afterEach(() => {
 });
 
 describe('UI rendering safety', () => {
+    it('shows only the schedule view on initial render', () => {
+        expect(document.getElementById('view-schedule').classList.contains('hidden')).toBe(false);
+        expect(document.getElementById('view-info').classList.contains('hidden')).toBe(true);
+        expect(document.getElementById('view-settings').classList.contains('hidden')).toBe(true);
+        expect(document.getElementById('view-urls').classList.contains('hidden')).toBe(true);
+    });
+
     it('task title with <img onerror> is not rendered as an element', () => {
         store.addTask({ title: '<img src=x onerror=alert(1)>', time: new Date('2026-11-13T16:00:00+09:00').toISOString() });
         ui.renderTasks();

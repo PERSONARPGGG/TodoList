@@ -959,7 +959,7 @@ body {
     }
 
     #app-container > nav .nav-btn {
-        width: 33.333%;
+        width: 25%;
         height: 100%;
         padding: 0.5rem 0.25rem;
         display: flex;
